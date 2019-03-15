@@ -6,7 +6,7 @@ import NavBar from './containers/NavBar';
 import Board from './containers/Board';
 
 import './App.css';
-import 'antd/dist/antd.min.css';
+import 'gestalt/dist/gestalt.css';
 
 const AppContainer = styled.div`
   display: flex;

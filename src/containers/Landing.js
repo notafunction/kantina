@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import Auth from '../components/Auth'
 
+import { Text } from 'gestalt';
+
 const Panel = styled.div`
   display: flex;
   flex-direction: column;
@@ -35,7 +37,7 @@ const Landing = (props) => {
   return (
     <Panel background='lightblue'>
       <Content>
-        <Header>Welcome to Kantina!</Header>
+        <Text>Welcome to Kantina!</Text>
         {
           props.profile.isEmpty &&
           <Header>Log in to get started!</Header>
