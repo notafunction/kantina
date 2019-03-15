@@ -1,7 +1,7 @@
 import React from 'react'
 import { compose, withHandlers } from 'recompose'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { firestoreConnect } from 'react-redux-firebase'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
@@ -10,12 +10,17 @@ import { Menu, Dropdown, Icon, message } from 'antd'
 import { Button } from './Button'
 import AddBoard from './AddBoard'
 
-const StyledLink = styled(Link)`
-  background: white;
+const MenuLink = styled(NavLink)`
+  font-family: 'Overpass', sans-serif;
+  text-decoration: none;
+  color: #1d1d1d;
+  flex: 1;
+  padding: 10px;
+
   :hover {
-    background: rgba(0,0,0,0.1);
+    background: lightgray;
   }
-`
+`;
 
 const enhance = compose(
   withRouter,
@@ -48,7 +53,7 @@ const BoardMenu = props => {
     <Menu>
       {props.boards && props.boards.map((board, i) => (
         <Menu.Item key={i}>
-          <StyledLink to={`/board/${board.id}`}>{board.title}</StyledLink>
+          <MenuLink to={`/board/${board.id}`}>{board.title}</MenuLink>
         </Menu.Item>
       ))}
       <Menu.Item>

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Landing from './containers/Landing';
 import NavBar from './containers/NavBar';
 import Board from './containers/Board';
+import Settings from './containers/Settings';
 
 import './App.css';
 import 'gestalt/dist/gestalt.css';
@@ -14,21 +15,15 @@ const AppContainer = styled.div`
   height: 100%;
 `;
 
-const ContentContainer = styled.div`
-  flex-grow: 1;
-  position: relative;
-`;
-
 const App = (props) => (
   <Router>
     <AppContainer>
       <NavBar />
-      <ContentContainer>
-        <Switch>
-          <Route exact path='/' component={Landing} />
-          <Route path='/board/:id' component={Board} />
-        </Switch>
-      </ContentContainer>
+      <Switch>
+        <Route exact path='/' component={Landing} />
+        <Route path='/settings' component={Settings} />
+        <Route path='/board/:id' component={Board} />
+      </Switch>
     </AppContainer>
   </Router>
 );
