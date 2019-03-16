@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
-import { Box, Flyout, IconButton, Heading, Text } from 'gestalt';
 import MenuLink from '../components/styled/MenuLink';
 import { firestoreConnect, withFirebase } from 'react-redux-firebase';
+
+import { Box, Flyout, IconButton, Heading, Text, Label, TextField, Button, Modal } from 'gestalt';
 
 const enhance = compose(
     withFirebase,
@@ -16,8 +17,17 @@ const enhance = compose(
 );
 
 const BoardMenu = (props) => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [ isOpen, setIsOpen ] = useState(false);
+    const [ isBoardFormOpen, setIsBoardFormOpen ] = useState(false);
     const anchorRef = useRef(null);
+
+    const toggleBoardFormModal = () => {
+        setIsBoardFormOpen(!isBoardFormOpen);
+    }
+
+    const handleCreateBoard = (payload) => {
+        console.log(payload, props.firestore);
+    }
 
     return (
         <React.Fragment>
@@ -55,6 +65,7 @@ const BoardMenu = (props) => {
                                 accessibilityLabel="create board"
                                 icon="add"
                                 size="sm"
+                                onClick={toggleBoardFormModal}
                             />
                         </Box>
                         {
@@ -71,7 +82,61 @@ const BoardMenu = (props) => {
                     </Box>
                 </Flyout>
             }
+            {
+                isBoardFormOpen && 
+                <NewBoardForm
+                    toggle={toggleBoardFormModal}
+                    onSubmit={handleCreateBoard}
+                /> 
+            }
         </React.Fragment>
+    );
+}
+
+const NewBoardForm = (props) => {
+    const [ name, setName ] = useState('');
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        props.onSubmit({
+            name,
+        });
+    }
+
+    return (
+        <Modal
+            accessibilityCloseLabel="cancel"
+            accessibilityModalLabel="create new board"
+            heading="New board"
+            onDismiss={props.toggle}
+            size="sm"
+        >
+            <form onSubmit={handleSubmit}>
+                <Box marginBottom={4}>
+                    <Box marginBottom={2}>
+                        <Label htmlFor="name">
+                            <Text>Name</Text>
+                        </Label>
+                    </Box>
+                    <TextField id="name"
+                        value={name}
+                        onChange={({ value }) => setName(value)}
+                    />
+                </Box>
+                <Box display="flex" justifyContent="between">
+                    <Button inline
+                        text="Cancel"
+                        color="red"
+                        onClick={props.toggle}
+                    />
+                    <Button inline
+                        text="Create"
+                        color="blue"
+                        type="submit"
+                    />
+                </Box>
+            </form>
+        </Modal>
     );
 }
 
