@@ -43,10 +43,6 @@ const Landing = (props) => {
           <Header>Log in to get started!</Header>
         }
       </Content>
-      {
-        props.profile.isEmpty &&
-        <Auth profile={props.profile} />
-      }
     </Panel>
   )
 }

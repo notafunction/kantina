@@ -18,7 +18,7 @@ const enhance = compose(
 
 const ProfileLink = (props) => {
     return (
-        <NavLink to={`/${props.profile.username}`}>
+        <NavLink to={`/profile/${props.profile.username}`}>
             <Box
                 shape="pill"
                 color="white"
@@ -53,7 +53,6 @@ const NavBar = (props) => {
     return (
         <nav>
             <Box
-                margin={1}
                 color="darkGray"
                 shape="rounded"
                 padding={3}
@@ -67,7 +66,7 @@ const NavBar = (props) => {
                 </Box>
                 <Box flex="grow"></Box>
                 {!props.profile.isEmpty && <ProfileLink profile={props.profile}/> }
-                {!props.profile.isEmpty && <BoardMenu />}
+                {!props.profile.isEmpty && <BoardMenu profile={props.profile}/>}
                 {showMainMenu()}
             </Box>
         </nav>
