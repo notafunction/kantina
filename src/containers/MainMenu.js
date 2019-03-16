@@ -1,14 +1,13 @@
 import React, { useState, useRef } from 'react';
-import { Box, Flyout, IconButton } from 'gestalt';
+import { Box, Flyout, IconButton, Avatar, Button, Text } from 'gestalt';
 import { compose } from 'recompose';
 import { withFirebase } from 'react-redux-firebase';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 
 import MenuLink from '../components/styled/MenuLink';
 
 const enhance = compose(
     withFirebase,
-    withRouter,
 );
 
 const MainMenu = (props) => {
@@ -16,9 +15,7 @@ const MainMenu = (props) => {
     const anchorRef = useRef(null);
 
     const logout = () => {
-        props.firebase.logout().then(() => {
-            
-        });
+        props.firebase.logout();
     }
 
     return (
@@ -42,7 +39,7 @@ const MainMenu = (props) => {
                 >
                     <Box display="flex" direction="column" flex="grow">
                         <MenuLink to="/settings">Edit settings</MenuLink>
-                        <MenuLink to="/" onClick={logout}>Logout</MenuLink>
+                        <MenuLink to="/" onClick={logout}>Log out</MenuLink>
                     </Box>
                 </Flyout>
             }

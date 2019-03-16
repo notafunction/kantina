@@ -161,7 +161,10 @@ const SignupForm = (props) => {
         event.preventDefault();
         if (!validateForm()) return;
 
-        props.onSubmit({ email, password })
+        props.onSubmit({
+            email,
+            password,
+        })
         .catch((error) => {
             setError(error.message);
         });
@@ -173,7 +176,7 @@ const SignupForm = (props) => {
                 <Box marginBottom={4}>
                     <Heading size="sm">Signup</Heading>
                 </Box>
-                {
+                { // Displays errors from firebase
                     error &&
                     <Box marginBottom={4}>
                         <Text color="red">{ error }</Text>

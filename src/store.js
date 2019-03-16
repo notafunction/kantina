@@ -6,26 +6,32 @@ import { reduxFirestore, firestoreReducer } from 'redux-firestore'
 const composeWithDevTools = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 const rrfConfig = {
-  userProfile: 'users',
-  useFirestoreForProfile: true,
-  profileFactory: (userData, profileData) => {
-    return {
-      id: userData.uid,
-      email: userData.email,
-      boardsById: [],
-      ...profileData,
-    }
-  }
+    userProfile: 'profiles',
+    useFirestoreForProfile: true,
+    profileFactory: (userData, profileData) => {
+        return {
+            id: userData.uid,
+            email: userData.email,
+            firstName: userData.email.match(/^([^@]*)@/)[1],
+            lastName: '',
+            username: userData.uid,
+            boardsById: [],
+            ...profileData,
+        }
+    },
+    profileParamsToPopulate: [
+        'boardsById:boards',
+    ],
 }
 
 const createStoreWithFirebase = composeWithDevTools(
-  reactReduxFirebase(firebase, rrfConfig),
-  reduxFirestore(firebase)
+    reactReduxFirebase(firebase, rrfConfig),
+    reduxFirestore(firebase)
 )(createStore)
 
 const rootReducer = combineReducers({
-  firebase: firebaseReducer,
-  firestore: firestoreReducer,
+    firebase: firebaseReducer,
+    firestore: firestoreReducer,
 })
 
 const initialState = {}
