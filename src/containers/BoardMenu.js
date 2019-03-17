@@ -2,14 +2,27 @@ import React, { useState, useRef } from 'react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import MenuLink from '../components/styled/MenuLink';
-import { firestoreConnect, withFirebase } from 'react-redux-firebase';
+import { firestoreConnect, withFirestore } from 'react-redux-firebase';
 
-import { Box, Flyout, IconButton, Heading, Text, Label, TextField, Button, Modal } from 'gestalt';
+import {
+    Box,
+    Flyout,
+    IconButton,
+    Heading,
+    Text,
+    Modal,
+    Label,
+    TextField,
+    Switch,
+    Button,
+} from 'gestalt';
 
 const enhance = compose(
-    withFirebase,
+    withFirestore,
     firestoreConnect((props) => ([
-        { collection: 'boards', where: ['uid', '==', props.profile.id] }
+        { collection: 'boards', where: [
+            ['ownerId', '==', props.profile.id],
+        ] }
     ])),
     connect((store) => ({
         boards: store.firestore.ordered && store.firestore.ordered.boards,
@@ -17,16 +30,18 @@ const enhance = compose(
 );
 
 const BoardMenu = (props) => {
-    const [ isOpen, setIsOpen ] = useState(false);
-    const [ isBoardFormOpen, setIsBoardFormOpen ] = useState(false);
+    const [ showMenu, setShowMenu ] = useState(false);
+    const [ showCreate, setShowCreate ] = useState(false);
     const anchorRef = useRef(null);
 
-    const toggleBoardFormModal = () => {
-        setIsBoardFormOpen(!isBoardFormOpen);
-    }
-
-    const handleCreateBoard = (payload) => {
-        console.log(payload, props.firestore);
+    const createBoard = (payload) => {
+        return props.firestore.add(
+            { collection: 'boards' },
+            {
+                ...payload,
+                ownerId: props.profile.id,
+            },
+        );
     }
 
     return (
@@ -36,16 +51,16 @@ const BoardMenu = (props) => {
                     icon="view-type-default"
                     accessibilityHaspopup
                     accessibilityLabel="board menu"
-                    accessibilityExpanded={isOpen}
-                    onClick={() => setIsOpen(!isOpen)}
+                    accessibilityExpanded={showMenu}
+                    onClick={() => setShowMenu(!showMenu)}
                 />
             </Box>
-            {
-                isOpen &&
+            { // Board list menu
+                showMenu &&
                 <Flyout
                     anchor={anchorRef.current}
                     idealDirection="down"
-                    onDismiss={() => setIsOpen(false)}
+                    onDismiss={() => setShowMenu(false)}
                     size="md"
                 >
                     <Box
@@ -65,13 +80,13 @@ const BoardMenu = (props) => {
                                 accessibilityLabel="create board"
                                 icon="add"
                                 size="sm"
-                                onClick={toggleBoardFormModal}
+                                onClick={() => setShowCreate(true)}
                             />
                         </Box>
                         {
                             props.boards.length
                             ? props.boards.map((board) => (
-                                <MenuLink to={`/board/${board.id}`}>{ board.name }</MenuLink>
+                                <MenuLink key={board.id} to={`/board/${board.id}`}>{ board.name }</MenuLink>
                             ))
                             : <Box marginTop={12} marginBottom={12} display="flex" flex="grow">
                                 <Box paddingX={4}>
@@ -82,60 +97,83 @@ const BoardMenu = (props) => {
                     </Box>
                 </Flyout>
             }
-            {
-                isBoardFormOpen && 
-                <NewBoardForm
-                    toggle={toggleBoardFormModal}
-                    onSubmit={handleCreateBoard}
-                /> 
+            { // Board create form
+                showCreate &&
+                <CreateForm
+                    onDismiss={() => setShowCreate(false)}
+                    onSubmit={createBoard}
+                />
             }
         </React.Fragment>
     );
 }
 
-const NewBoardForm = (props) => {
+const CreateForm = (props) => {
     const [ name, setName ] = useState('');
+    const [ isPrivate, setIsPrivate ] = useState(false);
 
     const handleSubmit = (event) => {
-        event.preventDefault();
+        if (event.type === 'submit') event.preventDefault();
+
         props.onSubmit({
             name,
+            isPrivate,
+        }).then((docRef) => {
+            props.history.push(`/boards/${docRef.id}`)
         });
     }
 
     return (
         <Modal
-            accessibilityCloseLabel="cancel"
-            accessibilityModalLabel="create new board"
-            heading="New board"
-            onDismiss={props.toggle}
-            size="sm"
-        >
-            <form onSubmit={handleSubmit}>
-                <Box marginBottom={4}>
-                    <Box marginBottom={2}>
-                        <Label htmlFor="name">
-                            <Text>Name</Text>
-                        </Label>
-                    </Box>
-                    <TextField id="name"
-                        value={name}
-                        onChange={({ value }) => setName(value)}
-                    />
-                </Box>
+            size="md"
+            accessibilityModalLabel="Create board"
+            accessibilityCloseLabel="Cancel"
+            onDismiss={props.onDismiss}
+            heading="Create board"
+            footer={
                 <Box display="flex" justifyContent="between">
-                    <Button inline
+                    <Button
+                        inline
                         text="Cancel"
-                        color="red"
-                        onClick={props.toggle}
+                        onClick={props.onDismiss}
                     />
-                    <Button inline
-                        text="Create"
+                    <Button
+                        inline
+                        text="Submit"
                         color="blue"
-                        type="submit"
+                        onClick={handleSubmit}
                     />
                 </Box>
-            </form>
+            }
+        >
+            <Box padding={2}>
+                <form onSubmit={handleSubmit}>
+                    <Box marginBottom={4}>
+                        <Box marginBottom={2}>
+                            <Label htmlFor="name">
+                                <Text>Name</Text>
+                            </Label>
+                        </Box>
+                        <TextField id="name"
+                            value={name}
+                            placeholder="Board name"
+                            onChange={({ value }) => setName(value)}
+                        />
+                    </Box>
+                    <Box display="flex" alignItems="center" marginBottom={4}>
+                        <Box paddingX={2} flex="grow">
+                            <Label htmlFor="isPrivate">
+                                <Text>Private</Text>
+                            </Label>
+                        </Box>
+                        <Switch
+                            id="isPrivate"
+                            switched={isPrivate}
+                            onChange={() => setIsPrivate(!isPrivate)}
+                        />
+                    </Box>
+                </form>
+            </Box>
         </Modal>
     );
 }

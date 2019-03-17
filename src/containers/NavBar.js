@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import { NavLink, Link } from 'react-router-dom';
@@ -68,6 +68,7 @@ const NavBar = (props) => {
                 {!props.profile.isEmpty && <ProfileLink profile={props.profile}/> }
                 {!props.profile.isEmpty && <BoardMenu profile={props.profile}/>}
                 {showMainMenu()}
+                {}
             </Box>
         </nav>
     );

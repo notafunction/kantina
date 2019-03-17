@@ -3,37 +3,13 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose, withHandlers } from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
-import styled from 'styled-components'
 
 import List from '../components/List'
 import AddList from '../components/AddList'
 
-const ListWrapper = styled.div`
-  display: inline-block;
-  margin: 0 5px;
-  height: 100%;
-  width: 270px;
-  vertical-align: top;
-  :first-child {
-    margin-left: 1rem;
-  }
-  :last-child {
-    margin-right: 1rem;
-  }
-`
-const ListsContainer = styled.div`
-  user-select: none;
-  white-space: nowrap;
-  margin-bottom: 1rem;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: 1rem;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-`
+import {
+  Box,
+} from 'gestalt';
 
 const enhance = compose(
   firestoreConnect((props) => ([
@@ -62,24 +38,24 @@ const enhance = compose(
 const Lists = (props) => {
   if (props.lists) {
   return (
-    <ListsContainer>
+    <Box>
       {
         props.lists.map((list, i) => (
-          <ListWrapper key={i}>
+          <Box key={i}>
             <List
               onDeleteList={() => props.onDeleteList(list.id)}
               {...list}
             />
-          </ListWrapper>
+          </Box>
         ))
       }
       {
         !props.profile.isEmpty && 
-        <ListWrapper>
+        <Box>
           <AddList onSubmit={props.onAddList} />
-        </ListWrapper>
+        </Box>
       }
-    </ListsContainer>
+    </Box>
   )
   } else {
     return 'Loading...'

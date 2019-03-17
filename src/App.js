@@ -15,12 +15,12 @@ import 'gestalt/dist/gestalt.css';
 const App = (props) => (
   <Router>
     <Box display="flex" direction="column" height="100%" padding={2}>
-      <NavBar />
+      <NavBar/>
       <Switch>
         <Route exact path='/' component={Landing} />
         <Route path='/settings' component={Settings} />
         <Route path='/profile/:uid' component={Profile} />
-        <Route path='/board/:id' component={Board} />
+        <Route path='/board/:boardId' component={Board} />
       </Switch>
     </Box>
   </Router>
