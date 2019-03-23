@@ -24,7 +24,7 @@ const MainMenu = (props) => {
                 <IconButton
                     icon="ellipsis"
                     accessibilityHaspopup
-                    accessibilityLabel="main menu"
+                    accessibilityLabel="Main menu"
                     accessibilityExpanded={isOpen}
                     onClick={() => setIsOpen(!isOpen)}
                 />

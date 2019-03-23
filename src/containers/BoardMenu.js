@@ -50,7 +50,7 @@ const BoardMenu = (props) => {
                 <IconButton
                     icon="view-type-default"
                     accessibilityHaspopup
-                    accessibilityLabel="board menu"
+                    accessibilityLabel="Boards"
                     accessibilityExpanded={showMenu}
                     onClick={() => setShowMenu(!showMenu)}
                 />
@@ -65,7 +65,6 @@ const BoardMenu = (props) => {
                 >
                     <Box
                         flex="grow"
-                        padding={2}
                         display="flex"
                         direction="column"
                     >
@@ -74,10 +73,11 @@ const BoardMenu = (props) => {
                             flex="grow"
                             justifyContent="between"
                             alignItems="center"
+                            padding={2}
                         >
                             <Heading size="xs">Boards</Heading>
                             <IconButton
-                                accessibilityLabel="create board"
+                                accessibilityLabel="Create board"
                                 icon="add"
                                 size="sm"
                                 onClick={() => setShowCreate(true)}

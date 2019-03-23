@@ -6,12 +6,15 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { onDragEnd } from '../services/dragDrop';
 import { get } from 'lodash';
 
-import Lists from './Lists'
+import Lists from './Lists';
+
+import TitleBar from '../components/TitleBar';
 
 import {
     Box,
     Heading,
     IconButton,
+    Spinner,
 } from 'gestalt';
 
 const enhance = compose(
@@ -32,35 +35,75 @@ const enhance = compose(
     connect((store, props) => {
         const { boards, lists } = store.firestore.data;
         const { boardId } = props.match.params;
+        const { profile } = store.firebase;
 
         return {
-            profile: firebase.profile,
-            board: get(boards, boardId),
+            profile,
             lists,
+            board: get(boards, boardId),
         }
     })
 );
 
 const Board = (props) => {
+
+    if (!props.board) {
+        return (
+            <BoardWrapper justifyContent="center">
+                <Spinner show accessibilityLabel="Loading board..." />
+            </BoardWrapper>
+        );
+    }
+
+    return (
+        <BoardWrapper>
+            <BoardBar boardName={props.board.name}/>
+            { renderLists(props.lists) }
+        </BoardWrapper>
+    );
+};
+
+const BoardWrapper = ({ children, ...props }) => {
     return (
         <Box
             display="flex"
             direction="column"
+            color="lightWash"
+            flex="grow"
+            shape="rounded"
+            {...props}
         >
-            <Box>
-                <Heading size="sm">{ props.board.name }</Heading>
-                <IconButton
-                    icon="ellipsis"
-                    accessibilityLabel="Board settings"
-                />
-            </Box>
-            <DragDropContext onDragEnd={onDragEnd}>
-                {
-                    props.lists.map((list) => console.log(list))
-                }
-            </DragDropContext>
+            { children }
         </Box>
-    )
+    );
 }
 
-export default enhance(Board)
+const BoardBar = (props) => {
+    return (
+        <TitleBar color="lightWash">
+            <Heading size="sm">{ props.boardName }</Heading>
+            <IconButton
+                icon="add"
+                accessibilityLabel="Add list"
+            />
+            <IconButton
+                icon="add"
+                accessibilityLabel="Add list"
+            />
+        </TitleBar>
+    );
+}
+
+const renderLists = (lists) => {
+    if (!lists) return null;
+
+    return (
+        <DragDropContext onDragEnd={onDragEnd}>
+            {
+                lists.map((list) => console.log(list))
+            }
+        </DragDropContext>
+    );
+}
+
+export default enhance(Board);

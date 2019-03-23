@@ -7,6 +7,8 @@ import BoardMenu from '../containers/BoardMenu';
 import MainMenu from '../containers/MainMenu';
 import LoginMenu from '../containers/LoginMenu';
 
+import TitleBar from '../components/TitleBar';
+
 import { Avatar, Box, Spinner, Text } from 'gestalt';
 import { capitalize } from '../services/helpers';
 
@@ -52,13 +54,7 @@ const NavBar = (props) => {
 
     return (
         <nav>
-            <Box
-                color="darkGray"
-                shape="rounded"
-                padding={3}
-                display="flex"
-                flex="grow"
-            >
+            <TitleBar>
                 <Box width={40}>
                     <NavLink to="/">
                         <Avatar name="Kantina" />
@@ -68,8 +64,7 @@ const NavBar = (props) => {
                 {!props.profile.isEmpty && <ProfileLink profile={props.profile}/> }
                 {!props.profile.isEmpty && <BoardMenu profile={props.profile}/>}
                 {showMainMenu()}
-                {}
-            </Box>
+            </TitleBar>
         </nav>
     );
 }
