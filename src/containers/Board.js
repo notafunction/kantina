@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { compose} from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
@@ -6,7 +6,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { onDragEnd } from '../services/dragDrop';
 import { get } from 'lodash';
 
-import Lists from './Lists';
+import List from './List';
 
 import TitleBar from '../components/TitleBar';
 
@@ -15,6 +15,11 @@ import {
     Heading,
     IconButton,
     Spinner,
+    Modal,
+    Button,
+    Label,
+    Text,
+    TextField,    
 } from 'gestalt';
 
 const enhance = compose(
@@ -28,7 +33,7 @@ const enhance = compose(
             },
             {
                 collection: 'lists',
-                where: ['boardId', '==', boardId]
+                where: ['boardId', '==', boardId],
             }
         ]
     }),
@@ -39,13 +44,29 @@ const enhance = compose(
 
         return {
             profile,
-            lists,
-            board: get(boards, boardId),
+            lists: lists && Object.keys(lists).map((id) => ({
+                id,
+                ...lists[id]
+            })),
+            board: {
+                id: boardId,
+                ...get(boards, boardId)
+            },
         }
     })
 );
 
 const Board = (props) => {
+    const createList = (payload) => {
+        console.log(props);
+        return props.firestore.add(
+            { collection: 'lists' },
+            {
+                ...payload,
+                boardId: props.board && props.board.id,
+            }
+        )
+    }
 
     if (!props.board) {
         return (
@@ -57,8 +78,14 @@ const Board = (props) => {
 
     return (
         <BoardWrapper>
-            <BoardBar boardName={props.board.name}/>
-            { renderLists(props.lists) }
+            <BoardBar
+                boardName={props.board.name}
+                onCreateList={createList}
+            />
+            {
+                props.lists &&
+                props.lists.map((list) => <List key={list.id} {...list}/>)
+            }
         </BoardWrapper>
     );
 };
@@ -82,27 +109,81 @@ const BoardBar = (props) => {
     return (
         <TitleBar color="lightWash">
             <Heading size="sm">{ props.boardName }</Heading>
-            <IconButton
-                icon="add"
-                accessibilityLabel="Add list"
-            />
-            <IconButton
-                icon="add"
-                accessibilityLabel="Add list"
-            />
+            <Box display="flex">
+                <IconButton
+                    icon="ellipsis"
+                    accessibilityLabel="Add list"
+                />
+                <CreateListButton
+                    onSubmit={props.onCreateList}
+                />
+            </Box>
         </TitleBar>
     );
 }
 
-const renderLists = (lists) => {
-    if (!lists) return null;
+const CreateListButton = (props) => {
+    const [ isOpen, setIsOpen ] = useState(false);
+    const [ name, setName ] = useState('');
+
+    const handleSubmit = (event) => {
+        if (event.type === 'submit') event.preventDefault();
+
+        props.onSubmit({
+            name,
+        });
+    }
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
+        <Box>
+            <IconButton
+                icon="add"
+                accessibilityLabel="Add list"
+                onClick={() => setIsOpen(!isOpen)}
+            />
             {
-                lists.map((list) => console.log(list))
+                isOpen &&
+                <Modal
+                    size="md"
+                    accessibilityModalLabel="Create list"
+                    accessibilityCloseLabel="Cancel"
+                    onDismiss={() => setIsOpen(false)}
+                    heading="Create list"
+                    footer={
+                        <Box display="flex" justifyContent="between">
+                            <Button
+                                inline
+                                text="Cancel"
+                                onClick={() => setIsOpen(false)}
+                            />
+                            <Button
+                                inline
+                                text="Submit"
+                                color="blue"
+                                onClick={handleSubmit}
+                            />
+                        </Box>
+                    }
+                >
+                    <Box padding={2}>
+                        <form onSubmit={handleSubmit}>
+                            <Box marginBottom={4}>
+                                <Box marginBottom={2}>
+                                    <Label htmlFor="name">
+                                        <Text>Name</Text>
+                                    </Label>
+                                </Box>
+                                <TextField id="name"
+                                    value={name}
+                                    placeholder="List name"
+                                    onChange={({ value }) => setName(value)}
+                                />
+                            </Box>
+                        </form>
+                    </Box>
+                </Modal>
             }
-        </DragDropContext>
+        </Box>
     );
 }
 

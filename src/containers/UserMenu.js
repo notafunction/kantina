@@ -1,16 +1,18 @@
 import React, { useState, useRef } from 'react';
-import { Box, Flyout, IconButton, Avatar, Button, Text } from 'gestalt';
 import { compose } from 'recompose';
 import { withFirebase } from 'react-redux-firebase';
-import { withRouter, Link } from 'react-router-dom';
+
+import { Box, Button, Flyout, Avatar, Text } from 'gestalt';
 
 import MenuLink from '../components/styled/MenuLink';
+
+import { capitalize } from '../services/helpers';
 
 const enhance = compose(
     withFirebase,
 );
 
-const MainMenu = (props) => {
+const UserMenu = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const anchorRef = useRef(null);
 
@@ -21,13 +23,28 @@ const MainMenu = (props) => {
     return (
         <React.Fragment>
             <Box paddingX={2} ref={anchorRef}>
-                <IconButton
-                    icon="ellipsis"
-                    accessibilityHaspopup
-                    accessibilityLabel="Main menu"
-                    accessibilityExpanded={isOpen}
-                    onClick={() => setIsOpen(!isOpen)}
-                />
+                <div style={{ cursor: 'pointer' }} onClick={() => setIsOpen(!isOpen)}>
+                <Box
+                    shape="pill"
+                    color="white"
+                    alignItems="center"
+                    display="flex"
+                    padding={2}
+                    dangerouslySetInlineStyle={{
+                        __style: {
+                            textDecoration: 'none',
+                            fontWeight: 'bold',
+                        }
+                    }}
+                >
+                    <Box>
+                        <Avatar size="sm" name={props.profile.firstName} />
+                    </Box>
+                    <Box paddingX={2}>
+                        <Text>{capitalize(props.profile.firstName)}</Text>
+                    </Box>
+                </Box>
+                </div>
             </Box>
             {
                 isOpen &&
@@ -47,4 +64,4 @@ const MainMenu = (props) => {
     );
 }
 
-export default enhance(MainMenu);
+export default enhance(UserMenu);
