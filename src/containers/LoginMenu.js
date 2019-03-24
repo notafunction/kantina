@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { compose } from 'recompose';
-import { withFirebase, reactReduxFirebase } from 'react-redux-firebase';
+import { withFirebase } from 'react-redux-firebase';
 import { 
     Box,
     Flyout,

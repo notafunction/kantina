@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { compose } from 'recompose';
 import { withFirebase } from 'react-redux-firebase';
 
-import { Box, Button, Flyout, Avatar, Text } from 'gestalt';
+import { Box, Flyout, Avatar, Text } from 'gestalt';
 
 import MenuLink from '../components/styled/MenuLink';
 

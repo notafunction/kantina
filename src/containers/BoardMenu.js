@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { compose } from 'recompose';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import MenuLink from '../components/styled/MenuLink';
 import { firestoreConnect, withFirestore } from 'react-redux-firebase';
@@ -18,11 +19,13 @@ import {
 } from 'gestalt';
 
 const enhance = compose(
+    withRouter,
     withFirestore,
     firestoreConnect((props) => ([
-        { collection: 'boards', where: [
-            ['ownerId', '==', props.profile.id],
-        ] }
+        { 
+            collection: 'boards',
+            where: ['ownerId', '==', props.profile.id]
+        }
     ])),
     connect((store) => ({
         boards: store.firestore.ordered && store.firestore.ordered.boards,
@@ -41,7 +44,9 @@ const BoardMenu = (props) => {
                 ...payload,
                 ownerId: props.profile.id,
             },
-        );
+        ).then((result) => {
+            props.history.push(`/board/${result.id}`);
+        });
     }
 
     return (
@@ -86,7 +91,7 @@ const BoardMenu = (props) => {
                         {
                             props.boards.length
                             ? props.boards.map((board) => (
-                                <MenuLink key={board.id} to={`/board/${board.id}`}>{ board.name }</MenuLink>
+                                <MenuLink key={board.id} onClick={() => setShowMenu(false)} to={`/board/${board.id}`}>{ board.name }</MenuLink>
                             ))
                             : <Box marginTop={12} marginBottom={12} display="flex" flex="grow">
                                 <Box paddingX={4}>
@@ -118,8 +123,8 @@ const CreateForm = (props) => {
         props.onSubmit({
             name,
             isPrivate,
-        }).then((docRef) => {
-            props.history.push(`/boards/${docRef.id}`)
+        }).then((result) => {
+            props.onDismiss();
         });
     }
 

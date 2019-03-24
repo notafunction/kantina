@@ -1,12 +1,9 @@
-import React, { useState } from 'react'
-import { connect } from 'react-redux'
-import { compose} from 'recompose'
-import { firestoreConnect } from 'react-redux-firebase'
-import { DragDropContext, Droppable } from 'react-beautiful-dnd'
-import { onDragEnd } from '../services/dragDrop';
-import { get } from 'lodash';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { compose} from 'recompose';
+import { firestoreConnect } from 'react-redux-firebase';
 
-import List from './List';
+import Lists from './Lists';
 
 import TitleBar from '../components/TitleBar';
 
@@ -38,7 +35,8 @@ const enhance = compose(
         ]
     }),
     connect((store, props) => {
-        const { boards, lists } = store.firestore.data;
+        const { boards } = store.firestore.data;
+        const { lists } = store.firestore.ordered;
         const { boardId } = props.match.params;
         const { profile } = store.firebase;
 
@@ -48,24 +46,33 @@ const enhance = compose(
                 id,
                 ...lists[id]
             })),
-            board: {
+            board: boards && {
                 id: boardId,
-                ...get(boards, boardId)
+                ...boards[boardId],
             },
         }
     })
 );
 
 const Board = (props) => {
-    const createList = (payload) => {
-        console.log(props);
-        return props.firestore.add(
+    const { firestore } = props;
+
+    const firestoreCreateList = (payload) => {
+        return firestore.add(
             { collection: 'lists' },
             {
                 ...payload,
                 boardId: props.board && props.board.id,
+                createdAt: firestore.FieldValue.serverTimestamp(),
             }
         )
+    }
+
+    const firestoreDeleteBoard = () => {
+        return firestore.delete({
+            collection: 'boards',
+            doc: props.board.id,
+        }).then((result) => props.history.push('/'));
     }
 
     if (!props.board) {
@@ -80,11 +87,12 @@ const Board = (props) => {
         <BoardWrapper>
             <BoardBar
                 boardName={props.board.name}
-                onCreateList={createList}
+                onCreateList={firestoreCreateList}
+                onDeleteBoard={firestoreDeleteBoard}
             />
             {
                 props.lists &&
-                props.lists.map((list) => <List key={list.id} {...list}/>)
+                <Lists lists={props.lists}/>
             }
         </BoardWrapper>
     );
@@ -111,8 +119,9 @@ const BoardBar = (props) => {
             <Heading size="sm">{ props.boardName }</Heading>
             <Box display="flex">
                 <IconButton
-                    icon="ellipsis"
-                    accessibilityLabel="Add list"
+                    icon="remove"
+                    accessibilityLabel="Delete board"
+                    onClick={props.onDeleteBoard}
                 />
                 <CreateListButton
                     onSubmit={props.onCreateList}
@@ -127,10 +136,15 @@ const CreateListButton = (props) => {
     const [ name, setName ] = useState('');
 
     const handleSubmit = (event) => {
+        event.persist();
         if (event.type === 'submit') event.preventDefault();
 
+        
         props.onSubmit({
             name,
+        }).then((result) => {
+            setName('');
+            setIsOpen(false);
         });
     }
 

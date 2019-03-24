@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
