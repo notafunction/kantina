@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { compose} from 'recompose';
+import { compose } from 'recompose';
 import { firestoreConnect } from 'react-redux-firebase';
 
 import Lists from './Lists';
@@ -32,7 +32,7 @@ const enhance = compose(
                 collection: 'lists',
                 where: ['boardId', '==', boardId],
             }
-        ]
+        ];
     }),
     connect((store, props) => {
         const { boards } = store.firestore.data;
@@ -62,6 +62,7 @@ const Board = (props) => {
             { collection: 'lists' },
             {
                 ...payload,
+                items: [],
                 boardId: props.board && props.board.id,
                 createdAt: firestore.FieldValue.serverTimestamp(),
             }
@@ -111,7 +112,7 @@ const BoardWrapper = ({ children, ...props }) => {
             { children }
         </Box>
     );
-}
+};
 
 const BoardBar = (props) => {
     return (
@@ -129,17 +130,18 @@ const BoardBar = (props) => {
             </Box>
         </TitleBar>
     );
-}
+};
 
 const CreateListButton = (props) => {
     const [ isOpen, setIsOpen ] = useState(false);
     const [ name, setName ] = useState('');
 
-    const handleSubmit = (event) => {
-        event.persist();
-        if (event.type === 'submit') event.preventDefault();
+    const handleFormSubmit = (event) => {
+        event.preventDefault();
+        handleSubmit();
+    }
 
-        
+    const handleSubmit = () => {
         props.onSubmit({
             name,
         }).then((result) => {
@@ -149,10 +151,12 @@ const CreateListButton = (props) => {
     }
 
     return (
-        <Box>
+        <Box display="flex">
             <IconButton
                 icon="add"
+                accessibilityHaspopup
                 accessibilityLabel="Add list"
+                accessibilityExpanded={isOpen}
                 onClick={() => setIsOpen(!isOpen)}
             />
             {
@@ -179,9 +183,9 @@ const CreateListButton = (props) => {
                         </Box>
                     }
                 >
-                    <Box padding={2}>
-                        <form onSubmit={handleSubmit}>
-                            <Box marginBottom={4}>
+                    <Box padding={4}>
+                        <form onSubmit={handleFormSubmit}>
+                            <Box>
                                 <Box marginBottom={2}>
                                     <Label htmlFor="name">
                                         <Text>Name</Text>
@@ -199,6 +203,6 @@ const CreateListButton = (props) => {
             }
         </Box>
     );
-}
+};
 
 export default enhance(Board);

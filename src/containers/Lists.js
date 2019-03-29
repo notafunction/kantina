@@ -8,18 +8,21 @@ import {
 
 const Lists = (props) => {
     return (
-        <Box
-            display="flex"
-            flex="grow"
-            overflow="scrollX"
-        >
-        {
-            props.lists.map((list) => (
-                <List {...list}
-                    key={list.id}
-                />
-            ))
-        }
+        <Box paddingX={2} display="flex" height="100%">
+            <Box
+                display="flex"
+                flex="grow"
+                overflow="scrollX"
+                paddingY={3}
+            >
+            {
+                props.lists.map((list) => (
+                    <List {...list}
+                        key={list.id}
+                    />
+                ))
+            }
+            </Box>
         </Box>
     );
 }
