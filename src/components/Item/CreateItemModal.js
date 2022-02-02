@@ -26,7 +26,6 @@ const CreateItemModal = (props) => {
 
   const onOk = async () => {
     const values = await form.validateFields()
-    console.log(props.list)
     await onCreateItem({
       ...values,
       createdBy: auth.uid
