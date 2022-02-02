@@ -1,0 +1,26 @@
+version: "3.1"
+
+networks:
+  http_network:
+    external: true
+
+services:
+  web:
+    image: nginx:alpine
+    networks:
+      - http_network
+    volumes:
+      - ./build:/usr/share/nginx/html
+      - ./_conf/nginx/conf.d:/etc/nginx/conf.d
+      - ./_conf/ngxinx/nginx.conf:/etc/nginx/nginx.conf
+      - ./_logs:/var/log/nginx
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=http_network"
+      - "traefik.frontend.rule=Host:${DOMAIN}"
+      - "traefik.port=${PORT}"
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.platform.os == linux
