@@ -15,7 +15,14 @@ const ListSettingsDrawer = (props) => {
 
   const onSave = async () => {
     const values = await form.validateFields()
-    firebase.ref(`lists/${boardId}/${props.list.id}`).update(values)
+    try {
+      await firebase.update(`lists/${boardId}/${props.list.id}`, values)
+      message.success('Your changes have been saved')
+      props.close()
+    } catch (error) {
+      message.error('There was a problem saving your changes')
+      console.error(error)
+    }
   }
 
   const onDelete = async () => {
