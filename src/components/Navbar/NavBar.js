@@ -6,6 +6,7 @@ import { isEmpty, isLoaded } from 'react-redux-firebase'
 import { Spin } from 'antd'
 import LoginButton from '../Login/LoginButton'
 import UserMenu from '../User/UserMenu'
+import config from '../../../package.json'
 
 const Container = styled.nav`
   display: flex;
@@ -19,9 +20,8 @@ const Logo = styled.div`
   font-weight: 700;
   color: #333;
   transition: all 0.2s;
-  flex-grow: 1;
 `
-export const StyledLink = styled(Link)`
+const StyledLink = styled(Link)`
   font-size: 20px;
   font-weight: 700;
   transition: all 0.2s;
@@ -34,6 +34,13 @@ export const StyledLink = styled(Link)`
     color: lightblue;
   }
 `
+const StyledRight = styled.div`
+  margin-left: auto;
+`
+const StyledVersion = styled.sup`
+  margin-left: 5px;
+  font-size: 70%;
+`
 
 const NavBar = () => {
   const auth = useSelector(({ firebase: { auth } }) => auth)
@@ -43,7 +50,10 @@ const NavBar = () => {
       <Logo>
         <StyledLink to="/">Kantina</StyledLink>
       </Logo>
-      {!isLoaded(auth) ? <Spin /> : !isEmpty(auth) ? <UserMenu /> : <LoginButton />}
+      <StyledVersion>v{config.version}</StyledVersion>
+      <StyledRight>
+        {!isLoaded(auth) ? <Spin /> : !isEmpty(auth) ? <UserMenu /> : <LoginButton />}
+      </StyledRight>
     </Container>
   )
 }
