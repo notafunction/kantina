@@ -50,7 +50,9 @@ const NavBar = () => {
       <Logo>
         <StyledLink to="/">Kantina</StyledLink>
       </Logo>
-      <StyledVersion>v{config.version}</StyledVersion>
+      <StyledVersion>
+        <Link to="/changelog">v{config.version}</Link>
+      </StyledVersion>
       <StyledRight>
         {!isLoaded(profile) ? <Spin /> : !isEmpty(profile) ? <UserMenu /> : <LoginButton />}
       </StyledRight>

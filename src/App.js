@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import Boards from './containers/Boards'
 import Board from './containers/Board'
 import NavBar from './components/Navbar/NavBar'
+import ChangeLog from './containers/ChangeLog'
 import './App.css'
 import RequireAccess from './containers/RequireAccess'
 
@@ -32,6 +33,7 @@ const App = () => (
             </RequireAccess>
           }
         />
+        <Route path="/changelog" element={<ChangeLog />} />
       </Routes>
     </ContentContainer>
   </AppContainer>
