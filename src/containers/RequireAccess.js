@@ -4,6 +4,7 @@ import { useParams } from 'react-router'
 import { Navigate } from 'react-router-dom'
 import { isEmpty, useFirebaseConnect } from 'react-redux-firebase'
 import { useSelector } from 'react-redux'
+import Spin from '../components/Spin'
 
 const RequireAccess = (props) => {
   const params = useParams()
@@ -11,8 +12,9 @@ const RequireAccess = (props) => {
   const board = useSelector(({ firebase: { data } }) => data.boards && data.boards[params.boardId])
   const auth = useSelector(({ firebase: { auth } }) => auth)
 
+  if (isEmpty(board)) return <Spin />
+
   const canViewBoard = () => {
-    console.log(auth)
     if (board.type === 'public') {
       return true
     }
