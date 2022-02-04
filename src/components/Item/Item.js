@@ -8,10 +8,28 @@ import { DeleteOutlined, EllipsisOutlined } from '@ant-design/icons'
 import { isEmpty, useFirebase } from 'react-redux-firebase'
 import { useSelector } from 'react-redux'
 import UserAvatar from '../User/UserAvatar'
-import Avatar from 'antd/lib/avatar/avatar'
 
+const ItemToolbar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.2rem;
+`
+const ItemContent = styled.div`
+  box-shadow: ${({ isDragging }) => (isDragging ? '2px 2px 5px rgba(0, 0, 0, 0.2)' : 'none')};
+  background-color: ${(props) => props.itemColor};
+  transition: background 0.2s ease;
+  padding: 0.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  transition: all 0.1s ease-in;
+
+  > span {
+    overflow: hidden;
+    display: block;
+    word-wrap: break-word;
+  }
+`
 const ItemContainer = styled.div`
-  box-shadow: ${({ isDragging }) => (isDragging ? '2px 2px 1px grey' : 'none')};
   margin: 0 8px;
   margin-bottom: 8px;
   user-select: none;
@@ -21,33 +39,26 @@ const ItemContainer = styled.div`
     outline: 2px solid eggplant;
     box-shadow: none;
   }
-`
-const ItemContent = styled.div`
-  background-color: ${(props) => props.itemColor};
-  transition: background 0.2s ease;
-  padding: 0.5rem;
-  overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.2);
 
-  > span {
-    overflow: hidden;
-    display: block;
-    word-wrap: break-word;
+  ${ItemToolbar} > .ant-dropdown-button {
+    opacity: 0;
+    transition: all 0.1s ease-in;
   }
-`
-const ItemToolbar = styled.div`
-  display: flex;
-  width: 100%;
-  margin-bottom: 0.2rem;
+
+  &:hover {
+    ${ItemToolbar} > .ant-dropdown-button {
+      opacity: 1;
+    }
+  }
 `
 
 const Item = (props) => {
   const firebase = useFirebase()
   const auth = useSelector(({ firebase: { auth } }) => auth)
-  const creator = useSelector(({ firebase: { data } }) => data.users[props.item.createdBy])
+  const creator = useSelector(({ firebase: { data } }) => data.users[props.item.value.createdBy])
 
   const onDeleteItem = async () => {
-    firebase.ref(`items/${props.list.id}/${props.item.id}`).remove()
+    firebase.ref(`items/${props.list.id}/${props.item.key}`).remove()
   }
 
   const itemMenu = (
@@ -68,14 +79,15 @@ const Item = (props) => {
           {creator && <UserAvatar user={creator} size="small" />}
           {!isEmpty(auth) && (
             <Dropdown.Button
-              style={{ marginLeft: 'auto' }}
+              trigger="click"
               size="small"
+              type="text"
               icon={<EllipsisOutlined />}
               overlay={itemMenu}
             />
           )}
         </ItemToolbar>
-        <div>{props.item.content}</div>
+        <div>{props.item.value.content}</div>
       </ItemContent>
     </ItemContainer>
   )
