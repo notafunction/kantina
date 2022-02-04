@@ -23,7 +23,7 @@ const ItemContainer = styled.div`
   }
 `
 const ItemContent = styled.div`
-  background-color: ${(props) => props.itemColor.hex};
+  background-color: ${(props) => props.itemColor};
   transition: background 0.2s ease;
   padding: 0.5rem;
   overflow: hidden;

@@ -8,4 +8,12 @@ export const colors = {
   red: '#693D49'
 }
 
-export const colorPickerColors = ['#acddde', '#caf1de', '#e1f8dc', '#fef8dd', '#ffe7c7', '#f7d8ba']
+export const colorPickerColors = [
+  '#acddde',
+  '#caf1de',
+  '#e1f8dc',
+  '#fef8dd',
+  '#ffe7c7',
+  '#f7d8ba',
+  '#eeeeee'
+]
