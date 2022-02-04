@@ -5,6 +5,7 @@ import Boards from './containers/Boards'
 import Board from './containers/Board'
 import NavBar from './components/Navbar/NavBar'
 import './App.css'
+import RequireAccess from './components/RequireAccess'
 
 const AppContainer = styled.div`
   display: flex;
@@ -23,7 +24,14 @@ const App = () => (
     <ContentContainer>
       <Routes>
         <Route path="/" element={<Boards />} />
-        <Route path="/b/:boardId" element={<Board />} />
+        <Route
+          path="/b/:boardId"
+          element={
+            <RequireAccess>
+              <Board />
+            </RequireAccess>
+          }
+        />
       </Routes>
     </ContentContainer>
   </AppContainer>
