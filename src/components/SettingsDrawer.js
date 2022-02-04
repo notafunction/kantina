@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Drawer, Space } from 'antd'
 
-const SettingsDrawer = (props) => {
+const SettingsDrawer = ({ close, onOk, okButtonText, cancelButtonText, ...props }) => {
   const [viewportWidth, setViewportWidth] = React.useState(window.innerWidth)
 
   React.useEffect(() => {
@@ -19,18 +19,17 @@ const SettingsDrawer = (props) => {
 
   return (
     <Drawer
-      title={props.title}
-      visible={props.visible}
-      onClose={props.close}
+      onClose={close}
       width={viewportWidth > 800 ? 700 : viewportWidth - 32}
       extra={
         <Space>
-          <Button onClick={props.close}>{props.cancelButtonText || 'Cancel'}</Button>
-          <Button type="primary" onClick={props.onOk}>
-            {props.okButtonText || 'Save'}
+          <Button onClick={close}>{cancelButtonText || 'Cancel'}</Button>
+          <Button type="primary" onClick={onOk}>
+            {okButtonText || 'Save'}
           </Button>
         </Space>
-      }>
+      }
+      {...props}>
       {props.children}
     </Drawer>
   )

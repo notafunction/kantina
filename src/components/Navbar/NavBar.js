@@ -43,7 +43,7 @@ const StyledVersion = styled.sup`
 `
 
 const NavBar = () => {
-  const auth = useSelector(({ firebase: { auth } }) => auth)
+  const profile = useSelector(({ firebase: { profile } }) => profile)
 
   return (
     <Container>
@@ -52,7 +52,7 @@ const NavBar = () => {
       </Logo>
       <StyledVersion>v{config.version}</StyledVersion>
       <StyledRight>
-        {!isLoaded(auth) ? <Spin /> : !isEmpty(auth) ? <UserMenu /> : <LoginButton />}
+        {!isLoaded(profile) ? <Spin /> : !isEmpty(profile) ? <UserMenu /> : <LoginButton />}
       </StyledRight>
     </Container>
   )
