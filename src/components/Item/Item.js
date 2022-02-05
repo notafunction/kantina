@@ -74,7 +74,7 @@ const Item = (props) => {
       ref={props.provided.innerRef}
       {...props.provided.draggableProps}
       {...props.provided.dragHandleProps}>
-      <ItemContent isDragging={props.isDragging} itemColor={props.item.color}>
+      <ItemContent isDragging={props.isDragging} itemColor={props.item.value.color}>
         <ItemToolbar>
           {creator && <UserAvatar user={creator} size="small" />}
           {!isEmpty(auth) && (

@@ -11,6 +11,13 @@ const StyledUpload = styled(Upload)`
   .ant-upload {
     width: 128px;
     height: 128px;
+    overflow: hidden;
+
+    img {
+      object-fit: cover;
+      min-height: 100%;
+      min-width: 100%;
+    }
   }
 `
 
@@ -86,7 +93,8 @@ const UserSettingsDrawer = (props) => {
       onOk={onSave}
       visible={props.visible}
       close={onClose}
-      destroyOnClose={true}>
+      destroyOnClose={true}
+      okButtonProps={{ loading }}>
       <Form layout="vertical" form={form} onFinish={onSave}>
         <Form.Item name="avatar" label="Avatar">
           <StyledUpload

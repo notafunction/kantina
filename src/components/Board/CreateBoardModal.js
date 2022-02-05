@@ -1,24 +1,17 @@
 import React from 'react'
-import { Modal, Form, Input, Select } from 'antd'
+import { Modal, Form, Input, Select, message } from 'antd'
 import PropTypes from 'prop-types'
-import { useFirebase } from 'react-redux-firebase'
-import { useSelector } from 'react-redux'
+import Board from '../../models/Board'
 
 const CreateBoardModal = (props) => {
-  const firebase = useFirebase()
-  const auth = useSelector(({ firebase }) => firebase.auth)
   const [form] = Form.useForm()
 
   const onCreateBoard = (values) => {
-    console.log({
-      ...values,
-      createdBy: auth.uid
-    })
-
-    firebase.push('boards', {
-      ...values,
-      createdBy: auth.uid
-    })
+    try {
+      console.log(new Board(values).save())
+    } catch (error) {
+      message.error(error)
+    }
   }
 
   const onOk = async () => {

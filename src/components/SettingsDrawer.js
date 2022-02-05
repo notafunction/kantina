@@ -23,8 +23,10 @@ const SettingsDrawer = ({ close, onOk, okButtonText, cancelButtonText, ...props 
       width={viewportWidth > 800 ? 700 : viewportWidth - 32}
       extra={
         <Space>
-          <Button onClick={close}>{cancelButtonText || 'Cancel'}</Button>
-          <Button type="primary" onClick={onOk}>
+          <Button onClick={close} {...props.cancelButtonProps}>
+            {cancelButtonText || 'Cancel'}
+          </Button>
+          <Button type="primary" onClick={onOk} {...props.okButtonProps}>
             {okButtonText || 'Save'}
           </Button>
         </Space>
@@ -42,7 +44,9 @@ SettingsDrawer.propTypes = {
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   onOk: PropTypes.func.isRequired,
   okButtonText: PropTypes.string,
-  cancelButtonText: PropTypes.string
+  okButtonProps: PropTypes.object,
+  cancelButtonText: PropTypes.string,
+  cancelButtonProps: PropTypes.object
 }
 
 export default SettingsDrawer

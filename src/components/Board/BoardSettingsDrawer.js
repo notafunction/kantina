@@ -1,18 +1,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Divider, Form, Input, Select } from 'antd'
+import { Button, Divider, Form, Input, message, Select } from 'antd'
 import { useFirebase } from 'react-redux-firebase'
 import { useNavigate } from 'react-router'
 import SettingsDrawer from '../SettingsDrawer'
 
 const BoardSettingsDrawer = (props) => {
+  const [loading, setLoading] = React.useState(false)
   const navigate = useNavigate()
   const firebase = useFirebase()
   const [form] = Form.useForm()
 
   const onSave = async () => {
-    const values = await form.validateFields()
-    firebase.ref(`boards/${props.board.id}`).update(values)
+    setLoading(true)
+    try {
+      const values = await form.validateFields()
+      firebase.ref(`boards/${props.board.id}`).update(values)
+    } catch (error) {
+      message.error(error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const onDelete = async () => {
@@ -38,7 +46,8 @@ const BoardSettingsDrawer = (props) => {
       title={`${props.board.title} Settings`}
       visible={props.visible}
       close={props.close}
-      onOk={onSave}>
+      onOk={onSave}
+      okButtonProps={{ loading }}>
       <Form layout="vertical" onFinish={onSave} form={form}>
         <Form.Item
           initialValue={props.board.title}

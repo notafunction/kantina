@@ -4,10 +4,10 @@ import { CreateListModal } from '../components/List'
 import Lists from './Lists'
 import { useParams, useNavigate } from 'react-router'
 import { Dropdown, Menu, Empty, Button, Result, PageHeader } from 'antd'
-import { SettingOutlined } from '@ant-design/icons'
+import { PlusOutlined, SettingOutlined } from '@ant-design/icons'
 import { useFirebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
 import { useSelector } from 'react-redux'
-import StyledSpin from '../components/Spin'
+import Spin from '../components/Spin'
 import { BoardContainer, BoardSettingsDrawer } from '../components/Board'
 
 const BoardContent = styled.div`
@@ -18,7 +18,8 @@ const BoardContent = styled.div`
 const Board = () => {
   const navigate = useNavigate()
   const params = useParams()
-  const [editOpen, setEditOpen] = useState(false)
+  const [boardSettingsVisible, setBoardSettingsVisible] = useState(false)
+  const [createListModalVisible, setCreateListModalVisible] = useState(false)
   const auth = useSelector(({ firebase: { auth } }) => auth)
   const board = useSelector(({ firebase: { data } }) => data.boards && data.boards[params.boardId])
   useFirebaseConnect([
@@ -29,7 +30,6 @@ const Board = () => {
       populates: [{ child: 'createdBy', root: 'users' }]
     }
   ])
-  const [createListModalVisible, setCreateListModalVisible] = useState(false)
   const creator = useSelector(
     ({
       firebase: {
@@ -45,19 +45,58 @@ const Board = () => {
     }) => lists && lists[params.boardId]
   )
 
-  const onEditBoard = () => {
-    setEditOpen(true)
+  const renderBoardSettingsMenu = () => {
+    if (isEmpty(auth)) return null
+
+    return (
+      <Dropdown.Button
+        trigger="click"
+        overlay={
+          <Menu>
+            <Menu.Item
+              key="create-list"
+              icon={<PlusOutlined />}
+              onClick={() => setCreateListModalVisible(true)}>
+              Create List
+            </Menu.Item>
+            <Menu.Item
+              key="board-settings"
+              icon={<SettingOutlined />}
+              onClick={() => setBoardSettingsVisible(true)}>
+              Board Settings
+            </Menu.Item>
+          </Menu>
+        }
+      />
+    )
   }
 
-  const boardOptionsMenu = (
-    <Menu>
-      <Menu.Item key="1" icon={<SettingOutlined />} onClick={onEditBoard}>
-        Board Settings
-      </Menu.Item>
-    </Menu>
-  )
+  const renderLists = () => {
+    if (!isLoaded(lists)) return <Spin />
 
-  if (!isLoaded(board)) return <StyledSpin />
+    if (!isEmpty(lists))
+      return (
+        <Lists
+          lists={lists}
+          board={{
+            id: params.boardId,
+            ...board
+          }}
+        />
+      )
+
+    return (
+      <Empty description="There's nothing here" image={Empty.PRESENTED_IMAGE_SIMPLE}>
+        {!isEmpty(auth) && (
+          <Button onClick={() => setCreateListModalVisible(true)} type="primary">
+            Create List
+          </Button>
+        )}
+      </Empty>
+    )
+  }
+
+  if (!isLoaded(board)) return <Spin />
 
   if (isEmpty(board)) {
     return (
@@ -79,37 +118,10 @@ const Board = () => {
       <PageHeader
         title={board.title}
         subTitle={!isEmpty(creator) && `created by ${creator.displayName}`}
-        extra={
-          !isEmpty(auth) && (
-            <Dropdown.Button
-              overlay={boardOptionsMenu}
-              onClick={() => setCreateListModalVisible(true)}>
-              Create List
-            </Dropdown.Button>
-          )
-        }
+        extra={renderBoardSettingsMenu()}
       />
-      <BoardContent>
-        {!isLoaded(lists) ? (
-          <StyledSpin />
-        ) : !isEmpty(lists) ? (
-          <Lists
-            lists={lists}
-            board={{
-              id: params.boardId,
-              ...board
-            }}
-          />
-        ) : (
-          <Empty description="There's nothing here" image={Empty.PRESENTED_IMAGE_SIMPLE}>
-            {!isEmpty(auth) && (
-              <Button onClick={() => setCreateListModalVisible(true)} type="primary">
-                Create List
-              </Button>
-            )}
-          </Empty>
-        )}
-      </BoardContent>
+
+      <BoardContent>{renderLists()}</BoardContent>
 
       <CreateListModal
         visible={createListModalVisible}
@@ -125,8 +137,8 @@ const Board = () => {
           ...board,
           id: params.boardId
         }}
-        visible={editOpen}
-        close={() => setEditOpen(false)}
+        visible={boardSettingsVisible}
+        close={() => setBoardSettingsVisible(false)}
       />
     </BoardContainer>
   )

@@ -39,13 +39,10 @@ const Auth = () => {
 
   const onLoginWithGoogleProvider = async () => {
     try {
-      toggleLoading()
       await firebase.login({ provider: 'google', type: 'popup' })
       message.success('You are now logged in')
     } catch (error) {
       console.error(error)
-    } finally {
-      toggleLoading()
     }
   }
 
