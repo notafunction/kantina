@@ -19,7 +19,8 @@ const Board = () => {
   const navigate = useNavigate()
   const params = useParams()
   const [editOpen, setEditOpen] = useState(false)
-
+  const auth = useSelector(({ firebase: { auth } }) => auth)
+  const board = useSelector(({ firebase: { data } }) => data.boards && data.boards[params.boardId])
   useFirebaseConnect([
     `boards/${params.boardId}`,
     {
@@ -28,11 +29,7 @@ const Board = () => {
       populates: [{ child: 'createdBy', root: 'users' }]
     }
   ])
-
   const [createListModalVisible, setCreateListModalVisible] = useState(false)
-
-  const auth = useSelector(({ firebase: { auth } }) => auth)
-  const board = useSelector(({ firebase: { data } }) => data.boards && data.boards[params.boardId])
   const creator = useSelector(
     ({
       firebase: {

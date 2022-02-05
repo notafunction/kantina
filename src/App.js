@@ -5,7 +5,7 @@ import Boards from './containers/Boards'
 import Board from './containers/Board'
 import NavBar from './components/Navbar/NavBar'
 import './App.css'
-import RequireAccess from './components/RequireAccess'
+import RequireAccess from './containers/RequireAccess'
 
 const AppContainer = styled.div`
   display: flex;

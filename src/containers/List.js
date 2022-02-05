@@ -10,6 +10,19 @@ import { useFirebaseConnect, isEmpty } from 'react-redux-firebase'
 import { useSelector } from 'react-redux'
 import { ListSettingsDrawer } from '../components/List'
 
+const ListHeader = styled.div`
+  padding: 8px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h3 {
+    margin-bottom: 0;
+    flex: 1;
+  }
+`
 const ListContent = styled.div`
   max-height: 100%;
   background-color: ${(props) => (props.color ? props.color.hex : 'lightgrey')};
@@ -17,22 +30,29 @@ const ListContent = styled.div`
   flex-direction: column;
   border-radius: 3px;
   white-space: normal;
+
+  ${ListHeader} {
+    .ant-dropdown-trigger {
+      opacity: 0;
+      transition: all 0.1s ease-in;
+
+      &.ant-dropdown-open {
+        opacity: 1;
+      }
+    }
+  }
+
+  &:hover {
+    ${ListHeader} {
+      .ant-dropdown-trigger {
+        opacity: 1;
+      }
+    }
+  }
 `
 const DropZone = styled.div`
   min-height: 250px;
   overflow: auto;
-`
-const ListHeader = styled.div`
-  padding: 8px;
-  font-size: 1.25rem;
-  font-weight: 600;
-  display: flex;
-  justify-content: space-between;
-
-  h3 {
-    margin-bottom: 0;
-    flex: 1;
-  }
 `
 
 const List = (props) => {
@@ -65,10 +85,7 @@ const List = (props) => {
           <ListHeader>
             <h3 {...props.dragHandleProps}>{props.list.title}</h3>
             {!isEmpty(auth) && (
-              <Dropdown.Button
-                overlay={listOptionsMenu}
-                onClick={() => setCreateItemModalVisible(true)}
-              />
+              <Dropdown.Button trigger="click" size="small" type="text" overlay={listOptionsMenu} />
             )}
           </ListHeader>
           <DropZone ref={provided.innerRef}>

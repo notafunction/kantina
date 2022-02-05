@@ -23,10 +23,7 @@ const Items = (props) => {
           <Item
             isDragging={snapshot.isDragging}
             provided={provided}
-            item={{
-              id: item.key,
-              ...item.value
-            }}
+            item={item}
             list={props.list}
           />
         )}

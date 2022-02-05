@@ -48,8 +48,12 @@ const CreateItemModal = (props) => {
           rules={[{ required: true, message: 'Please enter item content' }]}>
           <Input.TextArea />
         </Form.Item>
-        <Form.Item name="color" label="Color">
-          <CirclePicker colors={colorPickerColors} />
+        <Form.Item
+          name="color"
+          label="Color"
+          initialValue={'#eeeeee'}
+          getValueFromEvent={({ hex }) => hex}>
+          <CirclePicker colors={colorPickerColors} color={'#eeeeee'} />
         </Form.Item>
       </Form>
     </Modal>
