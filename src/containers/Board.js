@@ -80,11 +80,13 @@ const Board = () => {
         title={board.title}
         subTitle={!isEmpty(creator) && `created by ${creator.displayName}`}
         extra={
-          <Dropdown.Button
-            overlay={boardOptionsMenu}
-            onClick={() => setCreateListModalVisible(true)}>
-            Create List
-          </Dropdown.Button>
+          !isEmpty(auth) && (
+            <Dropdown.Button
+              overlay={boardOptionsMenu}
+              onClick={() => setCreateListModalVisible(true)}>
+              Create List
+            </Dropdown.Button>
+          )
         }
       />
       <BoardContent>
