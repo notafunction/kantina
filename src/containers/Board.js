@@ -3,12 +3,12 @@ import styled from 'styled-components'
 import { CreateListModal } from '../components/List'
 import Lists from './Lists'
 import { useParams, useNavigate } from 'react-router'
-import { Dropdown, Menu, Empty, Button, Result } from 'antd'
+import { Dropdown, Menu, Empty, Button, Result, PageHeader } from 'antd'
 import { SettingOutlined } from '@ant-design/icons'
 import { useFirebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
 import { useSelector } from 'react-redux'
 import StyledSpin from '../components/Spin'
-import { BoardContainer, BoardHeader, BoardSettingsDrawer } from '../components/Board'
+import { BoardContainer, BoardSettingsDrawer } from '../components/Board'
 
 const BoardContent = styled.div`
   position: relative;
@@ -22,13 +22,24 @@ const Board = () => {
 
   useFirebaseConnect([
     `boards/${params.boardId}`,
-    { path: `lists/${params.boardId}`, queryParams: ['orderByChild=order'] }
+    {
+      path: `lists/${params.boardId}`,
+      queryParams: ['orderByChild=order'],
+      populates: [{ child: 'createdBy', root: 'users' }]
+    }
   ])
 
   const [createListModalVisible, setCreateListModalVisible] = useState(false)
 
   const auth = useSelector(({ firebase: { auth } }) => auth)
   const board = useSelector(({ firebase: { data } }) => data.boards && data.boards[params.boardId])
+  const creator = useSelector(
+    ({
+      firebase: {
+        data: { users }
+      }
+    }) => users && users[board.createdBy]
+  )
   const lists = useSelector(
     ({
       firebase: {
@@ -68,16 +79,15 @@ const Board = () => {
 
   return (
     <BoardContainer>
-      <BoardHeader
-        text={board.title}
-        actions={
-          !isEmpty(auth) && (
-            <Dropdown.Button
-              overlay={boardOptionsMenu}
-              onClick={() => setCreateListModalVisible(true)}>
-              Create List
-            </Dropdown.Button>
-          )
+      <PageHeader
+        title={board.title}
+        subTitle={!isEmpty(creator) && `created by ${creator.displayName}`}
+        extra={
+          <Dropdown.Button
+            overlay={boardOptionsMenu}
+            onClick={() => setCreateListModalVisible(true)}>
+            Create List
+          </Dropdown.Button>
         }
       />
       <BoardContent>
