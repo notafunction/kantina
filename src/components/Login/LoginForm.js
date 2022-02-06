@@ -1,11 +1,9 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { Form, Input, Divider } from 'antd'
 import PropTypes from 'prop-types'
-import { useSelector } from 'react-redux'
 import GoogleButton from 'react-google-button'
-import { useFirebase } from 'react-redux-firebase'
 
 const StyledProviderLogins = styled.div`
   display: flex;
@@ -14,18 +12,7 @@ const StyledProviderLogins = styled.div`
   padding-bottom: 1rem;
 `
 
-const getAuthErrorMessage = (error) => {
-  switch (error.code) {
-    case 'auth/user-not-found':
-      return 'Email not found'
-    default:
-      return 'There was a problem signing you in. Try again later'
-  }
-}
-
 const LoginForm = (props) => {
-  const firebase = useFirebase()
-
   return (
     <Form {...props.formProps}>
       <Form.Item

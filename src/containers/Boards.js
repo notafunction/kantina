@@ -14,7 +14,7 @@ const StyledLink = styled(Link)`
   margin: 0 0.5rem;
 `
 
-const Boards = (props) => {
+const Boards = () => {
   useFirebaseConnect({
     path: `boards`,
     storeAs: 'allBoards',

@@ -73,7 +73,7 @@ const BoardSettingsDrawer = (props: Props) => {
       <Divider orientation="left" orientationMargin={0}>
         Danger Zone
       </Divider>
-      <Button type="danger" onClick={onDelete}>
+      <Button danger onClick={onDelete}>
         Delete Board
       </Button>
     </SettingsDrawer>

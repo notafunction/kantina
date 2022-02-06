@@ -1,7 +1,13 @@
 import firebase from '../services/firebase'
+import { Board as BoardInterface, BoardInput, BoardTypeEnum } from '../common/types'
 
-export default class Board {
-  constructor(attributes) {
+export default class Board implements BoardInterface {
+  id: string
+  title: string
+  type: BoardTypeEnum
+  createdBy: string
+
+  constructor(attributes: BoardInput) {
     this.title = attributes.title
     this.type = attributes.type
   }

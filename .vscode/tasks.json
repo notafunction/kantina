@@ -6,7 +6,11 @@
 			"script": "start",
 			"problemMatcher": [],
 			"label": "npm: start",
-			"detail": "PORT=3001 react-scripts start"
+			"detail": "PORT=3001 react-scripts start",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		}
 	]
 }

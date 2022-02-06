@@ -3,16 +3,6 @@ import React from 'react'
 import { Form, Input } from 'antd'
 import PropTypes from 'prop-types'
 
-const getAuthErrorMessage = (error) => {
-  console.dir(error)
-  switch (error.code) {
-    case 'auth/user-not-found':
-      return 'Email not found'
-    default:
-      return 'There was a problem signing you in. Try again later'
-  }
-}
-
 const SignupForm = (props) => {
   return (
     <Form {...props.formProps}>

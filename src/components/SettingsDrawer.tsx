@@ -4,11 +4,11 @@ import { Button, ButtonProps, Drawer, DrawerProps, Space } from 'antd'
 export type Props = DrawerProps & {
   close: () => void
   onOk: () => void
-  okButtonText: string
-  cancelButtonText: string
-  cancelButtonProps: ButtonProps
-  okButtonProps: ButtonProps
-  children: object
+  okButtonText?: string
+  cancelButtonText?: string
+  cancelButtonProps?: ButtonProps
+  okButtonProps?: ButtonProps
+  children?: object
 }
 
 const SettingsDrawer = ({ close, onOk, okButtonText, cancelButtonText, ...props }: Props) => {

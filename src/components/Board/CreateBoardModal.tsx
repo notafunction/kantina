@@ -1,16 +1,20 @@
 import React from 'react'
 import { Modal, Form, Input, Select, message } from 'antd'
-import PropTypes from 'prop-types'
 import Board from '../../models/Board'
 
-const CreateBoardModal = (props) => {
+export interface CreateBoardModalProps {
+  close: () => void
+  visible: boolean
+}
+
+const CreateBoardModal = (props: CreateBoardModalProps) => {
   const [form] = Form.useForm()
 
-  const onCreateBoard = (values) => {
+  const onCreateBoard = (values: object) => {
     try {
-      console.log(new Board(values).save())
+      new Board(values).save()
     } catch (error) {
-      message.error(error)
+      message.error('The board could not be created')
     }
   }
 
@@ -44,11 +48,6 @@ const CreateBoardModal = (props) => {
       </Form>
     </Modal>
   )
-}
-
-CreateBoardModal.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired
 }
 
 export default CreateBoardModal

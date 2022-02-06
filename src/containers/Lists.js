@@ -104,7 +104,7 @@ const Lists = (props) => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId={props.board.id} type="LIST" direction="horizontal">
-        {(droppableProvided, droppableSnapshot) => (
+        {(droppableProvided) => (
           <Container flex ref={droppableProvided.innerRef} {...droppableProvided.droppableProps}>
             {props.lists.map((list, i) => (
               <Draggable

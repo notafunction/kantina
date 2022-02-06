@@ -1,11 +1,16 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Upload, Form, Input, message } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import SettingsDrawer from '../SettingsDrawer'
 import { useFirebase } from 'react-redux-firebase'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
+import { RootState } from '../../store'
+
+export interface UserSettingsDrawerProps {
+  close: () => void
+  visible: boolean
+}
 
 const StyledUpload = styled(Upload)`
   .ant-upload {
@@ -21,22 +26,22 @@ const StyledUpload = styled(Upload)`
   }
 `
 
-const getBase64 = (image, callback) => {
+const getBase64 = (image: File, callback: (result: any) => any) => {
   const reader = new FileReader()
   reader.addEventListener('load', () => callback(reader.result))
   reader.readAsDataURL(image)
 }
 
-const UserSettingsDrawer = (props) => {
-  const [avatarFileList, setAvatarFileList] = React.useState([])
+const UserSettingsDrawer = (props: UserSettingsDrawerProps) => {
+  const [avatarFileList, setAvatarFileList] = React.useState<File[]>([])
   const [avatarPreviewUrl, setAvatarPreviewUrl] = React.useState(null)
   const [loading, setLoading] = React.useState(false)
   const [form] = Form.useForm()
   const firebase = useFirebase()
-  const auth = useSelector(({ firebase: { auth } }) => auth)
-  const profile = useSelector(({ firebase: { profile } }) => profile)
+  const auth = useSelector(({ firebase: { auth } }: RootState) => auth)
+  const profile = useSelector(({ firebase: { profile } }: RootState) => profile)
 
-  const beforeAvatarUpload = (file) => {
+  const beforeAvatarUpload = (file: File) => {
     const isLt2M = file.size / 1024 / 1024 < 2
 
     if (!isLt2M) {
@@ -51,7 +56,7 @@ const UserSettingsDrawer = (props) => {
 
   const uploadAndGetAvatarUrl = async () => {
     try {
-      const result = await firebase.uploadFile('userAvatars', avatarFileList[0], null, {
+      const result = await firebase.uploadFile('userAvatars', avatarFileList[0], undefined, {
         name: auth.uid
       })
       return result.uploadTaskSnapshot.ref.getDownloadURL()
@@ -123,11 +128,6 @@ const UserSettingsDrawer = (props) => {
       </Form>
     </SettingsDrawer>
   )
-}
-
-UserSettingsDrawer.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired
 }
 
 export default UserSettingsDrawer

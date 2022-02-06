@@ -1,3 +1,7 @@
+export interface Model {
+  path: string
+}
+
 export interface UserProfile {
   uid: string
   email: string
@@ -10,6 +14,11 @@ export interface Board {
   title: string
   type: BoardTypeEnum
   createdBy: string
+}
+
+export interface BoardInput {
+  title: string
+  type: BoardTypeEnum
 }
 
 export interface List {
