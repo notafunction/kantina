@@ -7,10 +7,9 @@ export default class Board {
   }
 
   save() {
-    const { currentUser } = firebase.auth()
-    if (!currentUser) throw new Error('must be authorized')
+    if (!firebase.auth().currentUser) throw new Error('must be authorized')
 
-    this.createdBy = currentUser.uid
+    this.createdBy = firebase.auth().currentUser.uid
 
     this.$ref = firebase.database().ref().child('boards').push(this)
 
