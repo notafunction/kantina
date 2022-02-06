@@ -1,8 +1,17 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { Button, Drawer, Space } from 'antd'
+import { Button, ButtonProps, Drawer, DrawerProps, Space } from 'antd'
 
-const SettingsDrawer = ({ close, onOk, okButtonText, cancelButtonText, ...props }) => {
+export type Props = DrawerProps & {
+  close: () => void
+  onOk: () => void
+  okButtonText: string
+  cancelButtonText: string
+  cancelButtonProps: ButtonProps
+  okButtonProps: ButtonProps
+  children: object
+}
+
+const SettingsDrawer = ({ close, onOk, okButtonText, cancelButtonText, ...props }: Props) => {
   const [viewportWidth, setViewportWidth] = React.useState(window.innerWidth)
 
   React.useEffect(() => {
@@ -35,18 +44,6 @@ const SettingsDrawer = ({ close, onOk, okButtonText, cancelButtonText, ...props 
       {props.children}
     </Drawer>
   )
-}
-
-SettingsDrawer.propTypes = {
-  title: PropTypes.string,
-  visible: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired,
-  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-  onOk: PropTypes.func.isRequired,
-  okButtonText: PropTypes.string,
-  okButtonProps: PropTypes.object,
-  cancelButtonText: PropTypes.string,
-  cancelButtonProps: PropTypes.object
 }
 
 export default SettingsDrawer

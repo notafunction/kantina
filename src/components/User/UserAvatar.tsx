@@ -1,8 +1,13 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Avatar } from 'antd'
+import { UserProfile } from '../../common/types'
+import { AvatarProps } from 'antd/lib/avatar'
 
-const UserAvatar = ({ user, ...props }) => {
+type Props = AvatarProps & {
+  user: UserProfile
+}
+
+const UserAvatar = ({ user, ...props }: Props) => {
   const imageUrl = user.avatarUrl || `https://joeschmoe.io/api/v1/${user.email || 'random'}`
 
   return (
@@ -10,10 +15,6 @@ const UserAvatar = ({ user, ...props }) => {
       <Avatar {...props} src={imageUrl} alt={user.displayName} />
     </div>
   )
-}
-
-UserAvatar.propTypes = {
-  user: PropTypes.object.isRequired
 }
 
 export default UserAvatar

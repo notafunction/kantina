@@ -7,14 +7,15 @@ import { useNavigate } from 'react-router'
 import { CreateBoardModal } from '../Board'
 import UserAvatar from './UserAvatar'
 import UserSettingsDrawer from './UserSettingsDrawer'
+import { RootState } from '../../store'
 
 const UserMenu = () => {
   const [createBoardModalVisible, setCreateBoardModalVisible] = React.useState(false)
   const [userSettingsDrawerVisible, setUserSettingsDrawerVisible] = React.useState(false)
   const navigate = useNavigate()
   const firebase = useFirebase()
-  const auth = useSelector(({ firebase: { auth } }) => auth)
-  const profile = useSelector(({ firebase: { profile } }) => profile)
+  const auth = useSelector(({ firebase: { auth } }: RootState) => auth)
+  const profile = useSelector(({ firebase: { profile } }: RootState) => profile)
 
   useFirebaseConnect({
     path: 'boards',
@@ -26,10 +27,10 @@ const UserMenu = () => {
       firebase: {
         ordered: { userBoards }
       }
-    }) => userBoards
+    }: RootState) => userBoards
   )
 
-  const handleMenuClick = (event) => {
+  const handleMenuClick = (event: { key: string }) => {
     switch (event.key) {
       case '$logout': {
         firebase.auth().signOut()

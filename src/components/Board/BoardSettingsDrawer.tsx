@@ -1,11 +1,17 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Button, Divider, Form, Input, message, Select } from 'antd'
 import { useFirebase } from 'react-redux-firebase'
 import { useNavigate } from 'react-router'
 import SettingsDrawer from '../SettingsDrawer'
+import { Board } from '../../common/types'
 
-const BoardSettingsDrawer = (props) => {
+export type Props = {
+  board: Board
+  visible: boolean
+  close: () => void
+}
+
+const BoardSettingsDrawer = (props: Props) => {
   const [loading, setLoading] = React.useState(false)
   const navigate = useNavigate()
   const firebase = useFirebase()
@@ -17,7 +23,7 @@ const BoardSettingsDrawer = (props) => {
       const values = await form.validateFields()
       firebase.ref(`boards/${props.board.id}`).update(values)
     } catch (error) {
-      message.error(error)
+      message.error('Could not update the board')
     } finally {
       setLoading(false)
     }
@@ -72,12 +78,6 @@ const BoardSettingsDrawer = (props) => {
       </Button>
     </SettingsDrawer>
   )
-}
-
-BoardSettingsDrawer.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired,
-  board: PropTypes.object.isRequired
 }
 
 export default BoardSettingsDrawer

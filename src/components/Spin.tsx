@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Spin } from 'antd'
+import { Spin, SpinProps } from 'antd'
+
+export type Props = SpinProps
 
 export default styled(Spin)`
   height: 100%;

@@ -4,15 +4,21 @@ import { Card, Statistic } from 'antd'
 import { useSelector } from 'react-redux'
 import { isLoaded, useFirebaseConnect } from 'react-redux-firebase'
 import Spin from '../Spin'
+import { RootState } from '../../store'
+import { Board } from '../../common/types'
 
-const BoardTile = (props) => {
+export type Props = {
+  board: Board
+}
+
+const BoardTile = (props: Props) => {
   useFirebaseConnect(`lists/${props.board.id}`)
   const lists = useSelector(
     ({
       firebase: {
         ordered: { lists }
       }
-    }) => lists && lists[props.board.id]
+    }: RootState) => lists && lists[props.board.id]
   )
 
   return (

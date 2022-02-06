@@ -6,8 +6,11 @@
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",
-        "plugin:prettier/recommended"
+        "plugin:prettier/recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
     ],
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
@@ -16,10 +19,12 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "@typescript-eslint"
     ],
     "rules": {
-        "no-unused-vars": ["error", {
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": ["error", {
             "vars": "all",
             "args": "after-used",
             "ignoreRestSiblings": false,
