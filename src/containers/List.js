@@ -9,12 +9,12 @@ import { useSelector } from 'react-redux'
 import { ListSettingsDrawer, ListToolbar } from '../components/List'
 
 const ListHeader = styled.div`
-  padding: 8px;
+  padding: 0.5rem;
   font-size: 1.25rem;
   font-weight: 600;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 
   h3 {
     margin-bottom: 0;
