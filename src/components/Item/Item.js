@@ -4,12 +4,12 @@ import { Button, Dropdown, Menu } from 'antd'
 import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { DeleteOutlined, EllipsisOutlined } from '@ant-design/icons'
 import { isEmpty, useFirebase } from 'react-redux-firebase'
 import { useSelector } from 'react-redux'
 import UserAvatar from '../User/UserAvatar'
+import ItemToolbar from './ItemToolbar'
 
-const ItemToolbar = styled.div`
+const ToolbarContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.2rem;
@@ -40,13 +40,13 @@ const ItemContainer = styled.div`
     box-shadow: none;
   }
 
-  ${ItemToolbar} > .ant-dropdown-button {
+  ${ToolbarContainer} > .ant-dropdown-button {
     opacity: 0;
     transition: all 0.1s ease-in;
   }
 
   &:hover {
-    ${ItemToolbar} > .ant-dropdown-button {
+    ${ToolbarContainer} > .ant-dropdown-button {
       opacity: 1;
     }
   }
@@ -61,13 +61,14 @@ const Item = (props) => {
     firebase.ref(`items/${props.list.id}/${props.item.key}`).remove()
   }
 
-  const itemMenu = (
-    <Menu>
-      <Menu.Item icon={<DeleteOutlined />} onClick={onDeleteItem} key="$delete">
-        Delete
-      </Menu.Item>
-    </Menu>
-  )
+  const handleToolbarClick = (event) => {
+    switch (event.key) {
+      case 'item:delete': {
+        onDeleteItem()
+        break
+      }
+    }
+  }
 
   return (
     <ItemContainer
@@ -75,18 +76,10 @@ const Item = (props) => {
       {...props.provided.draggableProps}
       {...props.provided.dragHandleProps}>
       <ItemContent isDragging={props.isDragging} itemColor={props.item.value.color}>
-        <ItemToolbar>
+        <ToolbarContainer>
           {creator && <UserAvatar user={creator} size="small" />}
-          {!isEmpty(auth) && (
-            <Dropdown.Button
-              trigger="click"
-              size="small"
-              type="text"
-              icon={<EllipsisOutlined />}
-              overlay={itemMenu}
-            />
-          )}
-        </ItemToolbar>
+          {!isEmpty(auth) && <ItemToolbar handleClick={handleToolbarClick} />}
+        </ToolbarContainer>
         <div>{props.item.value.content}</div>
       </ItemContent>
     </ItemContainer>

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Form, Input } from 'antd'
+import { Modal, Form, Input, message } from 'antd'
 import { isEmpty, useFirebase } from 'react-redux-firebase'
 import { useSelector } from 'react-redux'
 import { CirclePicker } from 'react-color'
@@ -17,11 +17,16 @@ const CreateListModal = (props) => {
     }) => lists && lists[props.board.id]
   )
 
-  const onCreateList = async (values) =>
-    firebase.push(`lists/${props.board.id}`, {
-      ...values,
-      order: !isEmpty(lists) ? lists.length : 0
-    })
+  const onCreateList = async (values) => {
+    try {
+      await firebase.push(`lists/${props.board.id}`, {
+        ...values,
+        order: !isEmpty(lists) ? lists.length : 0
+      })
+    } catch (error) {
+      message.error(error.code)
+    }
+  }
 
   const onOk = async () => {
     const values = await form.validateFields()

@@ -4,11 +4,9 @@ import { Droppable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
 import CreateItemModal from '../components/Item/CreateItemModal'
 import Items from './Items'
-import { Menu, Dropdown } from 'antd'
-import { SettingOutlined, PlusOutlined } from '@ant-design/icons'
 import { useFirebaseConnect, isEmpty } from 'react-redux-firebase'
 import { useSelector } from 'react-redux'
-import { ListSettingsDrawer } from '../components/List'
+import { ListSettingsDrawer, ListToolbar } from '../components/List'
 
 const ListHeader = styled.div`
   padding: 8px;
@@ -67,16 +65,17 @@ const List = (props) => {
   const [settingsVisible, setSettingsVisible] = useState(false)
   const auth = useSelector(({ firebase: { auth } }) => auth)
 
-  const listOptionsMenu = (
-    <Menu>
-      <Menu.Item key="1" icon={<PlusOutlined />} onClick={() => setCreateItemModalVisible(true)}>
-        Create Item
-      </Menu.Item>
-      <Menu.Item key="2" icon={<SettingOutlined />} onClick={() => setSettingsVisible(true)}>
-        List Settings
-      </Menu.Item>
-    </Menu>
-  )
+  const handleToolbarClick = (event) => {
+    switch (event.key) {
+      case 'item:create': {
+        setCreateItemModalVisible(true)
+        break
+      }
+      case 'list:settings': {
+        setSettingsVisible(true)
+      }
+    }
+  }
 
   return (
     <Droppable droppableId={props.list.id} type="ITEM">
@@ -84,9 +83,7 @@ const List = (props) => {
         <ListContent {...provided.droppableProps} itemColor={props.list.color}>
           <ListHeader>
             <h3 {...props.dragHandleProps}>{props.list.title}</h3>
-            {!isEmpty(auth) && (
-              <Dropdown.Button trigger="click" size="small" type="text" overlay={listOptionsMenu} />
-            )}
+            {!isEmpty(auth) && <ListToolbar handleClick={handleToolbarClick} />}
           </ListHeader>
           <DropZone ref={provided.innerRef}>
             <Items list={props.list} onCreate={() => setCreateItemModalVisible(true)} />

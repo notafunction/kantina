@@ -3,12 +3,11 @@ import styled from 'styled-components'
 import { CreateListModal } from '../components/List'
 import Lists from './Lists'
 import { useParams, useNavigate } from 'react-router'
-import { Dropdown, Menu, Empty, Button, Result, PageHeader } from 'antd'
-import { PlusOutlined, SettingOutlined } from '@ant-design/icons'
+import { Empty, Button, Result, PageHeader } from 'antd'
 import { useFirebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
 import { useSelector } from 'react-redux'
 import Spin from '../components/Spin'
-import { BoardContainer, BoardSettingsDrawer } from '../components/Board'
+import { BoardContainer, BoardSettingsDrawer, BoardToolbar } from '../components/Board'
 
 const BoardContent = styled.div`
   position: relative;
@@ -45,30 +44,22 @@ const Board = () => {
     }) => lists && lists[params.boardId]
   )
 
-  const renderBoardSettingsMenu = () => {
+  const renderBoardToolbar = () => {
     if (isEmpty(auth)) return null
 
-    return (
-      <Dropdown.Button
-        trigger="click"
-        overlay={
-          <Menu>
-            <Menu.Item
-              key="create-list"
-              icon={<PlusOutlined />}
-              onClick={() => setCreateListModalVisible(true)}>
-              Create List
-            </Menu.Item>
-            <Menu.Item
-              key="board-settings"
-              icon={<SettingOutlined />}
-              onClick={() => setBoardSettingsVisible(true)}>
-              Board Settings
-            </Menu.Item>
-          </Menu>
+    const handleToolbarClick = (event) => {
+      switch (event.key) {
+        case 'list:create': {
+          setCreateListModalVisible(true)
+          break
         }
-      />
-    )
+        case 'board:settings': {
+          setBoardSettingsVisible(true)
+        }
+      }
+    }
+
+    return <BoardToolbar handleClick={handleToolbarClick} />
   }
 
   const renderLists = () => {
@@ -118,7 +109,7 @@ const Board = () => {
       <PageHeader
         title={board.title}
         subTitle={!isEmpty(creator) && `created by ${creator.displayName}`}
-        extra={renderBoardSettingsMenu()}
+        extra={renderBoardToolbar()}
       />
 
       <BoardContent>{renderLists()}</BoardContent>
