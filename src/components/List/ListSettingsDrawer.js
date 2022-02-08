@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Form, Input, message } from 'antd'
+import { Button, Form, Input, message, Popconfirm } from 'antd'
+import { WarningOutlined } from '@ant-design/icons'
 import { useFirebase } from 'react-redux-firebase'
 import { useParams } from 'react-router'
 import { CirclePicker } from 'react-color'
@@ -58,9 +59,14 @@ const ListSettingsDrawer = (props) => {
         </Form.Item>
 
         <FormDangerZone>
-          <Button type="danger" onClick={onDelete}>
-            Delete List
-          </Button>
+          <Popconfirm
+            onConfirm={onDelete}
+            okText="Yes"
+            title="Are you sure? This cannot be undone"
+            okButtonProps={{ danger: true }}
+            icon={<WarningOutlined />}>
+            <Button danger>Delete List</Button>
+          </Popconfirm>
         </FormDangerZone>
       </Form>
     </SettingsDrawer>

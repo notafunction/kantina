@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Divider, Form, Input, message, Select } from 'antd'
+import { Button, Form, Input, message, Select, Popconfirm } from 'antd'
+import { WarningOutlined } from '@ant-design/icons'
 import { useFirebase } from 'react-redux-firebase'
 import { useNavigate } from 'react-router'
 import SettingsDrawer from '../SettingsDrawer'
+import FormDangerZone from '../Form/FormDangerZone'
 
 const BoardSettingsDrawer = (props) => {
   const [loading, setLoading] = React.useState(false)
@@ -64,12 +66,16 @@ const BoardSettingsDrawer = (props) => {
         </Form.Item>
       </Form>
 
-      <Divider orientation="left" orientationMargin={0}>
-        Danger Zone
-      </Divider>
-      <Button type="danger" onClick={onDelete}>
-        Delete Board
-      </Button>
+      <FormDangerZone>
+        <Popconfirm
+          onConfirm={onDelete}
+          okText="Yes"
+          title="Are you sure? This cannot be undone"
+          okButtonProps={{ danger: true }}
+          icon={<WarningOutlined />}>
+          <Button danger>Delete Board</Button>
+        </Popconfirm>
+      </FormDangerZone>
     </SettingsDrawer>
   )
 }
