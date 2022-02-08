@@ -7,11 +7,11 @@ import Spin from '../Spin'
 import { RootState } from '../../store'
 import { Board } from '../../common/types'
 
-export type Props = {
+type BoardTileProps = {
   board: Board
 }
 
-const BoardTile = (props: Props) => {
+const BoardTile = (props: BoardTileProps) => {
   useFirebaseConnect(`lists/${props.board.id}`)
   const lists = useSelector(
     ({

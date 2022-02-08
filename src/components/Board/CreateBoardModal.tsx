@@ -1,6 +1,9 @@
 import React from 'react'
 import { Modal, Form, Input, Select, message } from 'antd'
-import Board from '../../models/Board'
+import { BoardInput } from '../../common/types'
+import { useFirebase } from 'react-redux-firebase'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 
 export interface CreateBoardModalProps {
   close: () => void
@@ -9,10 +12,13 @@ export interface CreateBoardModalProps {
 
 const CreateBoardModal = (props: CreateBoardModalProps) => {
   const [form] = Form.useForm()
+  const firebase = useFirebase()
+  const auth = useSelector(({ firebase: { auth } }: RootState) => auth)
 
-  const onCreateBoard = (values: object) => {
+  const onCreateBoard = (values: BoardInput) => {
     try {
-      new Board(values).save()
+      values.createdBy = auth.uid
+      firebase.push('boards', values)
     } catch (error) {
       message.error('The board could not be created')
     }

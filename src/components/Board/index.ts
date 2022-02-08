@@ -9,4 +9,4 @@ const BoardContainer = styled.div`
   flex-direction: column;
 `
 
-export default { BoardTile, BoardContainer, CreateBoardModal, BoardSettingsDrawer }
+export { BoardTile, BoardContainer, CreateBoardModal, BoardSettingsDrawer }

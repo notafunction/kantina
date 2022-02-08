@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, ButtonProps, Drawer, DrawerProps, Space } from 'antd'
 
-export type Props = DrawerProps & {
+export type SettingsDrawerProps = DrawerProps & {
   close: () => void
   onOk: () => void
   okButtonText?: string
@@ -11,7 +11,13 @@ export type Props = DrawerProps & {
   children?: object
 }
 
-const SettingsDrawer = ({ close, onOk, okButtonText, cancelButtonText, ...props }: Props) => {
+const SettingsDrawer = ({
+  close,
+  onOk,
+  okButtonText,
+  cancelButtonText,
+  ...props
+}: SettingsDrawerProps) => {
   const [viewportWidth, setViewportWidth] = React.useState(window.innerWidth)
 
   React.useEffect(() => {

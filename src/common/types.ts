@@ -1,3 +1,5 @@
+import { Reference } from '@firebase/database-types'
+
 export interface Model {
   path: string
 }
@@ -19,6 +21,7 @@ export interface Board {
 export interface BoardInput {
   title: string
   type: BoardTypeEnum
+  createdBy: string
 }
 
 export interface List {

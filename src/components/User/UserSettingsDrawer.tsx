@@ -107,6 +107,7 @@ const UserSettingsDrawer = (props: UserSettingsDrawerProps) => {
             listType="picture-card"
             showUploadList={false}
             beforeUpload={beforeAvatarUpload}
+            // @ts-ignore:next-line
             fileList={avatarFileList}
             maxCount={1}>
             {avatarPreviewUrl ? (
