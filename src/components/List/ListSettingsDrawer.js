@@ -10,43 +10,52 @@ import SettingsDrawer from '../SettingsDrawer'
 import FormDangerZone from '../Form/FormDangerZone'
 
 const ListSettingsDrawer = (props) => {
+  const [loading, setLoading] = React.useState(false)
   const { boardId } = useParams()
   const firebase = useFirebase()
   const [form] = Form.useForm()
 
   const onSave = async () => {
+    setLoading(true)
     const values = await form.validateFields()
     try {
       await firebase.update(`lists/${boardId}/${props.list.id}`, values)
-      message.success('Your changes have been saved')
       props.close()
+      message.success('Your changes have been saved')
     } catch (error) {
       message.error('There was a problem saving your changes')
       console.error(error)
+    } finally {
+      setLoading(false)
     }
   }
 
   const onDelete = async () => {
+    setLoading(true)
     try {
       // Remove list
-      firebase.ref(`lists/${boardId}/${props.list.id}`).remove()
+      await firebase.remove(`lists/${boardId}/${props.list.id}`)
       // Remove items
-      firebase.ref(`items/${props.list.id}`).remove()
-
+      await firebase.remove(`items/${props.list.id}`)
       props.close()
       message.success(`List has been deleted`)
     } catch (error) {
+      message.error('There was a problem deleting the list')
       console.log(error)
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
     <SettingsDrawer
       title={`${props.list.title} Settings`}
-      onOk={onSave}
       visible={props.visible}
-      close={props.close}>
-      <Form layout="vertical" onFinish={onSave} form={form}>
+      close={props.close}
+      onOk={onSave}
+      okButtonProps={{ loading }}
+      destroyOnClose>
+      <Form layout="vertical" onFinish={onSave} form={form} preserve={false}>
         <Form.Item
           initialValue={props.list.title}
           name="title"
@@ -54,7 +63,11 @@ const ListSettingsDrawer = (props) => {
           rules={[{ required: true, message: 'A title is required.' }]}>
           <Input />
         </Form.Item>
-        <Form.Item name="color" label="Color" initialValue={props.list.color.hex}>
+        <Form.Item
+          name="color"
+          label="Color"
+          initialValue={props.list.color}
+          getValueFromEvent={({ hex }) => hex}>
           <CirclePicker colors={colorPickerColors} color={props.list.color} />
         </Form.Item>
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Form, Input, message, Select, Popconfirm } from 'antd'
-import { WarningOutlined } from '@ant-design/icons'
+import { Button, Form, Input, Switch, message, Select, Popconfirm } from 'antd'
+import { WarningOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons'
 import { useFirebase } from 'react-redux-firebase'
 import { useNavigate } from 'react-router'
 import SettingsDrawer from '../SettingsDrawer'
@@ -15,11 +15,14 @@ const BoardSettingsDrawer = (props) => {
 
   const onSave = async () => {
     setLoading(true)
+    const values = await form.validateFields()
     try {
-      const values = await form.validateFields()
-      firebase.ref(`boards/${props.board.id}`).update(values)
+      await firebase.update(`boards/${props.board.id}`, values)
+      message.success('Your changes have been saved')
+      props.close()
     } catch (error) {
-      message.error(error)
+      message.error('There was a problem saving your changes')
+      console.error(error)
     } finally {
       setLoading(false)
     }
@@ -28,13 +31,15 @@ const BoardSettingsDrawer = (props) => {
   const onDelete = async () => {
     try {
       // Delete board
-      firebase.ref(`boards/${props.board.id}`).remove()
+      await firebase.remove(`boards/${props.board.id}`)
       // Loops through lists and delete items, then list itself
       const listSnapshots = await firebase.ref(`lists/${props.board.id}`).orderByKey().once('value')
-      listSnapshots.forEach((snapshot) => {
-        firebase.ref(`items/${snapshot.key}`).remove()
-        snapshot.ref.remove()
-      })
+      await Promise.all(
+        listSnapshots.map(async (snapshot) => {
+          await firebase.remove(`items/${snapshot.key}`)
+          await snapshot.ref.remove()
+        })
+      )
 
       props.close()
       navigate('/')
@@ -49,8 +54,9 @@ const BoardSettingsDrawer = (props) => {
       visible={props.visible}
       close={props.close}
       onOk={onSave}
-      okButtonProps={{ loading }}>
-      <Form layout="vertical" onFinish={onSave} form={form}>
+      okButtonProps={{ loading }}
+      destroyOnClose>
+      <Form layout="vertical" onFinish={onSave} form={form} preserve={false}>
         <Form.Item
           initialValue={props.board.title}
           name="title"
@@ -63,6 +69,18 @@ const BoardSettingsDrawer = (props) => {
             <Select.Option value="private">Private</Select.Option>
             <Select.Option value="public">Public</Select.Option>
           </Select>
+        </Form.Item>
+        <Form.Item
+          name="locked"
+          label="Lock"
+          help="Allow changes only by board admins"
+          valuePropName="checked"
+          initialValue={props.board.locked}>
+          <Switch
+            checkedChildren={<LockOutlined />}
+            unCheckedChildren={<UnlockOutlined />}
+            checked={props.board.locked}
+          />
         </Form.Item>
       </Form>
 

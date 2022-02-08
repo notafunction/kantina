@@ -17,7 +17,20 @@ const rrfProps = {
   firebase,
   config: {
     ...firebaseConfig,
-    userProfile: 'users'
+    userProfile: 'users',
+    profileParamsToPopulate: [{ child: 'role', root: 'roles' }],
+    profileFactory: (user) => {
+      const profile = {
+        email: user.email || user.providerData[0].email,
+        role: 'user'
+      }
+
+      if (user.providerData && user.providerData.length) {
+        profile.providerData = user.providerData
+      }
+
+      return profile
+    }
   },
   dispatch: store.dispatch
 }

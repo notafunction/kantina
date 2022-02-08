@@ -25,7 +25,7 @@ const ListHeader = styled.div`
 `
 const ListContent = styled.div`
   max-height: 100%;
-  background-color: ${(props) => (props.color ? props.color.hex : 'lightgrey')};
+  background-color: ${(props) => props.itemColor};
   display: flex;
   flex-direction: column;
   border-radius: 3px;
@@ -81,7 +81,7 @@ const List = (props) => {
   return (
     <Droppable droppableId={props.list.id} type="ITEM">
       {(provided, _snapshot) => (
-        <ListContent {...provided.droppableProps} color={props.list.color}>
+        <ListContent {...provided.droppableProps} itemColor={props.list.color}>
           <ListHeader>
             <h3 {...props.dragHandleProps}>{props.list.title}</h3>
             {!isEmpty(auth) && (
