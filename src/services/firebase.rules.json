@@ -9,9 +9,6 @@
         ".write": "(data.child('locked').val() == false) || (data.child('createdBy').val() == auth.uid)"
       }
     },
-    "lists": {
-      
-    },
     "users": {
       "$uid": {
         ".write": "auth.uid != null && auth.uid == $uid"
