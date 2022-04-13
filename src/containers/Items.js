@@ -32,9 +32,11 @@ const Items = (props) => {
   } else {
     return (
       <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="There are no items">
-        <Button type="primary" onClick={props.onCreate}>
-          Create Item
-        </Button>
+        {!isEmpty(auth) && (
+          <Button type="primary" onClick={props.onCreate}>
+            Create Item
+          </Button>
+        )}
       </Empty>
     )
   }
