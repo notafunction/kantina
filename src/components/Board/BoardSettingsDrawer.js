@@ -19,7 +19,6 @@ const BoardSettingsDrawer = (props) => {
     try {
       await firebase.update(`boards/${props.board.id}`, values)
       message.success('Your changes have been saved')
-      props.close()
     } catch (error) {
       message.error('There was a problem saving your changes')
       console.error(error)
@@ -30,17 +29,7 @@ const BoardSettingsDrawer = (props) => {
 
   const onDelete = async () => {
     try {
-      // Delete board
       await firebase.remove(`boards/${props.board.id}`)
-      // Loops through lists and delete items, then list itself
-      const listSnapshots = await firebase.ref(`lists/${props.board.id}`).orderByKey().once('value')
-      await Promise.all(
-        listSnapshots.map(async (snapshot) => {
-          await firebase.remove(`items/${snapshot.key}`)
-          await snapshot.ref.remove()
-        })
-      )
-
       props.close()
       navigate('/')
     } catch (error) {

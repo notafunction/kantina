@@ -33,10 +33,7 @@ const ListSettingsDrawer = (props) => {
   const onDelete = async () => {
     setLoading(true)
     try {
-      // Remove list
       await firebase.remove(`lists/${boardId}/${props.list.id}`)
-      // Remove items
-      await firebase.remove(`items/${props.list.id}`)
       props.close()
       message.success(`List has been deleted`)
     } catch (error) {
