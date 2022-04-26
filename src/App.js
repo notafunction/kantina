@@ -6,6 +6,7 @@ import Board from './containers/Board'
 import NavBar from './components/Navbar/NavBar'
 import './App.css'
 import RequireAccess from './containers/RequireAccess'
+import { useGoogleAnalytics } from './hooks'
 
 const AppContainer = styled.div`
   display: flex;
@@ -18,23 +19,27 @@ const ContentContainer = styled.div`
   position: relative;
 `
 
-const App = () => (
-  <AppContainer>
-    <NavBar />
-    <ContentContainer>
-      <Routes>
-        <Route path="/" element={<Boards />} />
-        <Route
-          path="/b/:boardId"
-          element={
-            <RequireAccess>
-              <Board />
-            </RequireAccess>
-          }
-        />
-      </Routes>
-    </ContentContainer>
-  </AppContainer>
-)
+const App = () => {
+  useGoogleAnalytics()
+
+  return (
+    <AppContainer>
+      <NavBar />
+      <ContentContainer>
+        <Routes>
+          <Route path="/" element={<Boards />} />
+          <Route
+            path="/b/:boardId"
+            element={
+              <RequireAccess>
+                <Board />
+              </RequireAccess>
+            }
+          />
+        </Routes>
+      </ContentContainer>
+    </AppContainer>
+  )
+}
 
 export default App
