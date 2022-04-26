@@ -1,12 +1,13 @@
 import firebase from '../services/firebase'
 
-export default class Board {
-  static collection = 'boards'
+export default class List {
+  static collection = 'lists'
 
   constructor(attributes) {
+    this.board = attributes.board
+    this.color = attributes.color
+    this.order = attributes.order
     this.title = attributes.title
-    this.type = attributes.type
-    this.members = attributes.members || {}
   }
 
   async save() {

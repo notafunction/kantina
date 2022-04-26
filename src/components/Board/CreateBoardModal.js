@@ -8,7 +8,9 @@ const CreateBoardModal = (props) => {
 
   const onCreateBoard = (values) => {
     try {
-      console.log(new Board(values).save())
+      const board = new Board(values)
+
+      return board.save()
     } catch (error) {
       message.error(error)
     }

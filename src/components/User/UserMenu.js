@@ -1,7 +1,7 @@
 import React from 'react'
 import { Dropdown, Menu } from 'antd'
 import { useSelector } from 'react-redux'
-import { useFirebase, useFirebaseConnect } from 'react-redux-firebase'
+import { useFirebase, useFirestoreConnect } from 'react-redux-firebase'
 import { LogoutOutlined, GroupOutlined, SettingOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router'
 import { CreateBoardModal } from '../Board'
@@ -16,18 +16,12 @@ const UserMenu = () => {
   const auth = useSelector(({ firebase: { auth } }) => auth)
   const profile = useSelector(({ firebase: { profile } }) => profile)
 
-  useFirebaseConnect({
-    path: 'boards',
+  useFirestoreConnect({
+    collection: 'boards',
     queryParams: ['orderByChild=createdBy', `equalTo=${auth.uid}`],
     storeAs: 'userBoards'
   })
-  const userBoards = useSelector(
-    ({
-      firebase: {
-        ordered: { userBoards }
-      }
-    }) => userBoards
-  )
+  const userBoards = useSelector((state) => state.firestore.ordered.userBoards)
 
   const handleMenuClick = (event) => {
     switch (event.key) {

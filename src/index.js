@@ -7,6 +7,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 import App from './App'
 import firebase, { firebaseConfig } from './services/firebase'
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
+import { createFirestoreInstance } from 'redux-firestore'
 import { BrowserRouter } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
 import { ConfigProvider } from 'antd'
@@ -15,6 +16,8 @@ const history = createBrowserHistory()
 
 const rrfProps = {
   firebase,
+  createFirestoreInstance,
+  dispatch: store.dispatch,
   config: {
     ...firebaseConfig,
     userProfile: 'users',
@@ -31,8 +34,7 @@ const rrfProps = {
 
       return profile
     }
-  },
-  dispatch: store.dispatch
+  }
 }
 
 ConfigProvider.config({})
