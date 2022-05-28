@@ -1,0 +1,12 @@
+{
+  "eslint.validate": ["javascript", "vue", "javascriptvue"],
+  "css.validate": false,
+  "scss.validate": false,
+  "css.lint.unknownAtRules": "ignore",
+  "editor.formatOnSave": true,
+  "vetur.validation.template": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "prettier.endOfLine": "auto"
+}
