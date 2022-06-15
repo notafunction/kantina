@@ -16,10 +16,14 @@ const firebase = initializeApp(config)
 const auth = getAuth(firebase)
 const firestore = getFirestore(firebase)
 
-export default function (_context, inject) {
-  inject('firebase', {
-    firebase,
-    firestore,
-    auth,
-  })
-}
+export default defineNuxtPlugin((nuxtApp) => {
+  return {
+    provide: {
+      firebase: {
+        firebase,
+        firestore,
+        auth,
+      }
+    }
+  }
+})

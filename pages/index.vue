@@ -1,15 +1,13 @@
 <template>
-  <div>hello, world</div>
+  <h1>hello, world</h1>
 </template>
 
 <script>
-import Vue from 'vue'
+export default {
 
-export default Vue.extend({
-  name: 'IndexPage',
-
-  mounted() {
-    console.log(this.$firebase)
-  },
-})
+}
 </script>
+
+<style>
+
+</style>
