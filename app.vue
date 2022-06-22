@@ -1,19 +1,7 @@
 <template>
-  <div>
-    <Menubar >
-      <template #start>
-        foo
-      </template>
-
-      <template #end>
-        <AuthButton />
-      </template>
-    </Menubar>
-
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-  </div>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 
 <script>
@@ -21,3 +9,18 @@ export default {
   
 }
 </script>
+
+<style lang="scss">
+body {
+  background-color: #eff3f8;
+}
+
+a {
+  color: #0052cc;
+  @apply no-underline;
+
+  &:hover {
+    @apply underline;
+  }
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <Dialog :modal="true" :header="dialogHeader" :visible="visible" @update:visible="$emit('update:visible', $event)">
+  <Dialog :modal="true" :header="dialogHeader" :visible="visible" @update:visible="$emit('update:visible', $event)" v-bind="dialogOptions">
     <AuthSignUpForm v-if="isSigningUp" v-model="signUpData" />
     <AuthLogInForm v-else v-model="logInData" />
 
@@ -41,6 +41,10 @@ export default {
       isSigningUp: false,
 
       isLoading: false,
+
+      dialogOptions: {
+        draggable: false,
+      },
       
       signUpData: {
         email: '',

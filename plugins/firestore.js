@@ -19,11 +19,7 @@ const firestore = getFirestore(firebase)
 export default defineNuxtPlugin((nuxtApp) => {
   return {
     provide: {
-      firebase: {
-        firebase,
-        firestore,
-        auth,
-      }
+      firebase
     }
   }
 })

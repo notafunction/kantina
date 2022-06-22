@@ -18,6 +18,7 @@ export default defineNuxtConfig({
   ],
 
   css: [
+    '@unocss/reset/normalize.css',
     'primevue/resources/primevue.min.css',
     'primevue/resources/themes/saga-blue/theme.css',
     'primeicons/primeicons.css',

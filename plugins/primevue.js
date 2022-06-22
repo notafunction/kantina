@@ -173,7 +173,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   app.component('TreeTable', TreeTable)
   app.component('TriStateCheckbox', TriStateCheckbox)
 
-  app.use(PrimeVue, { ripple: true })
+  app.use(PrimeVue, { ripple: false })
 
   // services
   app.use(ConfirmationService)

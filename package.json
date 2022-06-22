@@ -22,7 +22,9 @@
     "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
+    "@nuxtjs/eslint-config-typescript": "^10.0.0",
     "@unocss/nuxt": "^0.39.0",
+    "@unocss/reset": "^0.39.3",
     "@unocss/transformer-directives": "^0.39.0",
     "nuxt": "3.0.0-rc.4",
     "sass": "^1.52.3",
