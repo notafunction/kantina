@@ -1,27 +1,24 @@
 <template>
   <main>
-    <Card class="max-w-md mx-auto">
+    <PvCard class="max-w-md mx-auto">
       <template #title>
         <h5 class="text-center">Sign up for your account</h5>
       </template>
       <template #content>
         <AuthSignupForm />
       </template>
-    </Card>
+    </PvCard>
   </main>
 </template>
 
 <script setup>
 definePageMeta({
-  layout: 'basic'
+  layout: 'basic',
 })
 </script>
 
 <script>
-export default {
-}
+export default {}
 </script>
 
-<style>
-
-</style>
+<style></style>

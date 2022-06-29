@@ -1,7 +1,7 @@
 import { useState } from '#app'
 
 const useUserData = () => {
-  const userData = useState('user', () => {})
+  const userData = useState('user', () => null)
 
   const setUserData = (user) => {
     userData.value = user
@@ -9,7 +9,7 @@ const useUserData = () => {
 
   return {
     userData,
-    setUserData
+    setUserData,
   }
 }
 

@@ -1,10 +1,19 @@
 <template>
   <div>
-    <Avatar shape="circle" @click="toggle" class="cursor-pointer" :image="$user.value.photoURL" />
+    <PvAvatar
+      shape="circle"
+      class="cursor-pointer"
+      v-bind="computePvAvatarProps"
+      @click="toggle"
+    />
 
-    <Menu ref="menu" :model="menu" :popup="true" />
+    <PvMenu ref="menu" :model="menu" :popup="true" />
   </div>
 </template>
+
+<script setup>
+const { userData } = useUserData()
+</script>
 
 <script>
 export default {
@@ -14,25 +23,37 @@ export default {
         {
           label: 'Profile',
           icon: 'pi pi-user',
-          to: `/user/${this.$user.value.uid}`
+          to: `/user/${this.userData.uid}`,
         },
         {
           label: 'Logout',
           icon: 'pi pi-sign-out',
-          command: () => this.$firebase.auth.signOut()
-        }
-      ]
+          command: () => this.$firebase.auth.signOut(),
+        },
+      ],
     }
+  },
+
+  computed: {
+    computePvAvatarProps() {
+      if (this.userData.photoURL) {
+        return {
+          image: this.userData.photoURL,
+        }
+      }
+
+      return {
+        icon: 'pi pi-user',
+      }
+    },
   },
 
   methods: {
     toggle(event) {
       this.$refs.menu.toggle(event)
-    }
-  }
+    },
+  },
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

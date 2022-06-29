@@ -1,6 +1,6 @@
-import { defineNuxtPlugin, useRuntimeConfig, useState } from '#app'
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
+import { defineNuxtPlugin, useRuntimeConfig } from '#app'
 import useUserData from '@/composables/useUserData'
 
 const getFirebaseErrorMessage = (code) => {
@@ -16,13 +16,12 @@ const getFirebaseErrorMessage = (code) => {
   }
 }
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig()
   const { userData, setUserData } = useUserData()
 
   const firebase = initializeApp(config.firebase)
   const auth = getAuth(firebase)
-
 
   auth.onAuthStateChanged((user) => {
     setUserData(user)
@@ -35,7 +34,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         firebase,
         auth,
         getFirebaseErrorMessage,
-      }
-    }
+      },
+    },
   }
 })

@@ -1,44 +1,57 @@
 <template>
   <form class="grid p-fluid my-4 gap-4" @submit.prevent="onLogin">
     <div class="col-12 md:col-4">
-        <div class="p-inputgroup">
-            <span class="p-inputgroup-addon">
-                <i class="pi pi-at"></i>
-            </span>
-            <InputText placeholder="Email" type="email" v-model="email" />
-        </div>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon">
+          <i class="pi pi-at"></i>
+        </span>
+        <PvInputText v-model="email" placeholder="Email" type="email" />
+      </div>
     </div>
 
     <div class="col-12 md:col-4">
-        <div class="p-inputgroup">
-            <span class="p-inputgroup-addon">
-                <i class="pi pi-lock"></i>
-            </span>
-            <InputText placeholder="Password" type="password" v-model="password" />
-        </div>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon">
+          <i class="pi pi-lock"></i>
+        </span>
+        <PvInputText
+          v-model="password"
+          placeholder="Password"
+          type="password"
+        />
+      </div>
     </div>
 
     <div class="col-12 md:col-4">
-      <Button label="Log in" :loading="loading" type="submit" />
+      <PvButton label="Log in" :loading="loading" type="submit" />
     </div>
 
-    <Divider align="center" type="dashed">OR</Divider>
+    <PvDivider align="center" type="dashed">OR</PvDivider>
 
-    <Button icon="pi pi-google" label="Continue with Google" class="p-button-outlined" @click="onLoginWithProvider(providers.google)" />
+    <PvButton
+      icon="pi pi-google"
+      label="Continue with Google"
+      class="p-button-outlined"
+      @click="onLoginWithProvider(providers.google)"
+    />
 
-    <Divider />
+    <PvDivider />
 
     <div class="flex gap-2 items-center mx-auto text-sm">
-      <NuxtLink to="/forgot">Can't log in?</NuxtLink> | 
+      <NuxtLink to="/forgot">Can't log in?</NuxtLink> |
       <NuxtLink to="/signup">Sign up for an account</NuxtLink>
     </div>
-
   </form>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth'
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  OAuthProvider,
+} from 'firebase/auth'
 import { useToast } from 'primevue/usetoast'
 
 const toast = useToast()
@@ -50,18 +63,22 @@ const providers = {
   microsoft: new OAuthProvider('microsoft.com').setCustomParameters({
     prompt: 'consent',
     tenant: '18133708-3531-404b-8b96-b133c27b5d21',
-  })
+  }),
 }
 
 const email = ref('')
 const password = ref('')
 const loading = ref(false)
 
-async function onLogin () {
+async function onLogin() {
   loading.value = true
 
   try {
-    await signInWithEmailAndPassword($firebase.auth, email.value, password.value)
+    await signInWithEmailAndPassword(
+      $firebase.auth,
+      email.value,
+      password.value
+    )
     handlePostLoginActions()
   } catch (error) {
     handleLoginError(error)
@@ -80,18 +97,25 @@ async function onLoginWithProvider(provider) {
 }
 
 function handlePostLoginActions() {
-  toast.add({ severity: 'success', summary: `Welcome back, ${$user.email}`, life: 3000 })
+  toast.add({
+    severity: 'success',
+    summary: `Welcome back, ${$user.email}`,
+    life: 3000,
+  })
   return navigateTo({
-    path: '/'
+    path: '/',
   })
 }
 
 function handleLoginError(error) {
-  toast.add({ severity: 'error', summary: $firebase.getFirebaseErrorMessage(error.code), life: 4000 })
+  toast.add({
+    severity: 'error',
+    summary: $firebase.getFirebaseErrorMessage(error.code),
+    life: 4000,
+  })
 }
 </script>
 
 <script>
-export default {
-}
+export default {}
 </script>

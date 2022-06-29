@@ -1,5 +1,3 @@
-import { defineNuxtPlugin } from '#app'
-
 // Services
 import Toast from 'primevue/toast'
 
@@ -15,6 +13,7 @@ import Menu from 'primevue/menu'
 
 // services
 import ToastService from 'primevue/toastservice'
+import { defineNuxtPlugin } from '#app'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const app = nuxtApp.vueApp
@@ -22,12 +21,12 @@ export default defineNuxtPlugin((nuxtApp) => {
   app.use(PrimeVue, { ripple: false })
   app.use(ToastService)
 
-  app.component('Button', Button)
-  app.component('Menubar', Menubar)
-  app.component('Toast', Toast)
-  app.component('Card', Card)
-  app.component('Divider', Divider)
-  app.component('InputText', InputText)
-  app.component('Avatar', Avatar)
-  app.component('Menu', Menu)
+  app.component('PvMenubar', Menubar)
+  app.component('PvButton', Button)
+  app.component('PvToast', Toast)
+  app.component('PvCard', Card)
+  app.component('PvDivider', Divider)
+  app.component('PvInputText', InputText)
+  app.component('PvAvatar', Avatar)
+  app.component('PvMenu', Menu)
 })

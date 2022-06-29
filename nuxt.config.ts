@@ -1,4 +1,5 @@
 import { defineNuxtConfig } from 'nuxt'
+import eslintPlugin from 'vite-plugin-eslint'
 import transformerDirective from '@unocss/transformer-directives'
 
 export default defineNuxtConfig({
@@ -13,9 +14,7 @@ export default defineNuxtConfig({
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
 
-  modules: [
-    '@unocss/nuxt',
-  ],
+  modules: ['@unocss/nuxt'],
 
   publicRuntimeConfig: {
     firebase: {
@@ -26,7 +25,7 @@ export default defineNuxtConfig({
       storageBucket: 'kantina-b8628.appspot.com',
       messagingSenderId: '898560228891',
       appId: '1:898560228891:web:ce19c5e5cc965ec0',
-    }
+    },
   },
 
   css: [
@@ -35,7 +34,7 @@ export default defineNuxtConfig({
     'primevue/resources/themes/saga-blue/theme.css',
     'primeicons/primeicons.css',
   ],
-  
+
   pwa: {
     manifest: {
       lang: 'en',
@@ -46,12 +45,14 @@ export default defineNuxtConfig({
     uno: true,
     attributify: true,
 
-    transformers: [
-      transformerDirective()
-    ]
+    transformers: [transformerDirective()],
   },
-  
+
   typescript: {
     shim: false,
+  },
+
+  vite: {
+    plugins: [eslintPlugin()],
   },
 })

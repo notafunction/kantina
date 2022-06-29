@@ -2,18 +2,18 @@
   <NuxtLayout>
     <NuxtPage />
 
-    <Toast />
+    <PvToast />
   </NuxtLayout>
 </template>
 
 <script>
-export default {
-  
-}
+export default {}
 </script>
 
 <style lang="scss">
-html, body, #__nuxt {
+html,
+body,
+#__nuxt {
   height: 100%;
 }
 
