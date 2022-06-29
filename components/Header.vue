@@ -5,10 +5,18 @@
       </template>
 
       <template #end>
-        <div class="flex gap-2">
-          <Button label="Log in" class="p-button-text" @click="$router.push('/login')" />
-          <Button label="Join Kantina for free" @click="$router.push('/signup')" />
-        </div>
+        <ClientOnly>
+          <div class="flex" v-if="$user.value">
+            <!-- <Button label="Log out" class="p-button-text" @click="$firebase.auth.signOut()" /> -->
+            <AuthUserMenu />
+          </div>
+  
+          <div class="flex gap-2" v-else>
+            <Button label="Log in" class="p-button-text" @click="$router.push('/login')" />
+            <Button label="Join Kantina for free" @click="$router.push('/signup')" />
+          </div>
+        </ClientOnly>
+
       </template>
     </Menubar>
 </template>

@@ -5,7 +5,7 @@
             <span class="p-inputgroup-addon">
                 <i class="pi pi-at"></i>
             </span>
-            <InputText placeholder="Email" type="email" v-model="email.value" />
+            <InputText placeholder="Email" type="email" v-model="email" />
         </div>
     </div>
 
@@ -14,19 +14,17 @@
             <span class="p-inputgroup-addon">
                 <i class="pi pi-lock"></i>
             </span>
-            <InputText placeholder="Password" type="password" v-model="password.value" />
+            <InputText placeholder="Password" type="password" v-model="password" />
         </div>
     </div>
 
     <div class="col-12 md:col-4">
-      <Button label="Log in" :loading="loading.value" type="submit" />
+      <Button label="Log in" :loading="loading" type="submit" />
     </div>
 
     <Divider align="center" type="dashed">OR</Divider>
 
-    <Button icon="pi pi-google" label="Continue with Google" class="p-button-outlined" @click="onLoginWithGoogleProvider" />
-    <Button icon="pi pi-microsoft" label="Continue with Microsoft" class="p-button-outlined" />
-    <Button icon="pi pi-apple" label="Continue with Apple" class="p-button-outlined" />
+    <Button icon="pi pi-google" label="Continue with Google" class="p-button-outlined" @click="onLoginWithProvider(providers.google)" />
 
     <Divider />
 
@@ -40,30 +38,60 @@
 
 <script setup>
 import { ref } from 'vue'
-import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth'
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth'
+import { useToast } from 'primevue/usetoast'
 
-const googleProvider = new GoogleAuthProvider()
-const appleProvider = new OAuthProvider('apple.com')
-const microsoftProvider = new OAuthProvider('microsoft.com')
+const toast = useToast()
+const { $user, $firebase } = useNuxtApp()
+
+const providers = {
+  google: new GoogleAuthProvider(),
+  apple: new OAuthProvider('apple.com'),
+  microsoft: new OAuthProvider('microsoft.com').setCustomParameters({
+    prompt: 'consent',
+    tenant: '18133708-3531-404b-8b96-b133c27b5d21',
+  })
+}
 
 const email = ref('')
 const password = ref('')
 const loading = ref(false)
 
-const onLogin = async () => {
+async function onLogin () {
   loading.value = true
-  const auth = getAuth()
 
-  const data = await signInWithEmailAndPassword(auth, email.value, password.value)
+  try {
+    await signInWithEmailAndPassword($firebase.auth, email.value, password.value)
+    handlePostLoginActions()
+  } catch (error) {
+    handleLoginError(error)
+  }
 
-  console.log(data)
   loading.value = false
 }
 
+async function onLoginWithProvider(provider) {
+  try {
+    await signInWithPopup($firebase.auth, provider)
+    handlePostLoginActions()
+  } catch (error) {
+    handleLoginError(error)
+  }
+}
+
+function handlePostLoginActions() {
+  toast.add({ severity: 'success', summary: `Welcome back, ${$user.email}`, life: 3000 })
+  return navigateTo({
+    path: '/'
+  })
+}
+
+function handleLoginError(error) {
+  toast.add({ severity: 'error', summary: $firebase.getFirebaseErrorMessage(error.code), life: 4000 })
+}
 </script>
 
 <script>
-
 export default {
 }
 </script>

@@ -17,8 +17,20 @@ export default defineNuxtConfig({
     '@unocss/nuxt',
   ],
 
+  publicRuntimeConfig: {
+    firebase: {
+      apiKey: 'AIzaSyCsW6mSWMZSLeUrJ6kHfQVhwDCTI9UGkCc',
+      authDomain: 'kantina-b8628.firebaseapp.com',
+      databaseURL: 'https://kantina-b8628.firebaseio.com',
+      projectId: 'kantina-b8628',
+      storageBucket: 'kantina-b8628.appspot.com',
+      messagingSenderId: '898560228891',
+      appId: '1:898560228891:web:ce19c5e5cc965ec0',
+    }
+  },
+
   css: [
-    '@unocss/reset/normalize.css',
+    '@unocss/reset/eric-meyer.css',
     'primevue/resources/primevue.min.css',
     'primevue/resources/themes/saga-blue/theme.css',
     'primeicons/primeicons.css',
@@ -37,11 +49,6 @@ export default defineNuxtConfig({
     transformers: [
       transformerDirective()
     ]
-  },
-
-  toast: {
-    position: 'top-right',
-    duration: 5000,
   },
   
   typescript: {

@@ -1,6 +1,8 @@
 <template>
   <NuxtLayout>
     <NuxtPage />
+
+    <Toast />
   </NuxtLayout>
 </template>
 
@@ -11,6 +13,10 @@ export default {
 </script>
 
 <style lang="scss">
+html, body, #__nuxt {
+  height: 100%;
+}
+
 body {
   background-color: #eff3f8;
 }

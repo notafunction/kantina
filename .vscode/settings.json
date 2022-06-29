@@ -8,5 +8,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "prettier.endOfLine": "auto"
+  "prettier.endOfLine": "auto",
+  "jest.jestCommandLine": "npm run test --"
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="grid p-fluid my-4 gap-4">
+  <form class="grid p-fluid my-4 gap-4" @submit.prevent="onSignup">
     <div class="col-12 md:col-4">
         <div class="p-inputgroup">
             <span class="p-inputgroup-addon">
@@ -19,22 +19,75 @@
     </div>
 
      <div class="col-12 md:col-4">
-        <Button label="Sign up" />
+        <Button label="Sign up" type="submit" />
     </div>
 
     <Divider align="center" type="dashed">OR</Divider>
 
-    <Button icon="pi pi-google" label="Continue with Google" class="p-button-outlined" />
-    <Button icon="pi pi-microsoft" label="Continue with Microsoft" class="p-button-outlined" />
-    <Button icon="pi pi-apple" label="Continue with Apple" class="p-button-outlined" />
+    <Button @click="onSignupWithProvider(providers.google)" icon="pi pi-google" label="Continue with Google" class="p-button-outlined" />
 
     <Divider />
 
     <div class="flex gap-2 items-center mx-auto text-sm">
       <NuxtLink to="/login">Already have an account? Log in</NuxtLink>
     </div>
-  </div>
+  </form>
 </template>
+
+<script setup>
+import { ref } from 'vue'
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth'
+import { useToast } from 'primevue/usetoast'
+
+const toast = useToast()
+const { $user, $firebase } = useNuxtApp()
+
+const providers = {
+  google: new GoogleAuthProvider(),
+  apple: new OAuthProvider('apple.com'),
+  microsoft: new OAuthProvider('microsoft.com').setCustomParameters({
+    prompt: 'consent',
+    tenant: '18133708-3531-404b-8b96-b133c27b5d21',
+  }),
+}
+
+
+const email = ref('')
+const password = ref('')
+const loading = ref(false)
+
+const onSignup = async () => {
+  loading.value = true
+
+  try {
+    await createUserWithEmailAndPassword($firebase.auth, email.value, password.value)
+    handlePostSignupActions()
+  } catch (error) {
+    handleSignupError(error)
+  }
+
+  loading.value = false
+}
+
+async function onSignupWithProvider(provider) {
+  try {
+    await signInWithPopup($firebase.auth, provider)
+  } catch (error) {
+    handleSignupError(error)
+  }
+}
+
+function handlePostSignupActions() {
+  toast.add({ severity: 'success', summary: `Welcome, ${$user.email}`, life: 3000 })
+  return navigateTo({
+    path: '/'
+  })
+}
+
+function handleSignupError(error) {
+  toast.add({ severity: 'error', summary: $firebase.getFirebaseErrorMessage(error.code), life: 4000 })
+}
+</script>
 
 <script>
 export default {

@@ -1,7 +1,5 @@
 <template>
-  <div class="container mx-auto">
-    <slot />
-  </div>
+  <div>{{ $route }}</div>
 </template>
 
 <script>
