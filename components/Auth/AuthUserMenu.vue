@@ -12,7 +12,14 @@
 </template>
 
 <script setup>
-const { userData } = useUserData()
+defineProps({
+  user: {
+    type: Object,
+    required: true,
+  },
+})
+
+const { logoutUser } = useFirebaseAuth()
 </script>
 
 <script>
@@ -23,12 +30,12 @@ export default {
         {
           label: 'Profile',
           icon: 'pi pi-user',
-          to: `/user/${this.userData.uid}`,
+          to: `/user/${this.user.uid}`,
         },
         {
           label: 'Logout',
           icon: 'pi pi-sign-out',
-          command: () => this.$firebase.auth.signOut(),
+          command: () => this.logoutUser(),
         },
       ],
     }
@@ -36,9 +43,9 @@ export default {
 
   computed: {
     computePvAvatarProps() {
-      if (this.userData.photoURL) {
+      if (this.user.photoURL) {
         return {
-          image: this.userData.photoURL,
+          image: this.user.photoURL,
         }
       }
 

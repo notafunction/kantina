@@ -5,27 +5,30 @@
     </template>
 
     <template #end>
-      <ClientOnly>
-        <div v-if="$user.value" class="flex">
-          <!-- <PvButton label="Log out" class="p-button-text" @click="$firebase.auth.signOut()" /> -->
-          <AuthUserMenu />
-        </div>
+      <div v-if="firebaseUser" class="flex">
+        <AuthUserMenu :user="firebaseUser" />
+      </div>
 
-        <div v-else class="flex gap-2">
-          <PvButton
-            label="Log in"
-            class="p-button-text"
-            @click="$router.push('/login')"
-          />
-          <PvButton
-            label="Join Kantina for free"
-            @click="$router.push('/signup')"
-          />
-        </div>
-      </ClientOnly>
+      <div v-else class="flex gap-2">
+        <PvButton
+          label="Log in"
+          class="p-button-text"
+          @click="$router.push('/login')"
+        />
+        <PvButton
+          label="Join Kantina for free"
+          @click="$router.push('/signup')"
+        />
+      </div>
     </template>
   </PvMenubar>
 </template>
+
+<script setup>
+import { useFirebaseUser } from '~/composables/useStates'
+
+const firebaseUser = useFirebaseUser()
+</script>
 
 <script>
 export default {}

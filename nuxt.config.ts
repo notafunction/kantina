@@ -14,19 +14,16 @@ export default defineNuxtConfig({
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
 
-  modules: ['@unocss/nuxt'],
-
   publicRuntimeConfig: {
-    firebase: {
-      apiKey: 'AIzaSyCsW6mSWMZSLeUrJ6kHfQVhwDCTI9UGkCc',
-      authDomain: 'kantina-b8628.firebaseapp.com',
-      databaseURL: 'https://kantina-b8628.firebaseio.com',
-      projectId: 'kantina-b8628',
-      storageBucket: 'kantina-b8628.appspot.com',
-      messagingSenderId: '898560228891',
-      appId: '1:898560228891:web:ce19c5e5cc965ec0',
+    environment: process.env.NODE_ENV,
+    sentry: {
+      dns: 'https://e1e0c6e085894adfa96c5538ea671110@o904613.ingest.sentry.io/6150119',
+      tracesSampleRate: 1.0,
+      debug: false,
     },
   },
+
+  modules: ['@unocss/nuxt'],
 
   css: [
     '@unocss/reset/eric-meyer.css',
@@ -50,9 +47,5 @@ export default defineNuxtConfig({
 
   typescript: {
     shim: false,
-  },
-
-  vite: {
-    plugins: [eslintPlugin()],
   },
 })

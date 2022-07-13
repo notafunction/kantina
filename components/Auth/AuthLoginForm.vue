@@ -5,7 +5,12 @@
         <span class="p-inputgroup-addon">
           <i class="pi pi-at"></i>
         </span>
-        <PvInputText v-model="email" placeholder="Email" type="email" />
+        <PvInputText
+          v-model="email"
+          placeholder="Email"
+          type="email"
+          name="email"
+        />
       </div>
     </div>
 
@@ -18,12 +23,13 @@
           v-model="password"
           placeholder="Password"
           type="password"
+          name="password"
         />
       </div>
     </div>
 
     <div class="col-12 md:col-4">
-      <PvButton label="Log in" :loading="loading" type="submit" />
+      <PvButton label="Log in" type="submit" />
     </div>
 
     <PvDivider align="center" type="dashed">OR</PvDivider>
@@ -45,17 +51,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import {
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  OAuthProvider,
-} from 'firebase/auth'
+import { GoogleAuthProvider, OAuthProvider } from 'firebase/auth'
 import { useToast } from 'primevue/usetoast'
 
 const toast = useToast()
-const { $user, $firebase } = useNuxtApp()
+
+const isLoading = ref(false)
+const data = ref({
+  email: '',
+  password: '',
+})
 
 const providers = {
   google: new GoogleAuthProvider(),
@@ -66,53 +71,27 @@ const providers = {
   }),
 }
 
-const email = ref('')
-const password = ref('')
-const loading = ref(false)
-
-async function onLogin() {
-  loading.value = true
+const onLogin = async () => {
+  isLoading.value = true
 
   try {
-    await signInWithEmailAndPassword(
-      $firebase.auth,
+    const { signInWithEmailAndPassword } = useAuth()
+    const credentials = await signInWithEmailAndPassword(
       email.value,
       password.value
     )
-    handlePostLoginActions()
+
+    navigateTo(`/${credentials.user.uid}/boards`)
   } catch (error) {
-    handleLoginError(error)
+    console.error(error)
   }
 
-  loading.value = false
+  isLoading.value = false
 }
 
-async function onLoginWithProvider(provider) {
-  try {
-    await signInWithPopup($firebase.auth, provider)
-    handlePostLoginActions()
-  } catch (error) {
-    handleLoginError(error)
-  }
-}
-
-function handlePostLoginActions() {
-  toast.add({
-    severity: 'success',
-    summary: `Welcome back, ${$user.email}`,
-    life: 3000,
-  })
-  return navigateTo({
-    path: '/',
-  })
-}
-
-function handleLoginError(error) {
-  toast.add({
-    severity: 'error',
-    summary: $firebase.getFirebaseErrorMessage(error.code),
-    life: 4000,
-  })
+const onLoginWithProvider = async (provider) => {
+  const { signInWithPopup } = useAuth()
+  await signInWithPopup(provider)
 }
 </script>
 

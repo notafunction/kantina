@@ -1,9 +1,15 @@
 <template>
-  <pre>{{ userData }}</pre>
+  <main>
+    <pre>{{ $auth }}</pre>
+  </main>
 </template>
 
 <script setup>
-const { userData } = useUserData()
+const { $auth } = useNuxtApp()
+
+definePageMeta({
+  middleware: ['auth'],
+})
 </script>
 
 <script>

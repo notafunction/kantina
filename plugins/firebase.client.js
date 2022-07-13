@@ -1,40 +1,27 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
-import { defineNuxtPlugin, useRuntimeConfig } from '#app'
-import useUserData from '@/composables/useUserData'
+import { initUser } from '~/composables/useFirebaseAuth'
 
-const getFirebaseErrorMessage = (code) => {
-  switch (code) {
-    case 'auth/invalid-email':
-      return 'Invalid email'
-
-    case 'auth/user-not-found':
-      return 'No account with that email was found'
-
-    case 'auth/wrong-password':
-      return 'Incorrect password'
-  }
+const firebaseConfig = {
+  apiKey: 'AIzaSyCsW6mSWMZSLeUrJ6kHfQVhwDCTI9UGkCc',
+  authDomain: 'kantina-b8628.firebaseapp.com',
+  databaseURL: 'https://kantina-b8628.firebaseio.com',
+  projectId: 'kantina-b8628',
+  storageBucket: 'kantina-b8628.appspot.com',
+  messagingSenderId: '898560228891',
+  appId: '1:898560228891:web:ce19c5e5cc965ec0',
 }
 
-export default defineNuxtPlugin(() => {
-  const config = useRuntimeConfig()
-  const { userData, setUserData } = useUserData()
+export default defineNuxtPlugin((nuxtApp) => {
+  const app = initializeApp(firebaseConfig)
 
-  const firebase = initializeApp(config.firebase)
-  const auth = getAuth(firebase)
+  initUser()
 
-  auth.onAuthStateChanged((user) => {
-    setUserData(user)
-  })
+  const auth = getAuth()
 
   return {
     provide: {
-      user: userData,
-      firebase: {
-        firebase,
-        auth,
-        getFirebaseErrorMessage,
-      },
+      auth,
     },
   }
 })

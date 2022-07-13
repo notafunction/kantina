@@ -12,6 +12,8 @@
 </template>
 
 <script setup>
+const firebaseUser = useFirebaseUser()
+
 definePageMeta({
   layout: 'basic',
 })

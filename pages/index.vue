@@ -1,13 +1,13 @@
 <template>
-  <div></div>
+  <div>
+    <pre>{{ firebaseUser }}</pre>
+  </div>
 </template>
 
 <script setup>
-const { userData } = useUserData()
+import { useFirebaseUser } from '~/composables/useStates'
 
-if (userData.value) {
-  navigateTo(`/${userData.value.uid}/boards`)
-}
+const firebaseUser = useFirebaseUser()
 </script>
 
 <script></script>

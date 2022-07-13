@@ -45,72 +45,43 @@
 
 <script setup>
 import { ref } from 'vue'
-import {
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  OAuthProvider,
-} from 'firebase/auth'
 import { useToast } from 'primevue/usetoast'
 
 const toast = useToast()
-const { $user, $firebase } = useNuxtApp()
-
-const providers = {
-  google: new GoogleAuthProvider(),
-  apple: new OAuthProvider('apple.com'),
-  microsoft: new OAuthProvider('microsoft.com').setCustomParameters({
-    prompt: 'consent',
-    tenant: '18133708-3531-404b-8b96-b133c27b5d21',
-  }),
-}
+const { $auth } = useNuxtApp()
 
 const email = ref('')
 const password = ref('')
-const loading = ref(false)
+const isLoading = ref(false)
 
 const onSignup = async () => {
-  loading.value = true
+  isLoading.value = true
 
   try {
-    await createUserWithEmailAndPassword(
-      $firebase.auth,
+    const { createUserWithEmailAndPassword } = useAuth()
+    const credentials = await createUserWithEmailAndPassword(
       email.value,
       password.value
     )
-    handlePostSignupActions()
+
+    navigateTo(`/${credentials.uid}/boards`)
   } catch (error) {
-    handleSignupError(error)
+    console.error(error)
   }
 
-  loading.value = false
+  isLoading.value = false
 }
 
-async function onSignupWithProvider(provider) {
+const onSignupWithProvider = async (providerId) => {
+  const { signInWithPopup } = useAuth()
+
   try {
-    await signInWithPopup($firebase.auth, provider)
+    const credentials = await signInWithPopup(providerId)
+
+    navigateTo(`/${credentials.uid}/boards`)
   } catch (error) {
-    handleSignupError(error)
+    console.error(error)
   }
-}
-
-function handlePostSignupActions() {
-  toast.add({
-    severity: 'success',
-    summary: `Welcome, ${$user.email}`,
-    life: 3000,
-  })
-  return navigateTo({
-    path: '/',
-  })
-}
-
-function handleSignupError(error) {
-  toast.add({
-    severity: 'error',
-    summary: $firebase.getFirebaseErrorMessage(error.code),
-    life: 4000,
-  })
 }
 </script>
 
