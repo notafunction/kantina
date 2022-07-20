@@ -33,14 +33,7 @@
     </div>
 
     <PvDivider align="center" type="dashed">OR</PvDivider>
-
-    <PvButton
-      icon="pi pi-google"
-      label="Continue with Google"
-      class="p-button-outlined"
-      @click="onLoginWithProvider('google.com')"
-    />
-
+    <AuthLoginProviders />
     <PvDivider />
 
     <div class="flex gap-2 items-center mx-auto text-sm">

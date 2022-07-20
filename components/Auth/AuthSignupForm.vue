@@ -48,8 +48,7 @@ import { useToast } from 'primevue/usetoast'
 import useFirebaseAuth from '~/composables/useFirebaseAuth'
 
 const toast = useToast()
-const { createUser, loginUserWithEmailAndPassword, loginUserWithProvider } =
-  useFirebaseAuth()
+const { createUser } = useFirebaseAuth()
 
 const email = ref('')
 const password = ref('')
