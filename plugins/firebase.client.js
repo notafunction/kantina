@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { initUser } from '~/composables/useFirebaseAuth'
+import { useFirebaseUser } from '~/composables/useStates'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCsW6mSWMZSLeUrJ6kHfQVhwDCTI9UGkCc',
@@ -14,14 +15,14 @@ const firebaseConfig = {
 
 export default defineNuxtPlugin((nuxtApp) => {
   const app = initializeApp(firebaseConfig)
+  const auth = getAuth()
+  const firebaseUser = useFirebaseUser()
 
   initUser()
 
-  const auth = getAuth()
-
   return {
     provide: {
-      auth,
+      user: firebaseUser,
     },
   }
 })

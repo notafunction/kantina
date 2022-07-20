@@ -38,7 +38,7 @@
       icon="pi pi-google"
       label="Continue with Google"
       class="p-button-outlined"
-      @click="onLoginWithProvider(providers.google)"
+      @click="onLoginWithProvider('google.com')"
     />
 
     <PvDivider />
@@ -51,32 +51,23 @@
 </template>
 
 <script setup>
-import { GoogleAuthProvider, OAuthProvider } from 'firebase/auth'
 import { useToast } from 'primevue/usetoast'
+
+const { loginUserWithEmailAndPassword, loginUserWithProvider } =
+  useFirebaseAuth()
 
 const toast = useToast()
 
 const isLoading = ref(false)
-const data = ref({
-  email: '',
-  password: '',
-})
 
-const providers = {
-  google: new GoogleAuthProvider(),
-  apple: new OAuthProvider('apple.com'),
-  microsoft: new OAuthProvider('microsoft.com').setCustomParameters({
-    prompt: 'consent',
-    tenant: '18133708-3531-404b-8b96-b133c27b5d21',
-  }),
-}
+const email = ref('')
+const password = ref('')
 
 const onLogin = async () => {
   isLoading.value = true
 
   try {
-    const { signInWithEmailAndPassword } = useAuth()
-    const credentials = await signInWithEmailAndPassword(
+    const credentials = await loginUserWithEmailAndPassword(
       email.value,
       password.value
     )
@@ -90,8 +81,12 @@ const onLogin = async () => {
 }
 
 const onLoginWithProvider = async (provider) => {
-  const { signInWithPopup } = useAuth()
-  await signInWithPopup(provider)
+  try {
+    const credentials = await loginUserWithProvider(provider)
+    navigateTo(`/${credentials.user.uid}/boards`)
+  } catch (error) {
+    console.error(error)
+  }
 }
 </script>
 

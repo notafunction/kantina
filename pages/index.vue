@@ -1,13 +1,11 @@
 <template>
   <div>
-    <pre>{{ firebaseUser }}</pre>
+    <pre>{{ $user }}</pre>
   </div>
 </template>
 
 <script setup>
 import { useFirebaseUser } from '~/composables/useStates'
-
-const firebaseUser = useFirebaseUser()
 </script>
 
 <script></script>

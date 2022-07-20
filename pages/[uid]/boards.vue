@@ -1,12 +1,10 @@
 <template>
   <main>
-    <pre>{{ $auth }}</pre>
+    <pre>{{ $user }}</pre>
   </main>
 </template>
 
 <script setup>
-const { $auth } = useNuxtApp()
-
 definePageMeta({
   middleware: ['auth'],
 })

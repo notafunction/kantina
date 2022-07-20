@@ -44,11 +44,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
+import useFirebaseAuth from '~/composables/useFirebaseAuth'
 
 const toast = useToast()
-const { $auth } = useNuxtApp()
+const { createUser, loginUserWithEmailAndPassword, loginUserWithProvider } =
+  useFirebaseAuth()
 
 const email = ref('')
 const password = ref('')
@@ -58,15 +59,15 @@ const onSignup = async () => {
   isLoading.value = true
 
   try {
-    const { createUserWithEmailAndPassword } = useAuth()
-    const credentials = await createUserWithEmailAndPassword(
-      email.value,
-      password.value
-    )
+    const credentials = await createUser(email.value, password.value)
 
     navigateTo(`/${credentials.uid}/boards`)
   } catch (error) {
-    console.error(error)
+    toast.add({
+      summary: 'Could not create user',
+      detail: error.message,
+      severity: 'error',
+    })
   }
 
   isLoading.value = false

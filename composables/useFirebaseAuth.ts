@@ -11,20 +11,20 @@ import {
   GithubAuthProvider,
   TwitterAuthProvider,
   AuthProvider,
+  OAuthProvider,
 } from 'firebase/auth'
 import { useFirebaseUser } from './useStates'
 
 export const createUser = async (email: string, password: string) => {
   const auth = getAuth()
 
-  try {
-    const credentials = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    )
-    return credentials
-  } catch (error) {}
+  const credentials = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  )
+
+  return credentials
 }
 
 export const loginUserWithEmailAndPassword = async (
@@ -97,6 +97,17 @@ function getProvider(providerId: string): AuthProvider {
 
     case ProviderId.TWITTER: {
       return new TwitterAuthProvider()
+    }
+
+    case 'microsoft.com': {
+      return new OAuthProvider('microsoft.com').setCustomParameters({
+        prompt: 'consent',
+        tenant: '18133708-3531-404b-8b96-b133c27b5d21',
+      })
+    }
+
+    case 'apple.com': {
+      return new OAuthProvider('apple.com')
     }
 
     default: {

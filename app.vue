@@ -6,6 +6,12 @@
   </NuxtLayout>
 </template>
 
+<script setup>
+import { useFirebaseUser } from './composables/useStates'
+
+const { initUser } = useFirebaseUser()
+</script>
+
 <script>
 export default {}
 </script>
