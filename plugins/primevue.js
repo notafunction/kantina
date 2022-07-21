@@ -10,6 +10,9 @@ import Card from 'primevue/card'
 import Divider from 'primevue/divider'
 import Avatar from 'primevue/avatar'
 import Menu from 'primevue/menu'
+import Toolbar from 'primevue/toolbar'
+import OverlayPanel from 'primevue/overlaypanel'
+import Dialog from 'primevue/dialog'
 
 // services
 import ToastService from 'primevue/toastservice'
@@ -29,4 +32,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   app.component('PvInputText', InputText)
   app.component('PvAvatar', Avatar)
   app.component('PvMenu', Menu)
+  app.component('PvToolbar', Toolbar)
+  app.component('PvOverlayPanel', OverlayPanel)
+  app.component('PvDialog', Dialog)
 })

@@ -29,7 +29,7 @@
     </div>
 
     <div class="col-12 md:col-4">
-      <PvButton label="Log in" type="submit" />
+      <PvButton label="Log in" type="submit" :loading="isLoading" />
     </div>
 
     <PvDivider align="center" type="dashed">OR</PvDivider>

@@ -1,7 +1,8 @@
 <template>
-  <PvMenubar>
+  <PvToolbar>
     <template #start>
       <NuxtLink to="/">Kantina</NuxtLink>
+      <HeaderToolbar v-if="firebaseUser" class="ml-4" />
     </template>
 
     <template #end>
@@ -21,7 +22,7 @@
         />
       </div>
     </template>
-  </PvMenubar>
+  </PvToolbar>
 </template>
 
 <script setup>
