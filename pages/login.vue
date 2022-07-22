@@ -1,6 +1,6 @@
 <template>
-  <q-page>
-    <q-card class="m-auto max-w-sm">
+  <q-page class="flex p-4">
+    <q-card class="m-auto w-full max-w-sm">
       <q-card-section>
         <h1 class="text-h5 text-center">Log in to Kantina</h1>
       </q-card-section>
@@ -45,19 +45,7 @@
         <div class="text-h6 q-mb-sm text-center">Or Log in with provider</div>
 
         <q-card-actions vertical>
-          <q-btn
-            icon="fa-brands fa-google"
-            label="Continue with Google"
-            no-caps
-            @click="onLoginWithProvider('google.com')"
-          />
-
-          <q-btn
-            icon="fa-brands fa-windows"
-            no-caps
-            label="Continue with Microsoft"
-            @click="onLoginWithProvider('microsoft.com')"
-          />
+          <AuthLoginProviders @login="onLoginWithProvider" />
         </q-card-actions>
       </q-card-section>
 
@@ -74,19 +62,30 @@
 
 <script setup>
 const firebaseUser = useFirebaseUser()
+const { loginUserWithProvider, loginUserWithEmailAndPassword } =
+  useFirebaseAuth()
+
 const form = ref()
 const password = ref('')
 const email = ref('')
 
 async function onLogin() {
   if (await form.value.validate()) {
+    try {
+      await loginUserWithEmailAndPassword(email, password).then((credentials) =>
+        navigateTo(`/${credentials.user.uid}/boards`)
+      )
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
 async function onLoginWithProvider(provider) {
   try {
-    const credentials = await loginUserWithProvider(provider)
-    navigateTo(`/${credentials.user.uid}/boards`)
+    await loginUserWithProvider(provider).then((credentials) =>
+      navigateTo(`/${credentials.user.uid}/boards`)
+    )
   } catch (error) {
     console.error(error)
   }
