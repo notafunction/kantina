@@ -2,45 +2,63 @@
   <q-page>
     <q-card class="m-auto max-w-sm">
       <q-card-section>
-        <div class="text-h6">Log in to Kantina</div>
-        <q-form ref="form" @submit="onLogin">
-          <q-input
-            v-model="email"
-            filled
-            label="Email"
-            lazy-rules="ondemand"
-            type="email"
-            :rules="[
-              (value) =>
-                (value && value.length > 0) ||
-                'Please enter your email address',
-            ]"
-          />
+        <h1 class="text-h5 text-center">Log in to Kantina</h1>
+      </q-card-section>
+      <q-card-section>
+        <q-form ref="form" greedy @submit="onLogin">
+          <div class="q-py-md">
+            <div class="q-gutter-md">
+              <q-input
+                v-model="email"
+                outlined
+                label="Email"
+                lazy-rules="ondemand"
+                type="email"
+                :rules="[
+                  (value) =>
+                    (value && value.length > 0) ||
+                    'Please enter your email address',
+                ]"
+              />
 
-          <q-input
-            v-model="password"
-            filled
-            label="Password"
-            lazy-rules="ondemand"
-            type="password"
-            :rules="[
-              (value) =>
-                (value && value.length > 0) || 'Please enter your password',
-            ]"
-          />
+              <q-input
+                v-model="password"
+                outlined
+                label="Password"
+                lazy-rules="ondemand"
+                type="password"
+                :rules="[
+                  (value) =>
+                    (value && value.length > 0) || 'Please enter your password',
+                ]"
+              />
+            </div>
+          </div>
 
-          <q-btn color="primary" class="full-width" @click="onLogin"
-            >Login</q-btn
-          >
+          <q-btn color="primary" class="full-width" type="submit">Login</q-btn>
         </q-form>
       </q-card-section>
 
       <q-separator inset />
 
       <q-card-section>
-        <div class="text-h6 q-mb-sm">Or Log in with provider</div>
+        <div class="text-h6 q-mb-sm text-center">Or Log in with provider</div>
 
-        <AuthLoginProviders />
+        <q-card-actions vertical>
+          <q-btn
+            icon="fa-brands fa-google"
+            label="Continue with Google"
+            no-caps
+            @click="onLoginWithProvider('google.com')"
+          />
+
+          <q-btn
+            icon="fa-brands fa-windows"
+            no-caps
+            label="Continue with Microsoft"
+            @click="onLoginWithProvider('microsoft.com')"
+          />
+        </q-card-actions>
       </q-card-section>
 
       <q-separator inset />
@@ -65,6 +83,14 @@ async function onLogin() {
   }
 }
 
+async function onLoginWithProvider(provider) {
+  try {
+    const credentials = await loginUserWithProvider(provider)
+    navigateTo(`/${credentials.user.uid}/boards`)
+  } catch (error) {
+    console.error(error)
+  }
+}
 definePageMeta({
   layout: 'basic',
 })
