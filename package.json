@@ -15,6 +15,7 @@
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
+    "@quasar/extras": "^1.15.0",
     "@sentry/tracing": "^7.6.0",
     "@sentry/vue": "^7.6.0",
     "@vuelidate/core": "^2.0.0-alpha.42",
@@ -22,6 +23,7 @@
     "firebase": "^9.8.2",
     "primeicons": "^5.0.0",
     "primevue": "^3.15.0",
+    "quasar": "^2.7.5",
     "vuedraggable": "^2.24.3"
   },
   "devDependencies": {

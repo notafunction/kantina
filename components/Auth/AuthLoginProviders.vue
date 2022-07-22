@@ -1,16 +1,16 @@
 <template>
-  <div class="flex flex-col gap-4">
-    <PvButton
-      icon="pi pi-google"
+  <div class="flex flex-col gap-2">
+    <q-btn
+      icon="fa-brands fa-google"
       label="Continue with Google"
-      class="p-button-outlined"
+      no-caps
       @click="onLoginWithProvider('google.com')"
     />
 
-    <PvButton
-      icon="pi pi-microsoft"
+    <q-btn
+      icon="fa-brands fa-windows"
+      no-caps
       label="Continue with Microsoft"
-      class="p-button-outlined"
       @click="onLoginWithProvider('microsoft.com')"
     />
   </div>

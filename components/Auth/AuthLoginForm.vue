@@ -1,5 +1,18 @@
 <template>
-  <form class="grid p-fluid my-4 gap-4" @submit.prevent="onLogin">
+  <q-form @submit="onLogin">
+    <q-input
+      v-model="email"
+      label="Email"
+      lazy-rules="ondemand"
+      type="email"
+      :rules="[
+        (value) =>
+          (value && value.length > 0) || 'Please enter your email address',
+      ]"
+    />
+  </q-form>
+
+  <!-- <form class="grid p-fluid my-4 gap-4" @submit.prevent="onLogin">
     <div class="col-12 md:col-4">
       <div class="p-inputgroup">
         <span class="p-inputgroup-addon">
@@ -40,7 +53,7 @@
       <NuxtLink to="/forgot">Can't log in?</NuxtLink> |
       <NuxtLink to="/signup">Sign up for an account</NuxtLink>
     </div>
-  </form>
+  </form> -->
 </template>
 
 <script setup>
@@ -52,25 +65,28 @@ const { loginUserWithEmailAndPassword, loginUserWithProvider } =
 const toast = useToast()
 
 const isLoading = ref(false)
+const form = ref()
 
 const email = ref('')
 const password = ref('')
 
 const onLogin = async () => {
-  isLoading.value = true
+  if (await form.validate()) {
+    isLoading.value = true
 
-  try {
-    const credentials = await loginUserWithEmailAndPassword(
-      email.value,
-      password.value
-    )
+    try {
+      const credentials = await loginUserWithEmailAndPassword(
+        email.value,
+        password.value
+      )
 
-    navigateTo(`/${credentials.user.uid}/boards`)
-  } catch (error) {
-    console.error(error)
+      navigateTo(`/${credentials.user.uid}/boards`)
+    } catch (error) {
+      console.error(error)
+    }
+
+    isLoading.value = false
   }
-
-  isLoading.value = false
 }
 
 const onLoginWithProvider = async (provider) => {
