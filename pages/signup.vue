@@ -65,24 +65,26 @@
 </template>
 
 <script setup>
-const firebaseUser = useFirebaseUser()
+const { createUser, loginUserWithProvider } = useFirebaseAuth()
 const form = ref()
 const password = ref('')
 const email = ref('')
 
 const app = useNuxtApp()
 
-console.log(app)
-
 async function onSignup() {
-  console.log(app)
   if (await form.value.validate()) {
+    try {
+      await createUser(email.value, password.value).then((credentials) =>
+        navigateTo(`/${credentials.user.uid}`)
+      )
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
 async function onLoginWithProvider(provider) {
-  const { loginUserWithProvider } = useFirebaseAuth()
-
   try {
     const credentials = await loginUserWithProvider(provider)
     navigateTo(`/${credentials.user.uid}/boards`)

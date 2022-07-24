@@ -18,13 +18,7 @@ import { useFirebaseUser } from './useStates'
 export const createUser = async (email: string, password: string) => {
   const auth = getAuth()
 
-  const credentials = await createUserWithEmailAndPassword(
-    auth,
-    email,
-    password
-  )
-
-  return credentials
+  return await createUserWithEmailAndPassword(auth, email, password)
 }
 
 export const loginUserWithEmailAndPassword = async (

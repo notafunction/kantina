@@ -72,11 +72,13 @@ const email = ref('')
 async function onLogin() {
   if (await form.value.validate()) {
     try {
-      await loginUserWithEmailAndPassword(email, password).then((credentials) =>
-        navigateTo(`/${credentials.user.uid}/boards`)
+      const credentials = await loginUserWithEmailAndPassword(
+        email.value,
+        password.value
       )
+      if (credentials) return navigateTo(`/${credentials.user.uid}/boards`)
     } catch (error) {
-      console.log(error)
+      console.log('catch', error)
     }
   }
 }
@@ -90,6 +92,7 @@ async function onLoginWithProvider(provider) {
     console.error(error)
   }
 }
+
 definePageMeta({
   layout: 'basic',
 })
