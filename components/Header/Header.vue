@@ -1,6 +1,16 @@
 <template>
-  <div>
-    <!-- <template #start>
+  <q-toolbar class="header">
+    <q-btn flat dense to="/" exact>Kantina</q-btn>
+
+    <q-separator spaced inset vertical />
+
+    <q-space />
+
+    <AuthUserMenu />
+  </q-toolbar>
+
+  <!-- <div>
+    <template #start>
       <NuxtLink to="/">Kantina</NuxtLink>
       <HeaderToolbar v-if="firebaseUser" class="ml-4" />
     </template>
@@ -21,8 +31,8 @@
           @click="$router.push('/signup')"
         />
       </div>
-    </template> -->
-  </div>
+    </template>
+  </div> -->
 </template>
 
 <script setup>
@@ -35,4 +45,8 @@ const firebaseUser = useFirebaseUser()
 export default {}
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.header {
+  @apply bg-slate-200;
+}
+</style>
