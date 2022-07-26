@@ -1,48 +1,77 @@
 <template>
   <q-toolbar class="header">
-    <q-btn flat dense to="/" exact>Kantina</q-btn>
+    <q-btn stretch flat to="/" exact>
+      <q-avatar size="md">
+        <img src="@/assets/images/logo.png" />
+      </q-avatar>
+
+      <div class="ml-2">Kantina</div>
+    </q-btn>
 
     <q-separator spaced inset vertical />
 
+    <template v-if="firebaseUser">
+      <q-btn-dropdown
+        flat
+        label="Recent"
+        no-caps
+        no-icon-animation
+        menu-anchor="bottom left"
+        menu-self="top left"
+        dropdown-icon="fa-solid fa-chevron-down"
+        :ripple="false"
+      >
+        <q-list>
+          <q-item-label header>Recent Boards</q-item-label>
+        </q-list>
+      </q-btn-dropdown>
+
+      <q-btn color="primary" no-caps label="Create">
+        <q-menu>
+          <q-list style="max-width: 300px">
+            <q-item clickable @click="showCreateBoardModal">
+              <q-item-section>
+                <q-item-label>Create Board</q-item-label>
+                <q-item-label caption
+                  >A board is made up of cards organized into lists. Use it to
+                  manage projects, track information, or organize
+                  anything.</q-item-label
+                >
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-btn>
+    </template>
+
     <q-space />
 
-    <AuthUserMenu />
+    <AuthUserMenu v-if="firebaseUser" />
+
+    <template v-else>
+      <q-btn stretch flat to="/login">Log in</q-btn>
+      <q-btn stretch color="primary" to="/signup"
+        >Sign up for a free account</q-btn
+      >
+    </template>
   </q-toolbar>
-
-  <!-- <div>
-    <template #start>
-      <NuxtLink to="/">Kantina</NuxtLink>
-      <HeaderToolbar v-if="firebaseUser" class="ml-4" />
-    </template>
-
-    <template #end>
-      <div v-if="firebaseUser" class="flex">
-        <AuthUserMenu :user="firebaseUser" />
-      </div>
-
-      <div v-else class="flex gap-2">
-        <PvButton
-          label="Log in"
-          class="p-button-text"
-          @click="$router.push('/login')"
-        />
-        <PvButton
-          label="Join Kantina for free"
-          @click="$router.push('/signup')"
-        />
-      </div>
-    </template>
-  </div> -->
 </template>
 
 <script setup>
-import { useFirebaseUser } from '~/composables/useStates'
+import { dialogInjectionKey } from 'gitart-vue-dialog'
 
 const firebaseUser = useFirebaseUser()
-</script>
+const $dialog = inject(dialogInjectionKey)
 
-<script>
-export default {}
+async function showCreateBoardModal() {
+  const { default: component } = await import(
+    '@/components/Dialog/DialogCreateBoard.vue'
+  )
+
+  $dialog.addDialog({
+    component,
+  })
+}
 </script>
 
 <style lang="scss" scoped>
