@@ -1,6 +1,6 @@
 <template>
   <div>
-    <CreateBoardOverlayWrapper>
+    <!-- <CreateBoardOverlayWrapper>
       <template #default="{ toggle }">
         <PvButton
           label="Create"
@@ -9,7 +9,7 @@
           @click="toggle"
         />
       </template>
-    </CreateBoardOverlayWrapper>
+    </CreateBoardOverlayWrapper> -->
   </div>
 </template>
 

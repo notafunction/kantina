@@ -29,19 +29,13 @@
                 type="password"
                 :rules="[
                   (value) =>
-                    (value && value.length > 0) || 'Please enter your password',
+                    (value && value.length > 0) || 'Please enter a password',
                 ]"
               />
             </div>
           </div>
 
-          <q-btn
-            color="primary"
-            class="full-width"
-            type="submit"
-            @click="onSignup"
-            >Signup</q-btn
-          >
+          <q-btn color="primary" class="full-width" type="submit">Signup</q-btn>
         </q-form>
       </q-card-section>
 
@@ -65,18 +59,17 @@
 </template>
 
 <script setup>
-const { createUser, loginUserWithProvider } = useFirebaseAuth()
 const form = ref()
 const password = ref('')
 const email = ref('')
 
-const app = useNuxtApp()
-
 async function onSignup() {
   if (await form.value.validate()) {
+    const { createUser } = useFirebaseAuth()
+
     try {
       await createUser(email.value, password.value).then((credentials) =>
-        navigateTo(`/${credentials.user.uid}`)
+        navigateTo(`/${credentials.user.uid}/boards`)
       )
     } catch (error) {
       console.log(error)
@@ -86,8 +79,9 @@ async function onSignup() {
 
 async function onLoginWithProvider(provider) {
   try {
-    const credentials = await loginUserWithProvider(provider)
-    navigateTo(`/${credentials.user.uid}/boards`)
+    await loginUserWithProvider(provider).then((credentials) =>
+      navigateTo(`/${credentials.user.uid}/boards`)
+    )
   } catch (error) {
     console.error(error)
   }

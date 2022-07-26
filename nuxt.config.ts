@@ -1,5 +1,4 @@
 import { defineNuxtConfig } from 'nuxt'
-import eslintPlugin from 'vite-plugin-eslint'
 import transformerDirective from '@unocss/transformer-directives'
 
 export default defineNuxtConfig({

@@ -61,7 +61,6 @@
 </template>
 
 <script setup>
-const firebaseUser = useFirebaseUser()
 const { loginUserWithProvider, loginUserWithEmailAndPassword } =
   useFirebaseAuth()
 
@@ -76,7 +75,10 @@ async function onLogin() {
         email.value,
         password.value
       )
-      if (credentials) return navigateTo(`/${credentials.user.uid}/boards`)
+
+      if (credentials) {
+        performPostLogin(credentials.user)
+      }
     } catch (error) {
       console.log('catch', error)
     }
@@ -85,12 +87,19 @@ async function onLogin() {
 
 async function onLoginWithProvider(provider) {
   try {
-    await loginUserWithProvider(provider).then((credentials) =>
-      navigateTo(`/${credentials.user.uid}/boards`)
-    )
+    const credentials = await loginUserWithProvider(provider)
+
+    if (credentials) {
+      performPostLogin(credentials.user)
+    }
   } catch (error) {
     console.error(error)
   }
+}
+
+function performPostLogin() {
+  const firebaseUser = useFirebaseUser()
+  navigateTo(`/${firebaseUser.uid}/boards`)
 }
 
 definePageMeta({

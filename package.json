@@ -18,6 +18,7 @@
     "@quasar/extras": "^1.15.0",
     "@sentry/tracing": "^7.6.0",
     "@sentry/vue": "^7.6.0",
+    "@tailwindcss/typography": "^0.5.4",
     "@vuelidate/core": "^2.0.0-alpha.42",
     "@vuelidate/validators": "^2.0.0-alpha.30",
     "firebase": "^9.8.2",

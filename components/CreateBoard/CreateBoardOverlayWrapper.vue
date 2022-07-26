@@ -1,10 +1,10 @@
 <template>
   <div>
-    <slot v-bind="{ toggle, hide }" />
+    <!-- <slot v-bind="{ toggle, hide }" />
 
     <PvDialog v-model:visible="dialogIsVisible" modal header="Create Board">
       <CreateBoardForm />
-    </PvDialog>
+    </PvDialog> -->
   </div>
 </template>
 

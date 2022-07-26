@@ -1,6 +1,6 @@
 <template>
-  <PvToolbar>
-    <template #start>
+  <div>
+    <!-- <template #start>
       <NuxtLink to="/">Kantina</NuxtLink>
       <HeaderToolbar v-if="firebaseUser" class="ml-4" />
     </template>
@@ -21,8 +21,8 @@
           @click="$router.push('/signup')"
         />
       </div>
-    </template>
-  </PvToolbar>
+    </template> -->
+  </div>
 </template>
 
 <script setup>
