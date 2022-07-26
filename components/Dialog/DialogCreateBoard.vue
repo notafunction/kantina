@@ -3,22 +3,36 @@
     <q-form class="w-full">
       <div class="q-py-md">
         <div class="q-gutter-md">
-          <q-color
+          <q-input
             v-model="hex"
-            default-value="palette"
-            no-header
-            no-footer
-            :palette="paletteColors"
-          />
-
-          <q-input v-model="name" dense outlined label="Board Name" />
-
-          <q-select
-            v-model="visibility"
-            dense
             outlined
-            :options="visibilityOptions"
+            label="Background"
+            :rules="['hexColor']"
+            lazy-rules
           >
+            <template #append>
+              <q-icon name="fa-solid fa-eye-dropper" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-color
+                    v-model="hex"
+                    square
+                    flat
+                    no-header-tabs
+                    no-footer
+                    default-view="palette"
+                  />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+
+          <q-input v-model="name" outlined label="Board Name" />
+
+          <q-select v-model="visibility" outlined :options="visibilityOptions">
             <template #option="scope">
               <q-item v-bind="scope.itemProps">
                 <q-item-section avatar>
