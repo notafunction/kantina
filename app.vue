@@ -30,9 +30,5 @@ body {
 a {
   color: #0052cc;
   @apply no-underline;
-
-  &:hover {
-    @apply underline;
-  }
 }
 </style>
