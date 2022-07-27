@@ -1,9 +1,11 @@
 <template>
-  <NuxtLayout>
-    <NuxtPage />
+  <client-only>
+    <NuxtLayout>
+      <NuxtPage />
 
-    <GDialogRoot />
-  </NuxtLayout>
+      <GDialogRoot />
+    </NuxtLayout>
+  </client-only>
 </template>
 
 <script>
