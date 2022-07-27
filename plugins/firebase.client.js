@@ -3,7 +3,7 @@ import { initUser } from '~/composables/useFirebaseAuth'
 import { useFirebaseUser } from '~/composables/useStates'
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const app = initializeApp(nuxtApp.$config.firebase.config)
+  const app = initializeApp(nuxtApp.$config.firebase)
   const firebaseUser = useFirebaseUser()
 
   initUser()
