@@ -1,5 +1,7 @@
-export default defineEventHandler((event) => {
-  const cookies = useCookies(event)
+import type { CompatibilityEvent } from 'h3'
 
-  return cookies['.user']
+export default defineEventHandler((event: CompatibilityEvent) => {
+  console.log(event.context.auth)
+
+  return 'hi there'
 })

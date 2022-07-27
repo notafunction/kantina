@@ -6,7 +6,6 @@
           <q-input
             v-model="hex"
             outlined
-            format-model="hex"
             label="Background"
             :rules="['hexColor']"
             lazy-rules
@@ -20,20 +19,34 @@
                 >
                   <q-color
                     v-model="hex"
+                    format-model="hex"
                     square
                     flat
                     no-header-tabs
                     no-footer
                     default-view="palette"
+                    :palette="paletteColors"
                   />
                 </q-popup-proxy>
               </q-icon>
             </template>
           </q-input>
 
-          <q-input v-model="name" outlined label="Board Name" />
+          <q-input
+            v-model="name"
+            outlined
+            label="Board Name"
+            :rules="[
+              (value) => (value && value.length > 0) || 'Please enter a name',
+            ]"
+          />
 
-          <q-select v-model="visibility" outlined :options="visibilityOptions">
+          <q-select
+            v-model="visibility"
+            outlined
+            :options="visibilityOptions"
+            label="Visibility"
+          >
             <template #option="scope">
               <q-item v-bind="scope.itemProps">
                 <q-item-section avatar>
@@ -98,13 +111,13 @@ const visibilityOptions = [
 async function onSubmit(event) {
   if (await form.value.validate()) {
     const { data } = await useFetch('/api/v1/boards', {
+      key: 'createBoard',
       method: 'post',
       body: {
         name: name.value,
         hex: hex.value,
         visibility: visibility.value.value,
       },
-      transform: JSON.parse,
     })
   }
 }

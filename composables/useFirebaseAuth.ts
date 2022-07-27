@@ -14,6 +14,7 @@ import {
   OAuthProvider,
 } from 'firebase/auth'
 import { useFirebaseUser } from './useStates'
+import { name } from '@/package.json'
 
 export const createUser = async (email: string, password: string) => {
   const auth = getAuth()
