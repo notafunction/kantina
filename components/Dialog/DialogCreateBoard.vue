@@ -1,11 +1,12 @@
 <template>
   <Dialog title="Create Board">
-    <q-form class="w-full">
+    <q-form ref="form" class="w-full" greedy @submit="onSubmit">
       <div class="q-py-md">
         <div class="q-gutter-md">
           <q-input
             v-model="hex"
             outlined
+            format-model="hex"
             label="Background"
             :rules="['hexColor']"
             lazy-rules
@@ -52,12 +53,19 @@
     </q-form>
 
     <template #actions>
-      <q-btn color="primary" flat label="Create" />
+      <q-btn
+        color="primary"
+        type="submit"
+        flat
+        label="Create"
+        @click="onSubmit"
+      />
     </template>
   </Dialog>
 </template>
 
 <script setup>
+const form = ref(null)
 const name = ref('')
 const hex = ref('')
 const visibility = ref('')
@@ -86,6 +94,20 @@ const visibilityOptions = [
     icon: 'fa-solid fa-earth-americas',
   },
 ]
+
+async function onSubmit(event) {
+  if (await form.value.validate()) {
+    const { data } = await useFetch('/api/v1/boards', {
+      method: 'post',
+      body: {
+        name: name.value,
+        hex: hex.value,
+        visibility: visibility.value.value,
+      },
+      transform: JSON.parse,
+    })
+  }
+}
 </script>
 
 <style></style>
