@@ -11,7 +11,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     app: vueApp,
     release: `${name}@${version}`,
     environment: config.environment,
-    dsn: config.sentry.dsn,
+    dsn: config.public.sentry.dsn,
     integrations: [
       new BrowserTracing({
         routingInstrumentation: Sentry.vueRouterInstrumentation(

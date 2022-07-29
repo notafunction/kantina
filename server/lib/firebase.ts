@@ -1,8 +1,11 @@
-import { initializeApp } from 'firebase/app'
-import { getFirestore } from 'firebase/firestore'
+import { initializeApp, cert } from 'firebase-admin/app'
+import { getFirestore } from 'firebase-admin/firestore'
 
-const { firebase: firebaseConfig } = useRuntimeConfig()
+const { firebaseAdminConfig } = useRuntimeConfig()
 
-export const firebaseApp = initializeApp(firebaseConfig)
+export const firebaseApp = initializeApp({
+  credential: cert(firebaseAdminConfig),
+  databaseURL: firebaseAdminConfig.databaseURL,
+})
 
 export const db = getFirestore(firebaseApp)

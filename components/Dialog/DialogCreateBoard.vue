@@ -110,8 +110,7 @@ const visibilityOptions = [
 
 async function onSubmit(event) {
   if (await form.value.validate()) {
-    const { data } = await useFetch('/api/v1/boards', {
-      key: 'createBoard',
+    const result = await $fetch('/api/v1/boards', {
       method: 'post',
       body: {
         name: name.value,
@@ -119,6 +118,8 @@ async function onSubmit(event) {
         visibility: visibility.value.value,
       },
     })
+
+    console.log(result)
   }
 }
 </script>

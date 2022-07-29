@@ -13,21 +13,40 @@ export default defineNuxtConfig({
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
 
-  publicRuntimeConfig: {
-    environment: process.env.NODE_ENV,
-    sentry: {
-      dns: 'https://e1e0c6e085894adfa96c5538ea671110@o904613.ingest.sentry.io/6150119',
-      tracesSampleRate: 1.0,
-      debug: false,
+  runtimeConfig: {
+    public: {
+      environment: process.env.NODE_ENV,
+      sentry: {
+        dns: 'https://e1e0c6e085894adfa96c5538ea671110@o904613.ingest.sentry.io/6150119',
+        tracesSampleRate: 1.0,
+        debug: false,
+      },
+      firebaseClientConfig: {
+        apiKey: 'AIzaSyCsW6mSWMZSLeUrJ6kHfQVhwDCTI9UGkCc',
+        authDomain: 'kantina-b8628.firebaseapp.com',
+        databaseURL: 'https://kantina-b8628.firebaseio.com',
+        projectId: 'kantina-b8628',
+        storageBucket: 'kantina-b8628.appspot.com',
+        messagingSenderId: '898560228891',
+        appId: '1:898560228891:web:ce19c5e5cc965ec0',
+      },
+      firebaseCookiePrefix: 'kantina',
     },
-    firebase: {
-      apiKey: 'AIzaSyCsW6mSWMZSLeUrJ6kHfQVhwDCTI9UGkCc',
-      authDomain: 'kantina-b8628.firebaseapp.com',
-      databaseURL: 'https://kantina-b8628.firebaseio.com',
+
+    firebaseAdminConfig: {
+      type: 'service_account',
       projectId: 'kantina-b8628',
-      storageBucket: 'kantina-b8628.appspot.com',
-      messagingSenderId: '898560228891',
-      appId: '1:898560228891:web:ce19c5e5cc965ec0',
+      privateKeyId: process.env.FIREBASE_ADMIN_PRIVATE_KEY_ID,
+      privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY
+        ? JSON.parse(process.env.FIREBASE_ADMIN_PRIVATE_KEY).privateKey
+        : undefined,
+      clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+      clientId: process.env.FIREBASE_ADMIN_CLIENT_ID,
+      authUri: 'https://accounts.google.com/o/oauth2/auth',
+      tokenUri: 'https://oauth2.googleapis.com/token',
+      authProviderX509CertUrl: 'https://www.googleapis.com/oauth2/v1/certs',
+      clientX509CertUrl: process.env.FIREBASE_ADMIN_CLIENT_X509_CERT_URL,
+      databaseURL: 'https://kantina-b8628.firebaseio.com',
     },
   },
 

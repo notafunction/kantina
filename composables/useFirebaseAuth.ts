@@ -14,7 +14,6 @@ import {
   OAuthProvider,
 } from 'firebase/auth'
 import { useFirebaseUser } from './useStates'
-import { name } from '@/package.json'
 
 export const createUser = async (email: string, password: string) => {
   const auth = getAuth()
@@ -54,15 +53,28 @@ export const logoutUser = async () => {
 }
 
 export const initUser = () => {
+  const config = useRuntimeConfig()
   const auth = getAuth()
   const firebaseUser = useFirebaseUser()
   firebaseUser.value = auth.currentUser
 
-  const firebaseUserCookie = useCookie(`${name}.user`)
+  const firebaseUserCookie = useCookie(
+    `${config.public.firebaseCookiePrefix}.user`
+  )
+  const firebaseUserTokensCookie = useCookie(
+    `${config.public.firebaseCookiePrefix}.tokens`
+  )
 
   onAuthStateChanged(auth, (user) => {
     firebaseUser.value = user
-    firebaseUserCookie.value = user
+
+    firebaseUserCookie.value = user ? user.providerData[0] : null
+    firebaseUserTokensCookie.value = user
+      ? {
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken,
+        }
+      : null
   })
 }
 

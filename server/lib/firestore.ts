@@ -1,50 +1,39 @@
-import {
-  collection,
-  getDocs,
-  getDoc,
-  addDoc,
-  deleteDoc,
-  doc,
-  query,
-  where,
-  setDoc,
-  collectionGroup,
-  Timestamp,
-  serverTimestamp,
-} from 'firebase/firestore'
+import { FieldValue } from 'firebase-admin/firestore'
 import { db } from './firebase'
 
-export const queryByCollection = async (col: string) => {
-  const colRef = collection(db, col)
+// export const queryByCollection = async (col: string) => {
+//   const colRef = collection(db, col)
 
-  const snapshot = await getDocs(colRef)
+//   const snapshot = await getDocs(colRef)
 
-  const docs = Array.from(snapshot.docs).map((doc) => {
-    return {
-      ...doc.data(),
-      id: doc.id,
-    }
-  })
+//   const docs = Array.from(snapshot.docs).map((doc) => {
+//     return {
+//       ...doc.data(),
+//       id: doc.id,
+//     }
+//   })
 
-  return docs
-}
+//   return docs
+// }
 
-export const set = async (col: string, document: any) => {
-  await setDoc(doc(collection(db, col)), document, { merge: true })
+export const set = async (collection: string, document: any) => {
+  const docRef = await db.collection(collection).doc()
+
+  return await docRef.set(document, { merge: true })
 }
 
 export const add = async (col: string, document: any) => {
-  const collectionsRef = collection(db, col)
+  const collectionsRef = db.collection(col)
 
-  const documentRef = await addDoc(collectionsRef, {
+  const documentRef = await collectionsRef.add({
     ...document,
-    createdOn: serverTimestamp(),
+    createdOn: FieldValue.serverTimestamp(),
   })
 
   return documentRef
 }
 
 export const del = async (col: string, id: string) => {
-  const docRef = doc(db, col, id)
-  return await deleteDoc(docRef)
+  const docRef = db.collection(col).doc(id)
+  return await docRef.delete()
 }

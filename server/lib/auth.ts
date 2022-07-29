@@ -1,7 +1,12 @@
-import type { CompatibilityEvent } from 'h3'
+import { CompatibilityEvent } from 'h3'
+import admin from 'firebase-admin'
 
-export const authorized = (event: CompatibilityEvent) => {
-  const { user } = event.context
+export const authorized = async (event: CompatibilityEvent) => {
+  const { user, auth } = event.context
+
+  const decodedToken = await admin.auth().verifyIdToken(auth.accessToken)
+
+  if (!decodedToken) return false
 
   if (user) return true
 
