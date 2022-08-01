@@ -1,20 +1,20 @@
 import { FieldValue } from 'firebase-admin/firestore'
 import { db } from './firebase'
 
-// export const queryByCollection = async (col: string) => {
-//   const colRef = collection(db, col)
+export const queryByCollection = async (col: string) => {
+  const colRef = db.collection(col)
 
-//   const snapshot = await getDocs(colRef)
+  const snapshot = await colRef.get()
 
-//   const docs = Array.from(snapshot.docs).map((doc) => {
-//     return {
-//       ...doc.data(),
-//       id: doc.id,
-//     }
-//   })
+  const docs = Array.from(snapshot.docs).map((doc) => {
+    return {
+      ...doc.data(),
+      id: doc.id,
+    }
+  })
 
-//   return docs
-// }
+  return docs
+}
 
 export const set = async (collection: string, document: any) => {
   const docRef = await db.collection(collection).doc()

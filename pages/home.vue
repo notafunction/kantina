@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h6 class="text-h6">Starred Boards</h6>
+    <HomeRecentBoards />
   </div>
 </template>
 

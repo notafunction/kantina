@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <pre>{{ user }}</pre>
-  </div>
+  <div></div>
 </template>
 
 <script setup>
