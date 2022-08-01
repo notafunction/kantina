@@ -99,7 +99,7 @@ async function onLoginWithProvider(provider) {
 
 function performPostLogin() {
   const firebaseUser = useFirebaseUser()
-  navigateTo(`/dashboard`)
+  navigateTo(`/home`)
 }
 
 definePageMeta({
