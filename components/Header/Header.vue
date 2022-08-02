@@ -11,20 +11,7 @@
     <q-separator spaced inset vertical />
 
     <template v-if="firebaseUser">
-      <q-btn-dropdown
-        flat
-        label="Recent"
-        no-caps
-        no-icon-animation
-        menu-anchor="bottom left"
-        menu-self="top left"
-        dropdown-icon="fa-solid fa-chevron-down"
-        :ripple="false"
-      >
-        <q-list>
-          <q-item-label header>Recent Boards</q-item-label>
-        </q-list>
-      </q-btn-dropdown>
+      <Button text="foo" />
 
       <q-btn color="primary" no-caps label="Create">
         <q-menu>

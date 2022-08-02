@@ -20,6 +20,8 @@
 
 <script setup>
 const { data: boards } = await useFetch('/api/v1/boards')
+
+console.log(boards)
 </script>
 
 <script>

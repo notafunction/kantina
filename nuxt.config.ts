@@ -1,5 +1,4 @@
 import { defineNuxtConfig } from 'nuxt'
-import transformerDirective from '@unocss/transformer-directives'
 
 export default defineNuxtConfig({
   head: {
@@ -50,26 +49,14 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['@unocss/nuxt'],
+  modules: [['unplugin-icons/nuxt', {}], '@nuxtjs/tailwindcss'],
 
-  css: [
-    '@unocss/reset/eric-meyer.css',
-    'primevue/resources/primevue.min.css',
-    'primevue/resources/themes/saga-blue/theme.css',
-    'primeicons/primeicons.css',
-  ],
+  css: [],
 
   pwa: {
     manifest: {
       lang: 'en',
     },
-  },
-
-  unocss: {
-    uno: true,
-    attributify: true,
-
-    transformers: [transformerDirective()],
   },
 
   typescript: {

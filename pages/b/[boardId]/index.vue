@@ -1,5 +1,5 @@
 <template>
-  <div class="flex" :style="`background-color: ${backgroundColor}`">
+  <div class="flex flex-1" :style="`background-color: ${backgroundColor}`">
     <h1>{{ board.name }}</h1>
   </div>
 </template>
