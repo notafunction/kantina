@@ -11,8 +11,6 @@
     <q-separator spaced inset vertical />
 
     <template v-if="firebaseUser">
-      <Button text="foo" />
-
       <q-btn color="primary" no-caps label="Create">
         <q-menu>
           <q-list style="max-width: 300px">
