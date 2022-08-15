@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HomeRecentBoards />
+    <!-- <HomeRecentBoards /> -->
   </div>
 </template>
 

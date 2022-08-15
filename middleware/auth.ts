@@ -6,6 +6,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   if (!user.value) {
     abortNavigation()
-    navigateTo('/')
+    // navigateTo('/')
   }
 })

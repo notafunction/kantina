@@ -4,6 +4,8 @@ import admin from 'firebase-admin'
 export const authorized = async (event: CompatibilityEvent) => {
   const { user, auth } = event.context
 
+  if (!auth || !auth.accessToken) return false
+
   const decodedToken = await admin.auth().verifyIdToken(auth.accessToken)
 
   if (!decodedToken) return false

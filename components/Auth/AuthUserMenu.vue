@@ -5,7 +5,7 @@
     <template #menu>
       <it-dropdown-menu>
         <it-dropdown-item>
-          <UserAvatar />
+          <!-- <UserAvatar /> -->
         </it-dropdown-item>
 
         <it-dropdown-item icon="settings"> Settings </it-dropdown-item>

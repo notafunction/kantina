@@ -76,6 +76,14 @@ export default defineNuxtConfig({
     },
   },
 
+  vite: {
+    server: {
+      watch: {
+        usePolling: true,
+      },
+    },
+  },
+
   typescript: {
     shim: false,
   },

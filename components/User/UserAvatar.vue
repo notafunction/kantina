@@ -1,6 +1,6 @@
 <template>
   <div>
-    <it-avatar :src="firebaseUser.photoURL" referrerpolicy="no-referrer" />
+    <!-- <it-avatar :src="firebaseUser.photoURL" referrerpolicy="no-referrer" /> -->
   </div>
 </template>
 

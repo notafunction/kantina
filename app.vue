@@ -1,21 +1,11 @@
 <template>
-  <client-only>
-    <NuxtLayout>
-      <NuxtPage />
-
-      <GDialogRoot />
-    </NuxtLayout>
-  </client-only>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 
 <script>
-import { GDialogRoot } from 'gitart-vue-dialog'
-
-export default {
-  components: {
-    GDialogRoot,
-  },
-}
+export default {}
 </script>
 
 <style lang="scss">
