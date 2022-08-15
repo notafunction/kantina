@@ -1,49 +1,43 @@
 <template>
-  <q-toolbar class="header">
-    <q-btn stretch flat to="/" exact>
-      <q-avatar size="md">
-        <img src="@/assets/images/logo.png" />
-      </q-avatar>
+  <div class="bg-slate-200 flex items-center p-2 gap-2">
+    <nuxt-link to="/" exact class="flex items-center">
+      <v-img :src="kantinaLogo" class="h-8 w-8" />
 
       <div class="ml-2">Kantina</div>
-    </q-btn>
+    </nuxt-link>
 
-    <q-separator spaced inset vertical />
+    <it-divider vertical />
 
-    <template v-if="firebaseUser">
-      <q-btn color="primary" no-caps label="Create">
-        <q-menu>
-          <q-list style="max-width: 300px">
-            <q-item clickable @click="showCreateBoardModal">
-              <q-item-section>
-                <q-item-label>Create Board</q-item-label>
-                <q-item-label caption
-                  >A board is made up of cards organized into lists. Use it to
-                  manage projects, track information, or organize
-                  anything.</q-item-label
-                >
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-menu>
-      </q-btn>
-    </template>
+    <div v-if="firebaseUser">
+      <v-menu offset-y>
+        <template #activator="{ on, attrs }">
+          <v-btn color="primary" v-bind="attrs" v-on="on">Create</v-btn>
+        </template>
 
-    <q-space />
+        <v-list>
+          <v-list-item>
+            <v-list-item-title> >Create Board </v-list-item-title></v-list-item
+          >
+        </v-list>
+      </v-menu>
+    </div>
 
-    <AuthUserMenu v-if="firebaseUser" />
+    <div class="ml-auto">
+      <AuthUserMenu v-if="firebaseUser" />
 
-    <template v-else>
-      <q-btn stretch flat to="/login">Log in</q-btn>
-      <q-btn stretch color="primary" to="/signup"
-        >Sign up for a free account</q-btn
-      >
-    </template>
-  </q-toolbar>
+      <div v-else class="flex items-center gap-1">
+        <v-btn @click="$router.push('/login')">Log in</v-btn>
+        <v-btn type="primary" @click="$router.push('/signup')"
+          >Sign up for a free account</v-btn
+        >
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
 import { dialogInjectionKey } from 'gitart-vue-dialog'
+import kantinaLogo from '~/assets/images/logo.png'
 
 const firebaseUser = useFirebaseUser()
 const $dialog = inject(dialogInjectionKey)

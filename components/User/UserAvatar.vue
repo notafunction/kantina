@@ -1,7 +1,7 @@
 <template>
-  <q-avatar>
-    <img :src="firebaseUser.photoURL" referrerpolicy="no-referrer" />
-  </q-avatar>
+  <div>
+    <it-avatar :src="firebaseUser.photoURL" referrerpolicy="no-referrer" />
+  </div>
 </template>
 
 <script setup>

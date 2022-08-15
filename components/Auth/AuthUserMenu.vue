@@ -1,8 +1,18 @@
 <template>
-  <q-btn round dense>
-    <UserAvatar />
+  <it-dropdown clickable placement="bottom-right">
+    <UserAvatar class="cursor-pointer" />
 
-    <q-menu>
+    <template #menu>
+      <it-dropdown-menu>
+        <it-dropdown-item>
+          <UserAvatar />
+        </it-dropdown-item>
+
+        <it-dropdown-item icon="settings"> Settings </it-dropdown-item>
+      </it-dropdown-menu>
+    </template>
+
+    <!-- <q-menu>
       <q-list style="max-width: 300px">
         <q-item>
           <q-item-section avatar>
@@ -26,18 +36,16 @@
 
         <q-separator />
 
-        <q-item clickable @click="logoutUser">
-          <!-- <q-item-section avatar>
-                <q-avatar icon="fa-solid fa-arrow-right-from-bracket" />
-              </q-item-section> -->
+        <q-item clickable @click="logoutUser">          
           <q-item-section>Logout</q-item-section>
         </q-item>
       </q-list>
-    </q-menu>
-  </q-btn>
+    </q-menu> -->
+  </it-dropdown>
 </template>
 
 <script setup>
+import UserAvatar from '../User/UserAvatar.vue'
 const firebaseUser = useFirebaseUser()
 const { logoutUser } = useFirebaseAuth()
 </script>
