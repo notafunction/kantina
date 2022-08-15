@@ -1,16 +1,20 @@
 <template>
-  <it-dropdown clickable placement="bottom-right">
-    <UserAvatar class="cursor-pointer" />
-
-    <template #menu>
-      <it-dropdown-menu>
-        <it-dropdown-item>
-          <!-- <UserAvatar /> -->
-        </it-dropdown-item>
-
-        <it-dropdown-item icon="settings"> Settings </it-dropdown-item>
-      </it-dropdown-menu>
+  <v-menu>
+    <template #activator="{ props }">
+      <v-btn v-bind="props" icon>
+        <v-avatar size="large">
+          <v-img :src="firebaseUser.photoURL" alt="" />
+        </v-avatar>
+      </v-btn>
     </template>
+
+    <v-list>
+      <v-list-item
+        :prepend-avatar="firebaseUser.photoURL"
+        :title="firebaseUser.displayName"
+        :subtitle="firebaseUser.email"
+      />
+    </v-list>
 
     <!-- <q-menu>
       <q-list style="max-width: 300px">
@@ -41,13 +45,14 @@
         </q-item>
       </q-list>
     </q-menu> -->
-  </it-dropdown>
+  </v-menu>
 </template>
 
 <script setup>
-import UserAvatar from '../User/UserAvatar.vue'
 const firebaseUser = useFirebaseUser()
 const { logoutUser } = useFirebaseAuth()
+
+const menu = false
 </script>
 
 <script>

@@ -7,7 +7,6 @@ export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig()
   const { vueApp } = nuxtApp
 
-  console.log(nuxtApp)
   Sentry.init({
     app: vueApp,
     release: `${name}@${version}`,

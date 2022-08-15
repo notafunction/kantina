@@ -1,87 +1,52 @@
 <template>
-  <Dialog title="Create Board">
-    <q-form ref="form" class="w-full" greedy @submit="onSubmit">
-      <div class="q-py-md">
-        <div class="q-gutter-md">
-          <q-input
-            v-model="hex"
-            outlined
-            label="Background"
-            :rules="['hexColor']"
-            lazy-rules
-          >
-            <template #append>
-              <q-icon name="fa-solid fa-eye-dropper" class="cursor-pointer">
-                <q-popup-proxy
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-color
-                    v-model="hex"
-                    format-model="hex"
-                    square
-                    flat
-                    no-header-tabs
-                    no-footer
-                    default-view="palette"
-                    :palette="paletteColors"
-                  />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
+  <Dialog v-bind="$attrs">
+    <template #default="{ close }">
+      <v-card>
+        <v-card-title>Create New Board</v-card-title>
+        <v-card-text>
+          <v-form ref="form" class="w-full">
+            <v-text-field
+              v-model="formData.name"
+              label="Board name"
+              :rules="[
+                (value) => (value && value.length > 0) || 'Please enter a name',
+              ]"
+              required
+            />
 
-          <q-input
-            v-model="name"
-            outlined
-            label="Board Name"
-            :rules="[
-              (value) => (value && value.length > 0) || 'Please enter a name',
-            ]"
-          />
+            <v-select
+              v-model="formData.privacy"
+              label="Privacy"
+              :items="privacyOptions"
+              item-title="label"
+              item-value="value"
+            />
+          </v-form>
+        </v-card-text>
 
-          <q-select
-            v-model="visibility"
-            outlined
-            :options="visibilityOptions"
-            label="Visibility"
-          >
-            <template #option="scope">
-              <q-item v-bind="scope.itemProps">
-                <q-item-section avatar>
-                  <q-icon :name="scope.opt.icon" />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>{{ scope.opt.label }}</q-item-label>
-                  <q-item-label caption>{{
-                    scope.opt.description
-                  }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-      </div>
-    </q-form>
-
-    <template #actions>
-      <q-btn
-        color="primary"
-        type="submit"
-        flat
-        label="Create"
-        @click="onSubmit"
-      />
+        <v-card-actions>
+          <v-spacer />
+          <v-btn @click="close">Cancel</v-btn>
+          <v-btn @click="onSubmit">Create</v-btn>
+        </v-card-actions>
+      </v-card>
     </template>
   </Dialog>
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
+import { useDisplay } from 'vuetify'
+
+const display = useDisplay()
+const dialogIsOpen = ref(false)
+
 const form = ref(null)
-const name = ref('')
-const hex = ref('')
-const visibility = ref('')
+const formData = ref({
+  name: '',
+  hex: '',
+  privacy: '',
+})
 
 const paletteColors = [
   '#019A9D',
@@ -92,7 +57,7 @@ const paletteColors = [
   '#019A9D',
 ]
 
-const visibilityOptions = [
+const privacyOptions = [
   {
     label: 'Private',
     value: 'private',
@@ -113,9 +78,9 @@ async function onSubmit(event) {
     const result = await $fetch('/api/v1/boards', {
       method: 'post',
       body: {
-        name: name.value,
-        hex: hex.value,
-        visibility: visibility.value.value,
+        name: formData.value.name,
+        hex: formData.value.hex,
+        privacy: formData.value.privacy,
       },
     })
 

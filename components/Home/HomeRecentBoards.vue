@@ -19,9 +19,7 @@
 </template>
 
 <script setup>
-// const { data: boards } = await useFetch('/api/v1/boards')
-
-// console.log(boards)
+const { data: boards } = await useFetch('/api/v1/boards')
 </script>
 
 <script>

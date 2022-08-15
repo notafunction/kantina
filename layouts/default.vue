@@ -1,9 +1,11 @@
 <template>
-  <div class="flex flex-col min-h-screen">
+  <v-layout>
     <Header />
 
-    <slot />
-  </div>
+    <v-main>
+      <slot />
+    </v-main>
+  </v-layout>
 </template>
 
 <script>

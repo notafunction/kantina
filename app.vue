@@ -1,7 +1,9 @@
 <template>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <v-app>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </v-app>
 </template>
 
 <script>
@@ -9,12 +11,6 @@ export default {}
 </script>
 
 <style lang="scss">
-html,
-body,
-#__nuxt {
-  height: 100%;
-}
-
 body {
   background-color: #eff3f8;
 }

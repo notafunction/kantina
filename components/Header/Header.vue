@@ -1,58 +1,52 @@
 <template>
-  <div class="bg-slate-200 flex items-center p-2 gap-2">
-    <nuxt-link to="/" exact class="flex items-center">
-      <!-- <v-img :src="kantinaLogo" class="h-8 w-8" /> -->
+  <v-app-bar>
+    <template #prepend>
+      <v-app-bar-nav-icon />
+    </template>
 
-      <div class="ml-2">Kantina</div>
-    </nuxt-link>
+    <v-app-bar-title>
+      <nuxt-link to="/"> Kantina </nuxt-link>
+    </v-app-bar-title>
+
+    <v-spacer />
 
     <div v-if="firebaseUser">
       <v-menu offset-y>
         <template #activator="{ props }">
-          <v-btn color="primary" v-bind="props">Create</v-btn>
+          <v-btn color="primary" v-bind="props" :icon="mdiPlus"></v-btn>
         </template>
 
-        <v-list two-lines>
-          <v-list-item>
+        <v-list max-width="300" lines="three">
+          <v-list-item value="create-board">
             <v-list-item-title>Create Board</v-list-item-title>
+            <v-list-item-subtitle
+              >A board is made up of cards ordered on lists. Use it to manage
+              projects, track information, or organize
+              anything</v-list-item-subtitle
+            >
+
+            <LazyDialogCreateBoard activator="parent" />
           </v-list-item>
         </v-list>
       </v-menu>
     </div>
 
-    <div class="ml-auto">
-      <!-- <AuthUserMenu v-if="firebaseUser" />
+    <template #append>
+      <AuthUserMenu v-if="firebaseUser" />
 
-      <div v-else class="flex items-center gap-1">
+      <template v-else>
         <v-btn @click="$router.push('/login')">Log in</v-btn>
         <v-btn type="primary" @click="$router.push('/signup')"
           >Sign up for a free account</v-btn
         >
-      </div> -->
-    </div>
-  </div>
+      </template>
+    </template>
+  </v-app-bar>
 </template>
 
 <script setup>
-import { dialogInjectionKey } from 'gitart-vue-dialog'
-// import kantinaLogo from '~/assets/images/logo.png'
+import { mdiPlus } from '@mdi/js'
+import kantinaLogo from '~/assets/images/logo.png'
 
 const firebaseUser = useFirebaseUser()
-const $dialog = inject(dialogInjectionKey)
-
-async function showCreateBoardModal() {
-  const { default: component } = await import(
-    '@/components/Dialog/DialogCreateBoard.vue'
-  )
-
-  $dialog.addDialog({
-    component,
-  })
-}
 </script>
-
-<style lang="scss" scoped>
-.header {
-  @apply bg-slate-200;
-}
-</style>
