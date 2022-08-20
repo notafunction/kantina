@@ -1,15 +1,48 @@
-import React, { useState } from 'react'
+import React, { useReducer } from 'react'
 import { useSelector } from 'react-redux'
 import { useFirebase, isLoaded, isEmpty } from 'react-redux-firebase'
-import { Button, Space, Spin, Modal, Tabs, Form, message } from 'antd'
+import { Button, Space, Spin, Modal, Form, message } from 'antd'
 import LoginForm from './LoginForm'
 import SignupForm from './SignupForm'
-import { useToggle } from '../../hooks'
+
+const TOGGLE_LOADING = 'TOGGLE_LOADING'
+const TOGGLE_REGISTER = 'TOGGLE_REGISTER'
+const TOGGLE_MODAL = 'TOGGLE_MODAL'
+
+function stateReducer(state, action) {
+  const { type } = action
+
+  switch (type) {
+    case TOGGLE_LOADING: {
+      return {
+        ...state,
+        isLoading: !state.isLoading
+      }
+    }
+
+    case TOGGLE_REGISTER: {
+      return {
+        ...state,
+        isRegistering: !state.isRegistering
+      }
+    }
+
+    case TOGGLE_MODAL: {
+      return {
+        ...state,
+        isModalVisible: !state.isModalVisible
+      }
+    }
+  }
+}
 
 const Auth = () => {
-  const [loading, toggleLoading] = useToggle()
-  const [authModalVisible, setAuthModalVisible] = useState(false)
-  const [activeTab, setActiveTab] = useState('login')
+  const [state, dispatch] = useReducer(stateReducer, {
+    isLoading: false,
+    isRegistering: false,
+    isModalVisible: false
+  })
+
   const [loginForm] = Form.useForm()
   const [signupForm] = Form.useForm()
   const firebase = useFirebase()
@@ -26,14 +59,14 @@ const Auth = () => {
 
   const onLoginWithEmailAndPassword = async ({ email, password }) => {
     try {
-      toggleLoading()
+      dispatch({ type: TOGGLE_LOADING })
       await firebase.login({ email, password })
       message.success('You are now logged in')
     } catch (error) {
       message.error('There was a problem logging you in')
     } finally {
-      setAuthModalVisible(false)
-      toggleLoading()
+      dispatch({ type: TOGGLE_MODAL })
+      dispatch({ type: TOGGLE_LOADING })
     }
   }
 
@@ -47,27 +80,28 @@ const Auth = () => {
   }
 
   const onSignup = async ({ email, password }) => {
-    toggleLoading()
+    dispatch({ type: TOGGLE_LOADING })
     try {
       await firebase.createUser({ email, password })
       message.success('You are now logged in')
     } catch (error) {
       message.error('There was a problem signing you up')
     } finally {
-      setAuthModalVisible(false)
-      toggleLoading()
+      dispatch({ type: TOGGLE_MODAL })
+      dispatch({ type: TOGGLE_LOADING })
     }
   }
 
   const handleModalOk = () => {
-    switch (activeTab) {
-      case 'login':
-        loginForm.validateFields().then(onLoginWithEmailAndPassword)
-        break
-      case 'signup':
-        signupForm.validateFields().then(onSignup)
-        break
+    if (state.isRegistering) {
+      signupForm.validateFields().then(onSignup)
+    } else {
+      loginForm.validateFields().then(onLoginWithEmailAndPassword)
     }
+  }
+
+  const getActionText = () => {
+    return state.isRegistering ? 'Sign Up' : 'Log In'
   }
 
   const formProps = {
@@ -77,12 +111,30 @@ const Auth = () => {
     preserve: false
   }
 
+  const renderForm = () => {
+    return state.isRegistering ? (
+      <SignupForm
+        formProps={{ ...formProps, onFinish: onSignup, form: signupForm, id: 'signup' }}
+      />
+    ) : (
+      <LoginForm
+        formProps={{
+          ...formProps,
+          onFinish: onLoginWithEmailAndPassword,
+          form: loginForm,
+          id: 'login'
+        }}
+        loginWithGoogleProvider={onLoginWithGoogleProvider}
+      />
+    )
+  }
+
   if (!isLoaded(auth)) return <Spin />
 
   return (
     <Space>
       {isEmpty(auth) ? (
-        <Button type="primary" onClick={() => setAuthModalVisible(true)}>
+        <Button type="primary" onClick={() => dispatch({ type: TOGGLE_MODAL })}>
           Login or Sign Up
         </Button>
       ) : (
@@ -92,44 +144,32 @@ const Auth = () => {
       <Modal
         destroyOnClose
         closable={false}
-        visible={authModalVisible}
+        visible={state.isModalVisible}
         footer={[
           <Button
             key="cancel"
             onClick={() => {
-              setAuthModalVisible(false)
-              setActiveTab('login')
+              dispatch({ type: TOGGLE_MODAL })
+              state.isRegistering && dispatch({ type: TOGGLE_REGISTER })
             }}>
             Cancel
           </Button>,
-          <Button loading={loading} type="primary" htmlType="submit" key="submit" form={activeTab}>
-            {activeTab === 'login' ? 'Login' : 'Sign Up'}
+          <Button
+            loading={state.isLoading}
+            type="primary"
+            htmlType="submit"
+            key="submit"
+            form={state.isRegistering ? 'signup' : 'login'}>
+            {state.isRegistering ? 'Sign Up' : 'Login'}
           </Button>
         ]}
         onCancel={() => {
-          setAuthModalVisible(false)
-          setActiveTab('login')
+          dispatch({ type: TOGGLE_MODAL })
+          state.isRegistering && dispatch({ type: TOGGLE_REGISTER })
         }}
         onOk={handleModalOk}
-        okText={activeTab === 'login' ? 'Login' : 'Sign Up'}>
-        <Tabs defaultActiveKey="login" onChange={(key) => setActiveTab(key)}>
-          <Tabs.TabPane tab="Login" key="login">
-            <LoginForm
-              formProps={{
-                ...formProps,
-                onFinish: onLoginWithEmailAndPassword,
-                form: loginForm,
-                id: 'login'
-              }}
-              loginWithGoogleProvider={onLoginWithGoogleProvider}
-            />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Sign Up" key="signup">
-            <SignupForm
-              formProps={{ ...formProps, onFinish: onSignup, form: signupForm, id: 'signup' }}
-            />
-          </Tabs.TabPane>
-        </Tabs>
+        okText={getActionText()}>
+        {renderForm()}
       </Modal>
     </Space>
   )
