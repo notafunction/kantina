@@ -1,63 +1,53 @@
 <template>
-  <q-page class="flex p-4">
-    <q-card class="m-auto w-full max-w-sm">
-      <q-card-section>
-        <h1 class="text-h5 text-center">Log in to Kantina</h1>
-      </q-card-section>
-      <q-card-section>
-        <q-form ref="form" greedy @submit="onLogin">
-          <div class="q-py-md">
-            <div class="q-gutter-md">
-              <q-input
-                v-model="email"
-                outlined
-                label="Email"
-                lazy-rules="ondemand"
-                type="email"
-                :rules="[
-                  (value) =>
-                    (value && value.length > 0) ||
-                    'Please enter your email address',
-                ]"
-              />
+  <v-container>
+    <v-card tonal>
+      <v-card-title>Log in to Kantina</v-card-title>
+      <v-card-text>
+        <v-form ref="form" @submit="onLogin">
+          <v-text-field
+            v-model="formData.email"
+            variant="solo"
+            label="Email"
+            type="email"
+            :rules="[
+              (value) =>
+                (value && value.length > 0) ||
+                'Please enter your email address',
+            ]"
+          />
 
-              <q-input
-                v-model="password"
-                outlined
-                label="Password"
-                lazy-rules="ondemand"
-                type="password"
-                :rules="[
-                  (value) =>
-                    (value && value.length > 0) || 'Please enter your password',
-                ]"
-              />
-            </div>
-          </div>
+          <v-text-field
+            v-model="formData.password"
+            variant="solo"
+            label="Password"
+            type="password"
+            :rules="[
+              (value) =>
+                (value && value.length > 0) || 'Please enter your password',
+            ]"
+          />
 
-          <q-btn color="primary" class="full-width" type="submit">Login</q-btn>
-        </q-form>
-      </q-card-section>
+          <v-btn color="primary" flat type="submit">Login</v-btn>
+        </v-form>
+      </v-card-text>
 
-      <q-separator inset />
+      <v-spacer />
 
-      <q-card-section>
+      <v-card-text>
         <div class="text-h6 q-mb-sm text-center">Or Log in with provider</div>
 
-        <q-card-actions vertical>
-          <AuthLoginProviders @login="onLoginWithProvider" />
-        </q-card-actions>
-      </q-card-section>
+        <AuthLoginProviders @login="onLoginWithProvider" />
+      </v-card-text>
 
-      <q-separator inset />
+      <v-spacer />
 
-      <q-card-section class="row justify-between">
-        <nuxt-link to="/recover">Can't log in?</nuxt-link>
+      <v-card-actions>
+        <v-btn to="/recover">Can't log in?</v-btn>
         <q-separator vertical inset />
-        <nuxt-link to="/signup">Sign up for an account</nuxt-link>
-      </q-card-section>
-    </q-card>
-  </q-page>
+        <v-btn to="/signup">Sign up for an account</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-container>
 </template>
 
 <script setup>
@@ -65,16 +55,14 @@ const { loginUserWithProvider, loginUserWithEmailAndPassword } =
   useFirebaseAuth()
 
 const form = ref()
-const password = ref('')
-const email = ref('')
+const formData = ref({ email: '', password: '' })
 
 async function onLogin() {
   if (await form.value.validate()) {
+    const { email, password } = formData.value
+
     try {
-      const credentials = await loginUserWithEmailAndPassword(
-        email.value,
-        password.value
-      )
+      const credentials = await loginUserWithEmailAndPassword(email, password)
 
       if (credentials) {
         performPostLogin(credentials.user)

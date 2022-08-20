@@ -1,9 +1,11 @@
 <template>
-  <v-app>
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-  </v-app>
+  <client-only>
+    <v-app>
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
+    </v-app>
+  </client-only>
 </template>
 
 <script>

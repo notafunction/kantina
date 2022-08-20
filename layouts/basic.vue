@@ -1,9 +1,9 @@
 <template>
-  <q-layout>
-    <q-page-container>
+  <v-layout>
+    <v-main>
       <slot />
-    </q-page-container>
-  </q-layout>
+    </v-main>
+  </v-layout>
 </template>
 
 <script>

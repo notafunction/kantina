@@ -36,7 +36,7 @@
 
       <template v-else>
         <v-btn @click="$router.push('/login')">Log in</v-btn>
-        <v-btn type="primary" @click="$router.push('/signup')"
+        <v-btn flat color="primary" to="/signup"
           >Sign up for a free account</v-btn
         >
       </template>
