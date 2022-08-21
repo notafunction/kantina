@@ -1,13 +1,22 @@
 import React, { useReducer } from 'react'
+import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import { useFirebase, isLoaded, isEmpty } from 'react-redux-firebase'
 import { Button, Space, Spin, Modal, Form, message } from 'antd'
+import { LoginOutlined, UserAddOutlined } from '@ant-design/icons'
 import LoginForm from './LoginForm'
 import SignupForm from './SignupForm'
 
 const TOGGLE_LOADING = 'TOGGLE_LOADING'
 const TOGGLE_REGISTER = 'TOGGLE_REGISTER'
 const TOGGLE_MODAL = 'TOGGLE_MODAL'
+const RESET = 'RESET'
+
+const defaultState = {
+  isLoading: false,
+  isRegistering: false,
+  isModalVisible: false
+}
 
 function stateReducer(state, action) {
   const { type } = action
@@ -33,15 +42,23 @@ function stateReducer(state, action) {
         isModalVisible: !state.isModalVisible
       }
     }
+
+    case RESET: {
+      return {
+        ...defaultState
+      }
+    }
   }
 }
 
+const ModalActions = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+
 const Auth = () => {
-  const [state, dispatch] = useReducer(stateReducer, {
-    isLoading: false,
-    isRegistering: false,
-    isModalVisible: false
-  })
+  const [state, dispatch] = useReducer(stateReducer, defaultState)
 
   const [loginForm] = Form.useForm()
   const [signupForm] = Form.useForm()
@@ -61,21 +78,26 @@ const Auth = () => {
     try {
       dispatch({ type: TOGGLE_LOADING })
       await firebase.login({ email, password })
+      dispatch({ type: TOGGLE_MODAL })
       message.success('You are now logged in')
     } catch (error) {
       message.error('There was a problem logging you in')
     } finally {
-      dispatch({ type: TOGGLE_MODAL })
       dispatch({ type: TOGGLE_LOADING })
     }
   }
 
   const onLoginWithGoogleProvider = async () => {
     try {
+      dispatch({ type: TOGGLE_LOADING })
       await firebase.login({ provider: 'google', type: 'popup' })
+      dispatch({ type: TOGGLE_MODAL })
       message.success('You are now logged in')
     } catch (error) {
+      message.error(error.message)
       console.error(error)
+    } finally {
+      dispatch({ type: TOGGLE_LOADING })
     }
   }
 
@@ -100,8 +122,8 @@ const Auth = () => {
     }
   }
 
-  const getActionText = () => {
-    return state.isRegistering ? 'Sign Up' : 'Log In'
+  const getActionText = (isRegistering = state.isRegistering) => {
+    return isRegistering ? 'Sign Up' : 'Log In'
   }
 
   const formProps = {
@@ -111,7 +133,7 @@ const Auth = () => {
     preserve: false
   }
 
-  const renderForm = () => {
+  function renderForm() {
     return state.isRegistering ? (
       <SignupForm
         formProps={{ ...formProps, onFinish: onSignup, form: signupForm, id: 'signup' }}
@@ -129,6 +151,29 @@ const Auth = () => {
     )
   }
 
+  function renderModalFooter() {
+    return (
+      <ModalActions>
+        <Button
+          type="text"
+          onClick={() => dispatch({ type: TOGGLE_REGISTER })}
+          icon={state.isRegistering ? <LoginOutlined /> : <UserAddOutlined />}>
+          {getActionText(!state.isRegistering)}
+        </Button>
+        <div>
+          <Button onClick={() => dispatch({ type: RESET })}>Cancel</Button>
+          <Button
+            loading={state.isLoading}
+            type="primary"
+            htmlType="submit"
+            form={state.isRegistering ? 'signup' : 'login'}>
+            {getActionText()}
+          </Button>
+        </div>
+      </ModalActions>
+    )
+  }
+
   if (!isLoaded(auth)) return <Spin />
 
   return (
@@ -143,30 +188,10 @@ const Auth = () => {
 
       <Modal
         destroyOnClose
-        closable={false}
         visible={state.isModalVisible}
-        footer={[
-          <Button
-            key="cancel"
-            onClick={() => {
-              dispatch({ type: TOGGLE_MODAL })
-              state.isRegistering && dispatch({ type: TOGGLE_REGISTER })
-            }}>
-            Cancel
-          </Button>,
-          <Button
-            loading={state.isLoading}
-            type="primary"
-            htmlType="submit"
-            key="submit"
-            form={state.isRegistering ? 'signup' : 'login'}>
-            {state.isRegistering ? 'Sign Up' : 'Login'}
-          </Button>
-        ]}
-        onCancel={() => {
-          dispatch({ type: TOGGLE_MODAL })
-          state.isRegistering && dispatch({ type: TOGGLE_REGISTER })
-        }}
+        title={getActionText()}
+        footer={renderModalFooter()}
+        onCancel={() => dispatch({ type: TOGGLE_MODAL })}
         onOk={handleModalOk}
         okText={getActionText()}>
         {renderForm()}
