@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Upload, Form, Input, message } from 'antd'
+import { Upload, Form, Input, message, Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import SettingsDrawer from '../SettingsDrawer'
-import { useFirebase } from 'react-redux-firebase'
-import { useSelector } from 'react-redux'
 import styled from 'styled-components'
+import { useAuth, useFirebaseApp, useUser } from 'reactfire'
 
 const StyledUpload = styled(Upload)`
   .ant-upload {
@@ -28,13 +27,15 @@ const getBase64 = (image, callback) => {
 }
 
 const UserSettingsDrawer = (props) => {
+  const { status, data: user } = useUser()
+  const firebase = useFirebaseApp()
+  const auth = useAuth()
+  // const storage = useStorage()
+
   const [avatarFileList, setAvatarFileList] = useState([])
   const [avatarPreviewUrl, setAvatarPreviewUrl] = useState(null)
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
-  const firebase = useFirebase()
-  const auth = useSelector(({ firebase: { auth } }) => auth)
-  const profile = useSelector(({ firebase: { profile } }) => profile)
 
   const beforeAvatarUpload = (file) => {
     const isLt2M = file.size / 1024 / 1024 < 2
@@ -65,7 +66,6 @@ const UserSettingsDrawer = (props) => {
     const { avatar: _avatar, ...values } = await form.validateFields()
     try {
       const avatarUrl = await uploadAndGetAvatarUrl()
-      console.log(avatarUrl)
       await firebase.updateProfile({
         ...values,
         avatarUrl
@@ -86,6 +86,10 @@ const UserSettingsDrawer = (props) => {
     setLoading(false)
     props.close()
   }
+
+  if (status === 'loading') return <Spin />
+
+  console.log(user)
 
   return (
     <SettingsDrawer
@@ -109,14 +113,14 @@ const UserSettingsDrawer = (props) => {
             ) : loading ? (
               <LoadingOutlined />
             ) : (
-              <img src={profile.avatarUrl} />
+              <img src={user.photoURL} />
             )}
           </StyledUpload>
         </Form.Item>
         <Form.Item
           name="displayName"
           label="Name"
-          initialValue={profile.displayName}
+          initialValue={user.displayName}
           rules={[{ required: true, message: 'Your name is required' }]}>
           <Input />
         </Form.Item>
@@ -127,7 +131,8 @@ const UserSettingsDrawer = (props) => {
 
 UserSettingsDrawer.propTypes = {
   visible: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired
+  close: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired
 }
 
 export default UserSettingsDrawer

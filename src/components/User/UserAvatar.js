@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Avatar } from 'antd'
 
 const UserAvatar = ({ user, ...props }) => {
-  const imageUrl = user.avatarUrl || `https://joeschmoe.io/api/v1/${user.email || 'random'}`
+  const imageUrl = user.photoURL || `https://joeschmoe.io/api/v1/${user.email || 'random'}`
 
   return (
     <div>

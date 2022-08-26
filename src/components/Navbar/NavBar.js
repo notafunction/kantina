@@ -1,12 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { isEmpty, isLoaded } from 'react-redux-firebase'
 import { Spin } from 'antd'
 import LoginButton from '../Login/LoginButton'
 import UserMenu from '../User/UserMenu'
 import config from '../../../package.json'
+import { useSigninCheck } from 'reactfire'
 
 const Container = styled.nav`
   display: flex;
@@ -42,8 +41,9 @@ const StyledVersion = styled.sup`
   font-size: 70%;
 `
 
-const NavBar = () => {
-  const profile = useSelector(({ firebase: { profile } }) => profile)
+function NavBar() {
+  // const profile = useSelector(({ firebase: { profile } }) => profile)
+  const { status, data: signInCheckResult } = useSigninCheck()
 
   return (
     <Container>
@@ -52,7 +52,13 @@ const NavBar = () => {
       </Logo>
       <StyledVersion>v{config.version}</StyledVersion>
       <StyledRight>
-        {!isLoaded(profile) ? <Spin /> : !isEmpty(profile) ? <UserMenu /> : <LoginButton />}
+        {status === 'loading' ? (
+          <Spin />
+        ) : signInCheckResult.signedIn ? (
+          <UserMenu user={signInCheckResult.user} />
+        ) : (
+          <LoginButton />
+        )}
       </StyledRight>
     </Container>
   )

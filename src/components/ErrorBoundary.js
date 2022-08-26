@@ -5,17 +5,11 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
 import { BrowserClient, Hub } from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { useNavigate } from 'react-router'
-import { connect } from 'react-redux'
-import { isEmpty, isLoaded } from 'react-redux-firebase'
 
 function withNavigation(Component) {
   // eslint-disable-next-line react/display-name
   return (props) => <Component {...props} navigate={useNavigate()} />
 }
-
-const mapStateToProps = (state) => ({
-  auth: state.firebase.auth
-})
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -45,20 +39,12 @@ class ErrorBoundary extends React.Component {
         scope.setExtra(key, errorInfo[key])
       })
 
-      if (isLoaded(this.props.auth) && !isEmpty(this.props.auth)) {
-        scope.setUser(this.props.auth)
-      }
-
       this.state.sentryHub.captureException(error)
     })
   }
 
   renderResultTitle() {
-    if (isLoaded(this.props.auth) && !isEmpty(this.props.auth)) {
-      return `I'm sorry, ${this.props.auth.displayName}`
-    } else {
-      return `I'm sorry, Dave`
-    }
+    return `I'm sorry, Dave`
   }
 
   handleGoHome = () => {
@@ -99,8 +85,7 @@ class ErrorBoundary extends React.Component {
 
 ErrorBoundary.propTypes = {
   children: PropTypes.object,
-  navigate: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
+  navigate: PropTypes.func.isRequired
 }
 
-export default withNavigation(connect(mapStateToProps)(ErrorBoundary))
+export default withNavigation(ErrorBoundary)

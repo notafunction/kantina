@@ -4,9 +4,9 @@ import styled from 'styled-components'
 import Boards from './containers/Boards'
 import Board from './containers/Board'
 import NavBar from './components/Navbar/NavBar'
-import './App.css'
 import RequireAccess from './containers/RequireAccess'
 import { useGoogleAnalytics } from './hooks'
+import './App.css'
 
 const AppContainer = styled.div`
   display: flex;

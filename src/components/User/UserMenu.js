@@ -1,38 +1,34 @@
 import React from 'react'
-import { Dropdown, Menu } from 'antd'
-import { useSelector } from 'react-redux'
-import { useFirebase, useFirebaseConnect } from 'react-redux-firebase'
+import PropTypes from 'prop-types'
+import { Dropdown, Menu, Spin } from 'antd'
 import { LogoutOutlined, GroupOutlined, SettingOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router'
 import { CreateBoardModal } from '../Board'
 import UserAvatar from './UserAvatar'
 import UserSettingsDrawer from './UserSettingsDrawer'
+import { useAuth, useDatabase, useDatabaseListData } from 'reactfire'
+import { equalTo, orderByChild, query, ref } from 'firebase/database'
 
-const UserMenu = () => {
+function UserMenu(props) {
+  const navigate = useNavigate()
+  const auth = useAuth()
+  const db = useDatabase()
+  const userBoardsQuery = query(
+    ref(db, 'boards'),
+    orderByChild('createdBy'),
+    equalTo(props.user.uid)
+  )
+  const { status, data: userBoards } = useDatabaseListData(userBoardsQuery, {
+    idField: 'id'
+  })
+
   const [createBoardModalVisible, setCreateBoardModalVisible] = React.useState(false)
   const [userSettingsDrawerVisible, setUserSettingsDrawerVisible] = React.useState(false)
-  const navigate = useNavigate()
-  const firebase = useFirebase()
-  const auth = useSelector(({ firebase: { auth } }) => auth)
-  const profile = useSelector(({ firebase: { profile } }) => profile)
-
-  useFirebaseConnect({
-    path: 'boards',
-    queryParams: ['orderByChild=createdBy', `equalTo=${auth.uid}`],
-    storeAs: 'userBoards'
-  })
-  const userBoards = useSelector(
-    ({
-      firebase: {
-        ordered: { userBoards }
-      }
-    }) => userBoards
-  )
 
   const handleMenuClick = (event) => {
     switch (event.key) {
       case '$logout': {
-        firebase.auth().signOut()
+        auth.signOut()
         break
       }
       case '$create': {
@@ -49,11 +45,15 @@ const UserMenu = () => {
     }
   }
 
+  if (status === 'loading') {
+    return <Spin />
+  }
+
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.SubMenu key="userBoards" title="My Boards" icon={<GroupOutlined />}>
         {userBoards &&
-          userBoards.map((board) => <Menu.Item key={board.key}>{board.value.title}</Menu.Item>)}
+          userBoards.map((board) => <Menu.Item key={board.id}>{board.title}</Menu.Item>)}
         {userBoards && userBoards.length && <Menu.Divider />}
         <Menu.Item key="$create">Create Board</Menu.Item>
       </Menu.SubMenu>
@@ -74,7 +74,7 @@ const UserMenu = () => {
           shape="square"
           size="large"
           key="user-menu-avatar"
-          user={profile}
+          user={props.user}
           style={{ cursor: 'pointer' }}
         />
       </Dropdown>
@@ -85,11 +85,16 @@ const UserMenu = () => {
       />
 
       <UserSettingsDrawer
+        user={props.user}
         visible={userSettingsDrawerVisible}
         close={() => setUserSettingsDrawerVisible(false)}
       />
     </>
   )
+}
+
+UserMenu.propTypes = {
+  user: PropTypes.object.isRequired
 }
 
 export default UserMenu
