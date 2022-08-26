@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Upload, Form, Input, message } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
@@ -28,9 +28,9 @@ const getBase64 = (image, callback) => {
 }
 
 const UserSettingsDrawer = (props) => {
-  const [avatarFileList, setAvatarFileList] = React.useState([])
-  const [avatarPreviewUrl, setAvatarPreviewUrl] = React.useState(null)
-  const [loading, setLoading] = React.useState(false)
+  const [avatarFileList, setAvatarFileList] = useState([])
+  const [avatarPreviewUrl, setAvatarPreviewUrl] = useState(null)
+  const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
   const firebase = useFirebase()
   const auth = useSelector(({ firebase: { auth } }) => auth)
