@@ -1,45 +1,36 @@
 /* eslint-disable no-unused-vars */
+import { equalTo, orderByChild, query, ref } from 'firebase/database'
 import { Space } from 'antd'
 import React from 'react'
-import { isLoaded, isEmpty, useFirebaseConnect } from 'react-redux-firebase'
 import { Link } from 'react-router-dom'
+import { useDatabase, useDatabaseListData } from 'reactfire'
 import styled from 'styled-components'
 import BoardTile from '../components/Board/BoardTile'
 import Container from '../components/Container'
 import StyledSpin from '../components/Spin'
-import { ref, child, get } from 'firebase/database'
 
 const StyledLink = styled(Link)`
   display: block;
   margin: 0 0.5rem;
 `
 
-const Boards = (props) => {
-  // useFirebaseConnect({
-  //   path: `boards`,
-  //   storeAs: 'allBoards',
-  //   queryParams: ['orderByChild=type', 'equalTo=public']
-  // })
+function PublicBoards() {
+  const db = useDatabase()
+  const publicBoardsQuery = query(ref(db, 'boards'), orderByChild('type'), equalTo('public'))
+  const { status, data: publicBoards } = useDatabaseListData(publicBoardsQuery, {
+    idField: 'id'
+  })
 
-  // const allBoards = useSelector(
-  //   ({
-  //     firebase: {
-  //       ordered: { allBoards }
-  //     }
-  //   }) => allBoards
-  // )
+  console.log(publicBoards)
 
-  const allBoards = []
-
-  if (!isLoaded(allBoards)) return <StyledSpin />
-  if (isEmpty(allBoards)) return null
+  if (status === 'loading') return <StyledSpin />
 
   return (
     <Container flex>
       <Space align="start" wrap>
-        {allBoards.map((board) => (
-          <StyledLink to={`/b/${board.key}`} key={board.key}>
-            <BoardTile board={{ id: board.key, ...board.value }} />
+        {publicBoards.map((board) => (
+          <StyledLink to={`/b/${board.id}`} key={board.id}>
+            <BoardTile board={board} />
           </StyledLink>
         ))}
       </Space>
@@ -47,4 +38,4 @@ const Boards = (props) => {
   )
 }
 
-export default Boards
+export default PublicBoards

@@ -1,33 +1,21 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-import styled from 'styled-components'
-import Boards from './containers/Boards'
 import Board from './containers/Board'
 import NavBar from './components/Navbar/NavBar'
 import RequireAccess from './containers/RequireAccess'
 import { useGoogleAnalytics } from './hooks'
 import './App.css'
-
-const AppContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-`
-
-const ContentContainer = styled.div`
-  flex-grow: 1;
-  position: relative;
-`
+import Dashboard from './containers/Dashboard'
 
 const App = () => {
   useGoogleAnalytics()
 
   return (
-    <AppContainer>
+    <div className="flex flex-col h-full">
       <NavBar />
-      <ContentContainer>
+      <div className="px-4 flex-1 relative">
         <Routes>
-          <Route path="/" element={<Boards />} />
+          <Route path="/" element={<Dashboard />} />
           <Route
             path="/b/:boardId"
             element={
@@ -37,8 +25,8 @@ const App = () => {
             }
           />
         </Routes>
-      </ContentContainer>
-    </AppContainer>
+      </div>
+    </div>
   )
 }
 

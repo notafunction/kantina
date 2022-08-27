@@ -42,7 +42,6 @@ const StyledVersion = styled.sup`
 `
 
 function NavBar() {
-  // const profile = useSelector(({ firebase: { profile } }) => profile)
   const { status, data: signInCheckResult } = useSigninCheck()
 
   return (
