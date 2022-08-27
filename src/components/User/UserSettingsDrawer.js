@@ -89,8 +89,6 @@ const UserSettingsDrawer = (props) => {
 
   if (status === 'loading') return <Spin />
 
-  console.log(user)
-
   return (
     <SettingsDrawer
       title="User Settings"

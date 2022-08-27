@@ -1,8 +1,13 @@
 import React, { useReducer } from 'react'
 import styled from 'styled-components'
-import { useSelector } from 'react-redux'
-import { useFirebase, isLoaded, isEmpty } from 'react-redux-firebase'
-import { Button, Space, Spin, Modal, Form, message } from 'antd'
+import {
+  GoogleAuthProvider,
+  getAuth,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword
+} from 'firebase/auth'
+import { Button, Space, Modal, Form, message } from 'antd'
 import { LoginOutlined, UserAddOutlined } from '@ant-design/icons'
 import LoginForm from './LoginForm'
 import SignupForm from './SignupForm'
@@ -62,22 +67,12 @@ const Auth = () => {
 
   const [loginForm] = Form.useForm()
   const [signupForm] = Form.useForm()
-  const firebase = useFirebase()
-  const auth = useSelector(({ firebase }) => firebase.auth)
-
-  const onLogout = async () => {
-    try {
-      await firebase.auth().signOut()
-      message.success('You are now logged out')
-    } catch (error) {
-      message.error('There was a problem :(')
-    }
-  }
+  const auth = getAuth()
 
   const onLoginWithEmailAndPassword = async ({ email, password }) => {
     try {
       dispatch({ type: TOGGLE_LOADING })
-      await firebase.login({ email, password })
+      await signInWithEmailAndPassword(auth, email, password)
       dispatch({ type: TOGGLE_MODAL })
       message.success('You are now logged in')
     } catch (error) {
@@ -90,12 +85,11 @@ const Auth = () => {
   const onLoginWithGoogleProvider = async () => {
     try {
       dispatch({ type: TOGGLE_LOADING })
-      await firebase.login({ provider: 'google', type: 'popup' })
+      await signInWithPopup(auth, new GoogleAuthProvider())
       dispatch({ type: TOGGLE_MODAL })
       message.success('You are now logged in')
     } catch (error) {
       message.error(error.message)
-      console.error(error)
     } finally {
       dispatch({ type: TOGGLE_LOADING })
     }
@@ -104,7 +98,7 @@ const Auth = () => {
   const onSignup = async ({ email, password }) => {
     dispatch({ type: TOGGLE_LOADING })
     try {
-      await firebase.createUser({ email, password })
+      await createUserWithEmailAndPassword(auth, email, password)
       message.success('You are now logged in')
     } catch (error) {
       message.error('There was a problem signing you up')
@@ -174,17 +168,11 @@ const Auth = () => {
     )
   }
 
-  if (!isLoaded(auth)) return <Spin />
-
   return (
     <Space>
-      {isEmpty(auth) ? (
-        <Button type="primary" onClick={() => dispatch({ type: TOGGLE_MODAL })}>
-          Login or Sign Up
-        </Button>
-      ) : (
-        <Button onClick={onLogout}>Logout</Button>
-      )}
+      <Button type="primary" onClick={() => dispatch({ type: TOGGLE_MODAL })}>
+        Login or Sign Up
+      </Button>
 
       <Modal
         destroyOnClose
