@@ -23,7 +23,7 @@ const Styled = {
 
 function DashboardBoardItem(props) {
   return (
-    <Styled.Container class={props.board.color && `bg-[${props.board.color}]`}>
+    <Styled.Container className={props.board.color && `bg-[${props.board.color}]`}>
       <Styled.Title>{props.board.title}</Styled.Title>
       <Styled.Content></Styled.Content>
     </Styled.Container>

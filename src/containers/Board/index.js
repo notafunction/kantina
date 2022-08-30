@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { CreateListModal } from '../components/List'
-import Lists from './Lists'
+import { CreateListModal } from '../../components/List'
+import Lists from '../Lists'
 import { useParams, useNavigate } from 'react-router'
 import { Empty, Button, Result, PageHeader } from 'antd'
-import { useFirebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
-import { useSelector } from 'react-redux'
-import Spin from '../components/Spin'
-import { BoardContainer, BoardSettingsDrawer, BoardToolbar } from '../components/Board'
+import Spin from '../../components/Spin'
+import { BoardContainer } from '../../components/Board'
+import BoardSettingsDrawer from './components/BoardSettingsDrawer'
+import UserToolbar from './components/UserToolbar'
+import { useDatabase, useDatabaseListData } from 'reactfire'
+import { ref } from '@firebase/database'
 
 const BoardContent = styled.div`
   position: relative;
@@ -17,55 +19,37 @@ const BoardContent = styled.div`
 const Board = () => {
   const navigate = useNavigate()
   const params = useParams()
+  const db = useDatabase()
+
+  const boardQuery = ref(db, `boards/${params.boardId}`)
+  const listsQuery = ref(db, `lists/${params.boardId}`)
+
+  const { status: boardStatus, data: board } = useDatabaseListData(boardQuery, {
+    idField: 'id'
+  })
+  const { status: listStatus, data: lists } = useDatabaseListData(listsQuery, {
+    idField: 'id'
+  })
+
   const [boardSettingsVisible, setBoardSettingsVisible] = useState(false)
   const [createListModalVisible, setCreateListModalVisible] = useState(false)
-  const auth = useSelector(({ firebase: { auth } }) => auth)
-  const board = useSelector(({ firebase: { data } }) => data.boards && data.boards[params.boardId])
-  useFirebaseConnect([
-    `boards/${params.boardId}`,
-    {
-      path: `lists/${params.boardId}`,
-      queryParams: ['orderByChild=order'],
-      populates: [{ child: 'createdBy', root: 'users' }]
-    }
-  ])
-  const creator = useSelector(
-    ({
-      firebase: {
-        data: { users }
-      }
-    }) => users && users[board.createdBy]
-  )
-  const lists = useSelector(
-    ({
-      firebase: {
-        ordered: { lists }
-      }
-    }) => lists && lists[params.boardId]
-  )
 
-  const renderBoardToolbar = () => {
-    if (isEmpty(auth)) return null
-
-    const handleToolbarClick = (event) => {
-      switch (event.key) {
-        case 'list:create': {
-          setCreateListModalVisible(true)
-          break
-        }
-        case 'board:settings': {
-          setBoardSettingsVisible(true)
-        }
+  const handleToolbarClick = (event) => {
+    switch (event.key) {
+      case 'list:create': {
+        setCreateListModalVisible(true)
+        break
+      }
+      case 'board:settings': {
+        setBoardSettingsVisible(true)
       }
     }
-
-    return <BoardToolbar handleClick={handleToolbarClick} />
   }
 
   const renderLists = () => {
-    if (!isLoaded(lists)) return <Spin />
+    if (listStatus === 'loading') return <Spin />
 
-    if (!isEmpty(lists))
+    if (lists.length)
       return (
         <Lists
           lists={lists}
@@ -78,18 +62,18 @@ const Board = () => {
 
     return (
       <Empty description="There's nothing here" image={Empty.PRESENTED_IMAGE_SIMPLE}>
-        {!isEmpty(auth) && (
+        {/* {!isEmpty(auth) && (
           <Button onClick={() => setCreateListModalVisible(true)} type="primary">
             Create List
           </Button>
-        )}
+        )} */}
       </Empty>
     )
   }
 
-  if (!isLoaded(board)) return <Spin />
+  if (boardStatus === 'loading') return <Spin />
 
-  if (isEmpty(board)) {
+  if (!board) {
     return (
       <Result
         status="404"
@@ -106,11 +90,7 @@ const Board = () => {
 
   return (
     <BoardContainer>
-      <PageHeader
-        title={board.title}
-        subTitle={!isEmpty(creator) && `created by ${creator.displayName}`}
-        extra={renderBoardToolbar()}
-      />
+      <PageHeader title={board.title} extra={<UserToolbar onClick={handleToolbarClick} />} />
 
       <BoardContent>{renderLists()}</BoardContent>
 

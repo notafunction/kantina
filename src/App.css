@@ -12,3 +12,7 @@ body {
     background: white;
     position: relative;
 }
+
+iframe {
+    display: none;
+}

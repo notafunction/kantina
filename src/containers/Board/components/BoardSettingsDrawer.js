@@ -4,8 +4,8 @@ import { Button, Form, Input, Switch, message, Select, Popconfirm } from 'antd'
 import { WarningOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons'
 import { useFirebase } from 'react-redux-firebase'
 import { useNavigate } from 'react-router'
-import SettingsDrawer from '../SettingsDrawer'
-import FormDangerZone from '../Form/FormDangerZone'
+import SettingsDrawer from '../../../components/SettingsDrawer'
+import FormDangerZone from '../../../components/Form/FormDangerZone'
 
 const BoardSettingsDrawer = (props) => {
   const [loading, setLoading] = React.useState(false)
