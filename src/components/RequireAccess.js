@@ -1,29 +1,37 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Navigate, useParams } from 'react-router'
-import { useSelector } from 'react-redux'
-import { useFirebaseConnect, isEmpty, isLoaded } from 'react-redux-firebase'
-import Spin from './Spin'
+import { useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
+import { query, ref } from 'firebase/database'
+import { Spin } from 'antd'
 
 const RequireAccess = (props) => {
   const { boardId } = useParams()
-  useFirebaseConnect([`boards/${boardId}`])
-  const auth = useSelector(({ firebase: { auth } }) => auth)
-  const board = useSelector(({ firebase: { data } }) => data.boards && data.boards[boardId])
+  const db = useDatabase()
 
-  if (!isLoaded(board)) return <Spin />
+  const boardQuery = query(ref(db, `boards/${boardId}`))
+  const { status, data: board } = useDatabaseObjectData(boardQuery, {
+    idField: 'id'
+  })
+  const { status: signinCheckStatus, data: signinCheckData } = useSigninCheck()
 
-  const checkAccess = () => {
+  if (status === 'loading' || signinCheckStatus === 'loading') {
+    return <Spin />
+  }
+
+  console.log(board)
+
+  const checkAccess = (board) => {
     if (board.type === 'public') return true
 
-    if (!isEmpty(auth) && board.createdBy === auth.uid) {
+    if (signinCheckData.signedIn && board.createdBy === signinCheckData.user.uid) {
       return true
     }
 
     return false
   }
 
-  return checkAccess() ? props.children : <Navigate to="/" replace />
+  return checkAccess(board) ? props.children : <Navigate to="/" replace />
 }
 
 RequireAccess.propTypes = {

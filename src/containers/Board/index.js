@@ -5,16 +5,21 @@ import Lists from '../Lists'
 import { useParams, useNavigate } from 'react-router'
 import { Empty, Button, Result, PageHeader } from 'antd'
 import Spin from '../../components/Spin'
-import { BoardContainer } from '../../components/Board'
 import BoardSettingsDrawer from './components/BoardSettingsDrawer'
 import UserToolbar from './components/UserToolbar'
 import { useDatabase, useDatabaseListData } from 'reactfire'
 import { ref } from '@firebase/database'
+import tw from 'twin.macro'
 
-const BoardContent = styled.div`
-  position: relative;
-  flex-grow: 1;
-`
+const Styled = {
+  Container: styled.div`
+    ${tw`h-full flex flex-col`}
+  `,
+
+  Content: styled.div`
+    ${tw`relative flex-1`}
+  `
+}
 
 const Board = () => {
   const navigate = useNavigate()
@@ -89,10 +94,10 @@ const Board = () => {
   }
 
   return (
-    <BoardContainer>
+    <Styled.Container>
       <PageHeader title={board.title} extra={<UserToolbar onClick={handleToolbarClick} />} />
 
-      <BoardContent>{renderLists()}</BoardContent>
+      <Styled.Content>{renderLists()}</Styled.Content>
 
       <CreateListModal
         visible={createListModalVisible}
@@ -111,7 +116,7 @@ const Board = () => {
         visible={boardSettingsVisible}
         close={() => setBoardSettingsVisible(false)}
       />
-    </BoardContainer>
+    </Styled.Container>
   )
 }
 

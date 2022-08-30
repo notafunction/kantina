@@ -7,8 +7,10 @@ import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd'
 import { useParams } from 'react-router'
 import { isEmpty, useFirebase } from 'react-redux-firebase'
 import { arrayMoveImmutable } from 'array-move'
-import { useSelector } from 'react-redux'
 import Container from '../components/Container'
+import { useDatabase, useDatabaseList, useSigninCheck } from 'reactfire'
+import { query, ref } from 'firebase/database'
+import { Spin } from 'antd'
 
 const ListWrapper = styled.div`
   flex-shrink: 0;
@@ -21,14 +23,14 @@ const ListWrapper = styled.div`
 const Lists = (props) => {
   const firebase = useFirebase()
   const params = useParams()
-  const items = useSelector(
-    ({
-      firebase: {
-        ordered: { items }
-      }
-    }) => items
-  )
-  const auth = useSelector(({ firebase: { auth } }) => auth)
+  const db = useDatabase()
+  const itemsQuery = query(ref(db, 'items'))
+  const { status: itemsStatus, data: items } = useDatabaseList(itemsQuery, {
+    idField: 'id'
+  })
+  const { status: signinCheckStatus, data: signinCheckData } = useSigninCheck(0)
+
+  if (itemsStatus === 'loading' || signinCheckStatus === 'loading') return <Spin />
 
   const onDragEnd = ({ source, destination, draggableId, ...result }) => {
     switch (result.type) {
@@ -37,8 +39,8 @@ const Lists = (props) => {
           arrayMoveImmutable(props.lists, source.index, destination.index).reduce(
             (prev, current, index) => ({
               ...prev,
-              [current.key]: {
-                ...current.value,
+              [current.id]: {
+                ...current,
                 order: index
               }
             }),
@@ -59,8 +61,8 @@ const Lists = (props) => {
           ).reduce(
             (prev, current, index) => ({
               ...prev,
-              [current.key]: {
-                ...current.value,
+              [current.id]: {
+                ...current,
                 order: index
               }
             }),
@@ -86,8 +88,8 @@ const Lists = (props) => {
         ].reduce(
           (prev, current, index) => ({
             ...prev,
-            [current.key]: {
-              ...current.value,
+            [current.id]: {
+              ...current,
               order: index
             }
           }),
@@ -108,19 +110,16 @@ const Lists = (props) => {
           <Container flex ref={droppableProvided.innerRef} {...droppableProvided.droppableProps}>
             {props.lists.map((list, i) => (
               <Draggable
-                key={list.key}
+                key={list.id}
                 index={i}
-                draggableId={list.key}
-                isDragDisabled={isEmpty(auth)}>
+                draggableId={list.id}
+                isDragDisabled={!signinCheckData.signedIn}>
                 {(draggableProvided, draggableSnapshot) => (
                   <ListWrapper
                     ref={draggableProvided.innerRef}
                     {...draggableProvided.draggableProps}>
                     <List
-                      list={{
-                        id: list.key,
-                        ...list.value
-                      }}
+                      list={list}
                       dragHandleProps={draggableProvided.dragHandleProps}
                       isDragging={draggableSnapshot.isDragging}
                     />

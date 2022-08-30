@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import tw from 'twin.macro'
 import { query, ref } from 'firebase/database'
 import { useDatabase, useDatabaseListData } from 'reactfire'
-import { Card } from 'antd'
+import { Card, Spin } from 'antd'
 import DashboardBoardItem from '../../components/Dashboard/DashboardBoardItem'
 import { Link } from 'react-router-dom'
 
@@ -19,6 +19,8 @@ function Dashboard() {
   const { status, data: recentBoards } = useDatabaseListData(recentBoardsQuery, {
     idField: 'id'
   })
+
+  if (status === 'loading') return <Spin />
 
   return (
     <div className="flex flex-col gap-4">

@@ -1,13 +1,14 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { Button, Dropdown, Menu } from 'antd'
+import { Button, Dropdown, Menu, Spin } from 'antd'
 import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { isEmpty, useFirebase } from 'react-redux-firebase'
-import { useSelector } from 'react-redux'
 import UserAvatar from '../User/UserAvatar'
 import ItemToolbar from './ItemToolbar'
+import { useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
+import { query, ref } from 'firebase/database'
 
 const ToolbarContainer = styled.div`
   display: flex;
@@ -54,11 +55,12 @@ const ItemContainer = styled.div`
 
 const Item = (props) => {
   const firebase = useFirebase()
-  const auth = useSelector(({ firebase: { auth } }) => auth)
-  const creator = useSelector(({ firebase: { data } }) => data.users[props.item.value.createdBy])
+  const db = useDatabase()
+  const auth = useSigninCheck()
+  const creator = useDatabaseObjectData(query(ref(db, `users/${props.item.createdBy}`)))
 
   const onDeleteItem = async () => {
-    firebase.ref(`items/${props.list.id}/${props.item.key}`).remove()
+    firebase.ref(`items/${props.list.id}/${props.item.id}`).remove()
   }
 
   const handleToolbarClick = (event) => {
@@ -75,12 +77,20 @@ const Item = (props) => {
       ref={props.provided.innerRef}
       {...props.provided.draggableProps}
       {...props.provided.dragHandleProps}>
-      <ItemContent isDragging={props.isDragging} itemColor={props.item.value.color}>
+      <ItemContent isDragging={props.isDragging} itemColor={props.item.color}>
         <ToolbarContainer>
-          {creator && <UserAvatar user={creator} size="small" />}
-          {!isEmpty(auth) && <ItemToolbar handleClick={handleToolbarClick} />}
+          {creator.status === 'loading' ? (
+            <Spin />
+          ) : (
+            <UserAvatar user={creator.data} size="small" />
+          )}
+          {auth.status === 'loading' ? (
+            <Spin />
+          ) : auth.data.signedIn ? (
+            <ItemToolbar handleClick={handleToolbarClick} />
+          ) : null}
         </ToolbarContainer>
-        <div>{props.item.value.content}</div>
+        <div>{props.item.content}</div>
       </ItemContent>
     </ItemContainer>
   )

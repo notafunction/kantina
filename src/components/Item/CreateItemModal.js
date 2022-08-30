@@ -2,21 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useFirebase } from 'react-redux-firebase'
 import { Form, Modal, Input } from 'antd'
-import { useSelector } from 'react-redux'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../constants'
+import { useDatabase, useDatabaseListData, useUser } from 'reactfire'
+import { query, ref } from 'firebase/database'
 
 const CreateItemModal = (props) => {
   const firebase = useFirebase()
+  const db = useDatabase()
+  const items = useDatabaseListData(query(ref(db, `items/${props.list.id}`)), { idField: 'id' })
+  const user = useUser()
   const [form] = Form.useForm()
-  const auth = useSelector(({ firebase: { auth } }) => auth)
-  const items = useSelector(
-    ({
-      firebase: {
-        ordered: { items }
-      }
-    }) => items && items[props.list.id]
-  )
 
   const onCreateItem = async (values) =>
     firebase.push(`items/${props.list.id}`, {
@@ -28,7 +24,7 @@ const CreateItemModal = (props) => {
     const values = await form.validateFields()
     await onCreateItem({
       ...values,
-      createdBy: auth.uid
+      createdBy: user.data.uid
     })
     form.resetFields()
     props.close()

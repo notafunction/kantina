@@ -1,27 +1,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Form, Input, message } from 'antd'
-import { isEmpty, useFirebase } from 'react-redux-firebase'
-import { useSelector } from 'react-redux'
+import { Modal, Form, Input, message, Spin } from 'antd'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../constants'
+import { useDatabase, useDatabaseListData } from 'reactfire'
+import { query, ref } from 'firebase/database'
 
 const CreateListModal = (props) => {
-  const firebase = useFirebase()
+  const db = useDatabase()
+  const listsQuery = query(ref(db, `lists/${props.board.id}`))
+  const { status: listsStatus, data: listsData } = useDatabaseListData(listsQuery, {
+    idField: 'id'
+  })
   const [form] = Form.useForm()
-  const lists = useSelector(
-    ({
-      firebase: {
-        ordered: { lists }
-      }
-    }) => lists && lists[props.board.id]
-  )
+
+  if (listsStatus === 'loading') return <Spin />
 
   const onCreateList = async (values) => {
     try {
-      await firebase.push(`lists/${props.board.id}`, {
+      await db.push(`lists/${props.board.id}`, {
         ...values,
-        order: !isEmpty(lists) ? lists.length : 0
+        order: listsData.length
       })
     } catch (error) {
       message.error(error.code)
