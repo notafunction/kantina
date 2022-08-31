@@ -2,14 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Avatar } from 'antd'
 
-const UserAvatar = ({ user, ...props }) => {
-  const imageUrl = user.avatarUrl || `https://joeschmoe.io/api/v1/${user.email || 'random'}`
-
-  return (
-    <div>
-      <Avatar {...props} src={imageUrl} alt={user.displayName} />
-    </div>
-  )
+const UserAvatar = (props) => {
+  console.log(props.user.photoURL)
+  return <Avatar src={props.user.photoURL} alt={props.user.displayName} />
 }
 
 UserAvatar.propTypes = {

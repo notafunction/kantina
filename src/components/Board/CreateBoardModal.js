@@ -1,14 +1,28 @@
 import React from 'react'
 import { Modal, Form, Input, Select, message } from 'antd'
 import PropTypes from 'prop-types'
-import Board from '../../models/Board'
+import { useDatabase, useUser } from 'reactfire'
+import { push, ref, set } from 'firebase/database'
 
 const CreateBoardModal = (props) => {
+  const db = useDatabase()
+  const user = useUser()
   const [form] = Form.useForm()
 
-  const onCreateBoard = (values) => {
+  const onCreateBoard = async (values) => {
     try {
-      console.log(new Board(values).save())
+      const boardRef = await push(ref(db, 'boards'))
+
+      set(boardRef, {
+        ...values,
+        members: {
+          [user.data.uid]: true
+        }
+      })
+
+      set(ref(db, `users/${user.data.uid}/boards`), {
+        [boardRef.key]: true
+      })
     } catch (error) {
       message.error(error)
     }

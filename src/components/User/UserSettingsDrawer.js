@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Upload, Form, Input, message, Spin } from 'antd'
-import { LoadingOutlined } from '@ant-design/icons'
+import { Upload, Form, Input, message, Spin, Image } from 'antd'
 import SettingsDrawer from '../SettingsDrawer'
 import styled from 'styled-components'
-import { useAuth, useFirebaseApp, useUser } from 'reactfire'
+import { useAuth, useStorage, useUser } from 'reactfire'
+import { updateProfile } from 'firebase/auth'
+import { uploadBytes, ref, getDownloadURL } from 'firebase/storage'
 
 const StyledUpload = styled(Upload)`
   .ant-upload {
@@ -28,9 +29,8 @@ const getBase64 = (image, callback) => {
 
 const UserSettingsDrawer = (props) => {
   const { status, data: user } = useUser()
-  const firebase = useFirebaseApp()
   const auth = useAuth()
-  // const storage = useStorage()
+  const storage = useStorage()
 
   const [avatarFileList, setAvatarFileList] = useState([])
   const [avatarPreviewUrl, setAvatarPreviewUrl] = useState(null)
@@ -52,10 +52,11 @@ const UserSettingsDrawer = (props) => {
 
   const uploadAndGetAvatarUrl = async () => {
     try {
-      const result = await firebase.uploadFile('userAvatars', avatarFileList[0], null, {
-        name: auth.uid
-      })
-      return result.uploadTaskSnapshot.ref.getDownloadURL()
+      const result = await uploadBytes(
+        ref(storage, `userAvatars/${props.user.uid}`),
+        avatarFileList[0]
+      )
+      return await getDownloadURL(result.ref)
     } catch (error) {
       return Promise.reject(error)
     }
@@ -65,11 +66,15 @@ const UserSettingsDrawer = (props) => {
     setLoading(true)
     const { avatar: _avatar, ...values } = await form.validateFields()
     try {
-      const avatarUrl = await uploadAndGetAvatarUrl()
-      await firebase.updateProfile({
-        ...values,
-        avatarUrl
-      })
+      const payload = values
+
+      if (avatarFileList.length) {
+        payload.photoURL = await uploadAndGetAvatarUrl()
+      }
+
+      console.log(payload)
+
+      await updateProfile(auth.currentUser, payload)
       message.success('Your settings have been saved')
       props.close()
     } catch (error) {
@@ -108,10 +113,13 @@ const UserSettingsDrawer = (props) => {
             maxCount={1}>
             {avatarPreviewUrl ? (
               <img src={avatarPreviewUrl} />
-            ) : loading ? (
-              <LoadingOutlined />
             ) : (
-              <img src={user.photoURL} />
+              <Image
+                preview={false}
+                src={props.user.photoURL}
+                shape="square"
+                style={{ width: '100%', height: '100%' }}
+              />
             )}
           </StyledUpload>
         </Form.Item>

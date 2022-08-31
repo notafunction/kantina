@@ -1,26 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Dropdown, Menu, Spin } from 'antd'
+import { Avatar, Dropdown, Menu, Spin } from 'antd'
 import { LogoutOutlined, GroupOutlined, SettingOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router'
 import { CreateBoardModal } from '../Board'
-import UserAvatar from './UserAvatar'
 import UserSettingsDrawer from './UserSettingsDrawer'
-import { useAuth, useDatabase, useDatabaseListData } from 'reactfire'
-import { equalTo, orderByChild, query, ref } from 'firebase/database'
+import { useAuth, useDatabase, useDatabaseObject } from 'reactfire'
+import { ref } from 'firebase/database'
 
 function UserMenu(props) {
   const navigate = useNavigate()
   const auth = useAuth()
   const db = useDatabase()
-  const userBoardsQuery = query(
-    ref(db, 'boards'),
-    orderByChild('createdBy'),
-    equalTo(props.user.uid)
-  )
-  const { status, data: userBoards } = useDatabaseListData(userBoardsQuery, {
-    idField: 'id'
-  })
+  const { status, data: userBoards } = useDatabaseObject(ref(db, `users/${props.user.uid}/boards`))
 
   const [createBoardModalVisible, setCreateBoardModalVisible] = React.useState(false)
   const [userSettingsDrawerVisible, setUserSettingsDrawerVisible] = React.useState(false)
@@ -70,11 +62,11 @@ function UserMenu(props) {
   return (
     <>
       <Dropdown overlay={menu} trigger={['click']}>
-        <UserAvatar
+        <Avatar
           shape="square"
           size="large"
           key="user-menu-avatar"
-          user={props.user}
+          src={props.user.photoURL}
           style={{ cursor: 'pointer' }}
         />
       </Dropdown>

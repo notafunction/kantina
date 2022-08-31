@@ -82,7 +82,7 @@ const LoginForm = (props) => {
       title="Log In to Kantina"
       onOk={handleSubmit}
       okText="Log In"
-      footer={renderFooterModal}>
+      footer={renderModalFooter}>
       <Form onFinish={handleSubmit}>
         <Form.Item
           name="email"
