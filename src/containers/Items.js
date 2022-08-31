@@ -3,19 +3,17 @@ import PropTypes from 'prop-types'
 import { Draggable } from 'react-beautiful-dnd'
 import Item from '../components/Item/Item'
 import { Empty, Button, Spin } from 'antd'
-import { useDatabase, useDatabaseListData, useSigninCheck } from 'reactfire'
-import { query, ref } from 'firebase/database'
+import { useDatabase, useDatabaseList, useSigninCheck } from 'reactfire'
+import { orderByChild, query, ref } from 'firebase/database'
 
 const Items = (props) => {
   const db = useDatabase()
-  const items = useDatabaseListData(query(ref(db, `items/${props.list.id}`)), {
-    idField: 'id'
-  })
+  const itemsList = useDatabaseList(query(ref(db, `items/${props.list.id}`), orderByChild('order')))
   const auth = useSigninCheck()
 
-  if (items.status === 'loading') return <Spin />
+  if (itemsList.status === 'loading') return <Spin />
 
-  if (!items.data.length) {
+  if (!itemsList.data.length) {
     return (
       <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="There are no items">
         {auth.status === 'loading' ? (
@@ -29,14 +27,22 @@ const Items = (props) => {
     )
   }
 
-  return items.data.map((item, i) => (
+  return itemsList.data.map(({ snapshot }, i) => (
     <Draggable
-      key={item.id}
+      key={snapshot.key}
       index={i}
-      draggableId={item.id}
+      draggableId={snapshot.key}
       isDragDisabled={auth.status !== 'loading' && !auth.data.signedIn}>
-      {(provided, snapshot) => (
-        <Item isDragging={snapshot.isDragging} provided={provided} item={item} list={props.list} />
+      {(provided, draggableSnapshot) => (
+        <Item
+          isDragging={draggableSnapshot.isDragging}
+          provided={provided}
+          item={{
+            id: snapshot.key,
+            ...snapshot.val()
+          }}
+          list={props.list}
+        />
       )}
     </Draggable>
   ))

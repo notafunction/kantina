@@ -1,5 +1,5 @@
 import CreateListModal from './CreateListModal'
-import ListToolbar from './ListToolbar'
-import ListSettingsDrawer from './ListSettingsDrawer'
+import ListToolbar from '../../containers/List/components/ListToolbar'
+import ListSettingsDrawer from '../../containers/List/components/ListSettingsDrawer'
 
 export { CreateListModal, ListSettingsDrawer, ListToolbar }

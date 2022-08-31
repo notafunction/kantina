@@ -1,23 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useFirebase } from 'react-redux-firebase'
 import { Form, Modal, Input } from 'antd'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../constants'
 import { useDatabase, useDatabaseListData, useUser } from 'reactfire'
-import { query, ref } from 'firebase/database'
+import { query, ref, push } from 'firebase/database'
 
 const CreateItemModal = (props) => {
-  const firebase = useFirebase()
   const db = useDatabase()
   const items = useDatabaseListData(query(ref(db, `items/${props.list.id}`)), { idField: 'id' })
   const user = useUser()
   const [form] = Form.useForm()
 
   const onCreateItem = async (values) =>
-    firebase.push(`items/${props.list.id}`, {
+    push(ref(db, `items/${props.list.id}`), {
       ...values,
-      order: items ? items.length : 0
+      order: items.data ? items.data.length : 0
     })
 
   const onOk = async () => {

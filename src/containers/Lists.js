@@ -5,11 +5,10 @@ import List from './List'
 import PropTypes from 'prop-types'
 import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd'
 import { useParams } from 'react-router'
-import { isEmpty, useFirebase } from 'react-redux-firebase'
 import { arrayMoveImmutable } from 'array-move'
 import Container from '../components/Container'
-import { useDatabase, useDatabaseList, useSigninCheck } from 'reactfire'
-import { query, ref } from 'firebase/database'
+import { useDatabase, useDatabaseListData, useSigninCheck } from 'reactfire'
+import { query, ref, set, remove, get, child } from 'firebase/database'
 import { Spin } from 'antd'
 
 const ListWrapper = styled.div`
@@ -21,60 +20,69 @@ const ListWrapper = styled.div`
 `
 
 const Lists = (props) => {
-  const firebase = useFirebase()
   const params = useParams()
   const db = useDatabase()
   const itemsQuery = query(ref(db, 'items'))
-  const { status: itemsStatus, data: items } = useDatabaseList(itemsQuery, {
+  const { status: itemsStatus, data: items } = useDatabaseListData(itemsQuery, {
     idField: 'id'
   })
   const { status: signinCheckStatus, data: signinCheckData } = useSigninCheck(0)
 
   if (itemsStatus === 'loading' || signinCheckStatus === 'loading') return <Spin />
 
-  const onDragEnd = ({ source, destination, draggableId, ...result }) => {
+  const onDragEnd = async ({ source, destination, draggableId, ...result }) => {
     switch (result.type) {
       case 'LIST': {
-        firebase.ref(`lists/${params.boardId}`).update(
-          arrayMoveImmutable(props.lists, source.index, destination.index).reduce(
-            (prev, current, index) => ({
-              ...prev,
-              [current.id]: {
-                ...current,
-                order: index
-              }
-            }),
-            {}
-          )
+        const updatedLists = arrayMoveImmutable(
+          props.lists,
+          source.index,
+          destination.index
+        ).reduce(
+          (lists, list, index) => ({
+            ...lists,
+            [list.id]: {
+              ...list,
+              order: index
+            }
+          }),
+          {}
         )
+
+        set(ref(db, `lists/${params.boardId}`), updatedLists)
         break
       }
-      case 'ITEM': {
-        if (!destination) return // If dropped outside of <Droppable type="ITEM">
-        if (source.droppableId === destination.droppableId) {
-          if (source.index === destination.index) return // If dropped into same position
 
-          const updatedItemsByKey = arrayMoveImmutable(
-            items[destination.droppableId],
+      case 'ITEM': {
+        if (!destination) return
+
+        const items = (await get(child(ref(db), `items/${destination.droppableId}`))).val()
+
+        if (source.droppableId === destination.droppableId) {
+          if (source.index === destination.index) return
+
+          const itemIDsByOrder = arrayMoveImmutable(
+            Object.keys(items),
             source.index,
             destination.index
-          ).reduce(
-            (prev, current, index) => ({
-              ...prev,
-              [current.id]: {
-                ...current,
+          )
+
+          const updatedItems = itemIDsByOrder.reduce(
+            (_items, id, index) => ({
+              ..._items,
+              [id]: {
+                ...items[id],
                 order: index
               }
             }),
             {}
           )
 
-          firebase.ref(`items/${destination.droppableId}`).update(updatedItemsByKey)
+          set(ref(db, `items/${destination.droppableId}`), updatedItems)
           return
         }
 
-        const sourceItemsRef = firebase.ref(`items/${source.droppableId}`)
-        const destinationItemsRef = firebase.ref(`items/${destination.droppableId}`)
+        const sourceItemsRef = ref(db, `items/${source.droppableId}`)
+        const destinationItemsRef = ref(db, `items/${destination.droppableId}`)
 
         // Squeeze item into destination items array at index and reduce into object for firebase update
         const updatedItemsByKey = [
@@ -86,18 +94,18 @@ const Lists = (props) => {
             ? items[destination.droppableId].slice(destination.index)
             : [])
         ].reduce(
-          (prev, current, index) => ({
-            ...prev,
-            [current.id]: {
-              ...current,
+          (items, item, index) => ({
+            ...items,
+            [item.id]: {
+              ...item,
               order: index
             }
           }),
           {}
         )
 
-        sourceItemsRef.child(draggableId).remove()
-        destinationItemsRef.update(updatedItemsByKey)
+        remove(ref(db, `items/${source.droppableId}/${draggableId}`))
+        set(ref(db, `items/${destination.droppableId}`), updatedItemsByKey)
         break
       }
     }

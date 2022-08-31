@@ -5,9 +5,9 @@ import { WarningOutlined } from '@ant-design/icons'
 import { useFirebase } from 'react-redux-firebase'
 import { useParams } from 'react-router'
 import { CirclePicker } from 'react-color'
-import { colorPickerColors } from '../../constants'
-import SettingsDrawer from '../SettingsDrawer'
-import FormDangerZone from '../Form/FormDangerZone'
+import { colorPickerColors } from '../../../constants'
+import SettingsDrawer from '../../../components/SettingsDrawer'
+import FormDangerZone from '../../../components/Form/FormDangerZone'
 
 const ListSettingsDrawer = (props) => {
   const [loading, setLoading] = React.useState(false)
