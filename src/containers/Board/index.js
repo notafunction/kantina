@@ -8,7 +8,7 @@ import Spin from '../../components/Spin'
 import BoardSettingsDrawer from './components/BoardSettingsDrawer'
 import UserToolbar from './components/UserToolbar'
 import { useDatabase, useDatabaseListData } from 'reactfire'
-import { ref } from '@firebase/database'
+import { orderByChild, query, ref } from 'firebase/database'
 import tw from 'twin.macro'
 
 const Styled = {
@@ -27,7 +27,7 @@ const Board = () => {
   const db = useDatabase()
 
   const boardQuery = ref(db, `boards/${params.boardId}`)
-  const listsQuery = ref(db, `lists/${params.boardId}`)
+  const listsQuery = query(ref(db, `lists/${params.boardId}`), orderByChild('order'))
 
   const { status: boardStatus, data: board } = useDatabaseListData(boardQuery, {
     idField: 'id'

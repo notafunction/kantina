@@ -7,8 +7,8 @@ import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd'
 import { useParams } from 'react-router'
 import { arrayMoveImmutable } from 'array-move'
 import Container from '../components/Container'
-import { useDatabase, useDatabaseListData, useSigninCheck } from 'reactfire'
-import { query, ref, set, remove, get, child } from 'firebase/database'
+import { useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
+import { query, ref, set, remove, get, child, orderByChild, push } from 'firebase/database'
 import { Spin } from 'antd'
 
 const ListWrapper = styled.div`
@@ -22,13 +22,7 @@ const ListWrapper = styled.div`
 const Lists = (props) => {
   const params = useParams()
   const db = useDatabase()
-  const itemsQuery = query(ref(db, 'items'))
-  const { status: itemsStatus, data: items } = useDatabaseListData(itemsQuery, {
-    idField: 'id'
-  })
   const { status: signinCheckStatus, data: signinCheckData } = useSigninCheck(0)
-
-  if (itemsStatus === 'loading' || signinCheckStatus === 'loading') return <Spin />
 
   const onDragEnd = async ({ source, destination, draggableId, ...result }) => {
     switch (result.type) {
@@ -55,10 +49,10 @@ const Lists = (props) => {
       case 'ITEM': {
         if (!destination) return
 
-        const items = (await get(child(ref(db), `items/${destination.droppableId}`))).val()
-
         if (source.droppableId === destination.droppableId) {
           if (source.index === destination.index) return
+
+          const items = (await get(child(ref(db), `items/${destination.droppableId}`))).val()
 
           const itemIDsByOrder = arrayMoveImmutable(
             Object.keys(items),
@@ -81,8 +75,22 @@ const Lists = (props) => {
           return
         }
 
-        const sourceItemsRef = ref(db, `items/${source.droppableId}`)
-        const destinationItemsRef = ref(db, `items/${destination.droppableId}`)
+        console.log(destination.droppableId)
+
+        const destinationItems = (
+          await get(query(ref(db, `items/${destination.droppableId}`), orderByChild('order')))
+        ).val()
+
+        if (!destinationItems) {
+          const sourceItem = (
+            await get(ref(db, `items/${source.droppableId}/${source.draggableId}`))
+          ).val()
+
+          push(ref(db, `items/${destination.droppableId}`), {
+            ...sourceItem,
+            order: 0
+          })
+        }
 
         // Squeeze item into destination items array at index and reduce into object for firebase update
         const updatedItemsByKey = [

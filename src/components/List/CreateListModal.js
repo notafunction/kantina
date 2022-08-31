@@ -4,7 +4,7 @@ import { Modal, Form, Input, message, Spin } from 'antd'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../constants'
 import { useDatabase, useDatabaseListData } from 'reactfire'
-import { query, ref } from 'firebase/database'
+import { push, query, ref } from 'firebase/database'
 
 const CreateListModal = (props) => {
   const db = useDatabase()
@@ -18,7 +18,7 @@ const CreateListModal = (props) => {
 
   const onCreateList = async (values) => {
     try {
-      await db.push(`lists/${props.board.id}`, {
+      await push(ref(db, `lists/${props.board.id}`), {
         ...values,
         order: listsData.length
       })
