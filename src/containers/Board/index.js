@@ -7,8 +7,8 @@ import { Empty, Button, Result, PageHeader } from 'antd'
 import Spin from '../../components/Spin'
 import BoardSettingsDrawer from './components/BoardSettingsDrawer'
 import UserToolbar from './components/UserToolbar'
-import { useDatabase, useDatabaseListData } from 'reactfire'
-import { orderByChild, query, ref } from 'firebase/database'
+import { useDatabase, useDatabaseObjectData } from 'reactfire'
+import { ref } from 'firebase/database'
 import tw from 'twin.macro'
 
 const Styled = {
@@ -27,12 +27,8 @@ const Board = () => {
   const db = useDatabase()
 
   const boardQuery = ref(db, `boards/${params.boardId}`)
-  const listsQuery = query(ref(db, `lists/${params.boardId}`), orderByChild('order'))
 
-  const { status: boardStatus, data: board } = useDatabaseListData(boardQuery, {
-    idField: 'id'
-  })
-  const { status: listStatus, data: lists } = useDatabaseListData(listsQuery, {
+  const board = useDatabaseObjectData(boardQuery, {
     idField: 'id'
   })
 
@@ -51,34 +47,9 @@ const Board = () => {
     }
   }
 
-  const renderLists = () => {
-    if (listStatus === 'loading') return <Spin />
+  if (board.status === 'loading') return <Spin />
 
-    if (lists.length)
-      return (
-        <Lists
-          lists={lists}
-          board={{
-            id: params.boardId,
-            ...board
-          }}
-        />
-      )
-
-    return (
-      <Empty description="There's nothing here" image={Empty.PRESENTED_IMAGE_SIMPLE}>
-        {/* {!isEmpty(auth) && (
-          <Button onClick={() => setCreateListModalVisible(true)} type="primary">
-            Create List
-          </Button>
-        )} */}
-      </Empty>
-    )
-  }
-
-  if (boardStatus === 'loading') return <Spin />
-
-  if (!board) {
+  if (!board.data) {
     return (
       <Result
         status="404"
@@ -97,22 +68,18 @@ const Board = () => {
     <Styled.Container>
       <PageHeader title={board.title} extra={<UserToolbar onClick={handleToolbarClick} />} />
 
-      <Styled.Content>{renderLists()}</Styled.Content>
+      <Styled.Content>
+        <Lists />
+      </Styled.Content>
 
       <CreateListModal
         visible={createListModalVisible}
         close={() => setCreateListModalVisible(false)}
-        board={{
-          ...board,
-          id: params.boardId
-        }}
+        board={board.data}
       />
 
       <BoardSettingsDrawer
-        board={{
-          ...board,
-          id: params.boardId
-        }}
+        board={board.data}
         visible={boardSettingsVisible}
         close={() => setBoardSettingsVisible(false)}
       />

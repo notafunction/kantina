@@ -1,21 +1,50 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Avatar, Dropdown, Menu, Spin } from 'antd'
 import { LogoutOutlined, GroupOutlined, SettingOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router'
 import { CreateBoardModal } from '../Board'
 import UserSettingsDrawer from './UserSettingsDrawer'
-import { useAuth, useDatabase, useDatabaseObject } from 'reactfire'
-import { ref } from 'firebase/database'
-
+import { useUser, useDatabase, useDatabaseObjectData, useAuth } from 'reactfire'
+import { ref, get } from 'firebase/database'
 function UserMenu(props) {
   const navigate = useNavigate()
+  const user = useUser()
   const auth = useAuth()
   const db = useDatabase()
-  const { status, data: userBoards } = useDatabaseObject(ref(db, `users/${props.user.uid}/boards`))
 
+  const userBoards = useDatabaseObjectData(ref(db, `users/${user.data.uid}/boards`), {
+    idField: false
+  })
+
+  const [boards, setBoards] = useState([])
   const [createBoardModalVisible, setCreateBoardModalVisible] = React.useState(false)
   const [userSettingsDrawerVisible, setUserSettingsDrawerVisible] = React.useState(false)
+
+  useEffect(() => {
+    if (userBoards.status === 'loading') return
+
+    const fetchData = async () => {
+      const boardIds = Object.keys(userBoards.data)
+
+      const boards = await Promise.all(
+        boardIds.map(async (id) => {
+          const snap = await get(ref(db, `boards/${id}`))
+
+          if (snap.exists()) {
+            return {
+              id,
+              ...snap.val()
+            }
+          }
+        })
+      )
+
+      setBoards(boards)
+    }
+
+    fetchData().catch(console.error)
+  }, [userBoards])
 
   const handleMenuClick = (event) => {
     switch (event.key) {
@@ -37,16 +66,17 @@ function UserMenu(props) {
     }
   }
 
-  if (status === 'loading') {
+  if (userBoards.status === 'loading') {
     return <Spin />
   }
 
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.SubMenu key="userBoards" title="My Boards" icon={<GroupOutlined />}>
-        {userBoards &&
-          userBoards.map((board) => <Menu.Item key={board.id}>{board.title}</Menu.Item>)}
-        {userBoards && userBoards.length && <Menu.Divider />}
+        {boards.map((board) => (
+          <Menu.Item key={board.id}>{board.title}</Menu.Item>
+        ))}
+        {boards.length ? <Menu.Divider /> : null}
         <Menu.Item key="$create">Create Board</Menu.Item>
       </Menu.SubMenu>
       <Menu.Item key="$settings" icon={<SettingOutlined />}>

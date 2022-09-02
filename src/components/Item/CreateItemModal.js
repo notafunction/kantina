@@ -3,26 +3,26 @@ import PropTypes from 'prop-types'
 import { Form, Modal, Input } from 'antd'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../constants'
-import { useDatabase, useDatabaseListData, useUser } from 'reactfire'
-import { query, ref, push } from 'firebase/database'
+import { useDatabase, useUser } from 'reactfire'
+import { ref, push, set } from 'firebase/database'
 
 const CreateItemModal = (props) => {
   const db = useDatabase()
-  const items = useDatabaseListData(query(ref(db, `items/${props.list.id}`)), { idField: 'id' })
   const user = useUser()
   const [form] = Form.useForm()
 
-  const onCreateItem = async (values) =>
-    push(ref(db, `items/${props.list.id}`), {
-      ...values,
-      order: items.data ? items.data.length : 0
-    })
+  const onCreateItem = async (values) => {
+    const result = push(ref(db, `items`), values)
+
+    await set(ref(db, `lists/${props.list.id}/items/${result.key}`), true)
+  }
 
   const onOk = async () => {
     const values = await form.validateFields()
     await onCreateItem({
       ...values,
-      createdBy: user.data.uid
+      createdBy: user.data.uid,
+      list: props.list.id
     })
     form.resetFields()
     props.close()

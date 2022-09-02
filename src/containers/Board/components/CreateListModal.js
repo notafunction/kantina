@@ -1,27 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Form, Input, message, Spin } from 'antd'
+import { Modal, Form, Input, message } from 'antd'
 import { CirclePicker } from 'react-color'
-import { colorPickerColors } from '../../constants'
-import { useDatabase, useDatabaseListData } from 'reactfire'
-import { push, query, ref } from 'firebase/database'
+import { colorPickerColors } from '../../../constants'
+import { useDatabase } from 'reactfire'
+import { push, ref, set } from 'firebase/database'
+import { useParams } from 'react-router'
 
 const CreateListModal = (props) => {
+  const params = useParams()
   const db = useDatabase()
-  const listsQuery = query(ref(db, `lists/${props.board.id}`))
-  const { status: listsStatus, data: listsData } = useDatabaseListData(listsQuery, {
-    idField: 'id'
-  })
   const [form] = Form.useForm()
-
-  if (listsStatus === 'loading') return <Spin />
 
   const onCreateList = async (values) => {
     try {
-      await push(ref(db, `lists/${props.board.id}`), {
-        ...values,
-        order: listsData.length
-      })
+      const result = await push(ref(db, `lists`), values)
+      await set(ref(db, `boards/${params.boardId}/lists/${result.key}`), true)
     } catch (error) {
       message.error(error.code)
     }
@@ -29,7 +23,10 @@ const CreateListModal = (props) => {
 
   const onOk = async () => {
     const values = await form.validateFields()
-    await onCreateList(values)
+    await onCreateList({
+      ...values,
+      board: params.boardId
+    })
     form.resetFields()
     props.close()
   }
