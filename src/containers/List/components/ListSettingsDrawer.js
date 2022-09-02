@@ -20,7 +20,7 @@ const ListSettingsDrawer = (props) => {
     setLoading(true)
     const values = await form.validateFields()
     try {
-      await update(`lists/${props.list.id}`, values)
+      await update(ref(db, `lists/${props.list.id}`), values)
       message.success('Your changes have been saved')
       props.close()
     } catch (error) {

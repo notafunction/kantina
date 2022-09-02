@@ -4,10 +4,16 @@ import { Dropdown, Menu, Popconfirm } from 'antd'
 import { PlusOutlined, SettingOutlined, DeleteOutlined, WarningOutlined } from '@ant-design/icons'
 import ListSettingsDrawer from './ListSettingsDrawer'
 import CreateItemModal from './CreateItemModal'
+import { useSigninCheck } from 'reactfire'
 
 const ListToolbar = (props) => {
+  const auth = useSigninCheck()
   const [settingsVisible, setSettingsVisible] = useState(false)
   const [createItemVisible, setCreateItemVisible] = useState(false)
+
+  if (auth.status === 'loading' || !auth.data.signedIn) {
+    return null
+  }
 
   const handleMenuClick = (event) => {
     switch (event.key) {

@@ -25,9 +25,7 @@ const Board = () => {
   const params = useParams()
   const db = useDatabase()
 
-  const boardQuery = ref(db, `boards/${params.boardId}`)
-
-  const board = useDatabaseObjectData(boardQuery, {
+  const board = useDatabaseObjectData(ref(db, `boards/${params.boardId}`), {
     idField: 'id'
   })
 
