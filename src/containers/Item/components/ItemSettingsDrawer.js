@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useDatabase } from 'reactfire'
-import { Form, Input, message } from 'antd'
+import { Button, Form, Input, message, Popconfirm } from 'antd'
 import { ref, update, remove } from 'firebase/database'
 import SettingsDrawer from '../../../components/SettingsDrawer'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
+import FormDangerZone from '../../../components/Form/FormDangerZone'
+import { WarningOutlined } from '@ant-design/icons'
 
 const ItemSettingsDrawer = (props) => {
   const db = useDatabase()
@@ -28,10 +30,10 @@ const ItemSettingsDrawer = (props) => {
 
   const onDelete = async () => {
     try {
-      await Promise.all(
+      await Promise.all([
         remove(ref(db, `items/${props.item.id}`)),
         remove(ref(db, `lists/${props.list.id}/items/${props.item.id}`))
-      )
+      ])
     } catch (error) {
       message.error(error.message)
     }
@@ -59,8 +61,19 @@ const ItemSettingsDrawer = (props) => {
           label="Color"
           initialValue={props.item.color}
           getValueFromEvent={({ hex }) => hex}>
-          <CirclePicker color={colorPickerColors} color={props.item.color} />
+          <CirclePicker colors={colorPickerColors} color={props.item.color} />
         </Form.Item>
+
+        <FormDangerZone>
+          <Popconfirm
+            onConfirm={onDelete}
+            okText="Yes"
+            title="Are you sure?"
+            okButtonProps={{ danger: true }}
+            icon={<WarningOutlined />}>
+            <Button danger>Delete Item</Button>
+          </Popconfirm>
+        </FormDangerZone>
       </Form>
     </SettingsDrawer>
   )
