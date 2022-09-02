@@ -1,6 +1,6 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-import Board from './containers/Board'
+import Board from './containers/Board/Board'
 import NavBar from './components/Navbar/NavBar'
 import RequireAccess from './containers/RequireAccess'
 import { useGoogleAnalytics } from './hooks'

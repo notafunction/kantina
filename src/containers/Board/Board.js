@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { CreateListModal } from '../../components/List'
-import Lists from '../Lists'
+import Lists from '../Lists/Lists'
 import { useParams, useNavigate } from 'react-router'
-import { Empty, Button, Result, PageHeader } from 'antd'
-import Spin from '../../components/Spin'
+import { Button, Result, PageHeader, Spin } from 'antd'
 import BoardSettingsDrawer from './components/BoardSettingsDrawer'
 import UserToolbar from './components/UserToolbar'
 import { useDatabase, useDatabaseObjectData } from 'reactfire'
@@ -66,7 +65,7 @@ const Board = () => {
 
   return (
     <Styled.Container>
-      <PageHeader title={board.title} extra={<UserToolbar onClick={handleToolbarClick} />} />
+      <PageHeader title={board.data.title} extra={<UserToolbar onClick={handleToolbarClick} />} />
 
       <Styled.Content>
         <Lists />

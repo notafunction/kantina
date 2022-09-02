@@ -1,30 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Form, Input, message, Popconfirm } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
-import { useFirebase } from 'react-redux-firebase'
 import { useParams } from 'react-router'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
 import SettingsDrawer from '../../../components/SettingsDrawer'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
+import { ref, remove, update } from 'firebase/database'
+import { useDatabase } from 'reactfire'
 
 const ListSettingsDrawer = (props) => {
-  const [loading, setLoading] = React.useState(false)
-  const { boardId } = useParams()
-  const firebase = useFirebase()
+  const db = useDatabase()
+  const [loading, setLoading] = useState(false)
+  const params = useParams()
   const [form] = Form.useForm()
 
   const onSave = async () => {
     setLoading(true)
     const values = await form.validateFields()
     try {
-      await firebase.update(`lists/${boardId}/${props.list.id}`, values)
-      props.close()
+      await update(`lists/${props.list.id}`, values)
       message.success('Your changes have been saved')
+      props.close()
     } catch (error) {
-      message.error('There was a problem saving your changes')
-      console.error(error)
+      message.error(error.message)
     } finally {
       setLoading(false)
     }
@@ -33,12 +33,14 @@ const ListSettingsDrawer = (props) => {
   const onDelete = async () => {
     setLoading(true)
     try {
-      await firebase.remove(`lists/${boardId}/${props.list.id}`)
-      props.close()
+      await Promise.all(
+        remove(ref(db, `lists/${props.list.id}`)),
+        remove(ref(db, `boards/${params.boardId}/lists/${props.list.id}`))
+      )
       message.success(`List has been deleted`)
+      props.close()
     } catch (error) {
-      message.error('There was a problem deleting the list')
-      console.log(error)
+      message.error(error.message)
     } finally {
       setLoading(false)
     }

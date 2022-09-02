@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Modal, Input } from 'antd'
 import { CirclePicker } from 'react-color'
-import { colorPickerColors } from '../../constants'
+import { colorPickerColors } from '../../../constants'
 import { useDatabase, useUser } from 'reactfire'
 import { ref, push, set } from 'firebase/database'
 
