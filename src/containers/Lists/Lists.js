@@ -5,11 +5,9 @@ import List from '../List/List'
 import PropTypes from 'prop-types'
 import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd'
 import { useParams } from 'react-router'
-import { arrayMoveImmutable } from 'array-move'
 import Container from '../../components/Container'
 import { useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
 import { query, ref, set, remove, get, child, orderByChild, push } from 'firebase/database'
-import { Spin } from 'antd'
 
 const ListWrapper = styled.div`
   flex-shrink: 0;
@@ -23,37 +21,56 @@ const Lists = (props) => {
   const params = useParams()
   const db = useDatabase()
   const { status: signinCheckStatus, data: signinCheckData } = useSigninCheck()
-  const boardLists = useDatabaseObjectData(ref(db, `boards/${params.boardId}/lists`), {
+  const listIds = useDatabaseObjectData(ref(db, `boards/${params.boardId}/lists`), {
     idField: false
   })
 
   const [lists, setLists] = useState([])
 
   useEffect(() => {
-    if (boardLists.status === 'loading') return
-    if (boardLists.data === null) return
+    if (listIds.status === 'success') {
+      if (listIds.data === null) return
 
-    const fetchData = async () => {
-      const listIds = Object.keys(boardLists.data)
+      const fetchData = async () => {
+        const ids = Object.keys(listIds.data)
 
-      const lists = await Promise.all(
-        listIds.map(async (id) => {
-          const snap = await get(ref(db, `lists/${id}`))
+        const lists = await Promise.all(
+          ids.map(async (id) => {
+            const snap = await get(ref(db, `lists/${id}`))
 
-          if (snap.exists()) {
-            return {
-              id,
-              ...snap.val()
+            if (snap.exists()) {
+              return {
+                id,
+                ...snap.val()
+              }
             }
-          }
-        })
-      )
+          })
+        )
 
-      setLists(lists)
+        setLists(lists)
+      }
+
+      fetchData().catch(console.error)
     }
+  }, [listIds.data])
 
-    fetchData().catch(console.error)
-  }, [boardLists])
+  const renderList = (list, index) => (
+    <Draggable
+      key={list.id}
+      index={index}
+      draggableId={list.id}
+      isDragDisabled={!signinCheckData.signedIn}>
+      {(draggableProvided, draggableSnapshot) => (
+        <ListWrapper ref={draggableProvided.innerRef} {...draggableProvided.draggableProps}>
+          <List
+            list={list}
+            dragHandleProps={draggableProvided.dragHandleProps}
+            isDragging={draggableSnapshot.isDragging}
+          />
+        </ListWrapper>
+      )}
+    </Draggable>
+  )
 
   const onDragEnd = async ({ source, destination, draggableId, ...result }) => {
     // switch (result.type) {
@@ -141,25 +158,7 @@ const Lists = (props) => {
       <Droppable droppableId={params.boardId} type="LIST" direction="horizontal">
         {(droppableProvided, droppableSnapshot) => (
           <Container flex ref={droppableProvided.innerRef} {...droppableProvided.droppableProps}>
-            {lists.map((list, i) => (
-              <Draggable
-                key={i}
-                index={i}
-                draggableId={list.id}
-                isDragDisabled={!signinCheckData.signedIn}>
-                {(draggableProvided, draggableSnapshot) => (
-                  <ListWrapper
-                    ref={draggableProvided.innerRef}
-                    {...draggableProvided.draggableProps}>
-                    <List
-                      list={list}
-                      dragHandleProps={draggableProvided.dragHandleProps}
-                      isDragging={draggableSnapshot.isDragging}
-                    />
-                  </ListWrapper>
-                )}
-              </Draggable>
-            ))}
+            {lists.map((list, index) => renderList(list, index))}
             {droppableProvided.placeholder}
           </Container>
         )}

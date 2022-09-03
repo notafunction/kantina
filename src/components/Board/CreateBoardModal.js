@@ -1,5 +1,6 @@
 import React from 'react'
-import { Modal, Form, Input, Select, message } from 'antd'
+import { Modal, Form, Input, Select, Switch, message } from 'antd'
+import { LockOutlined, UnlockOutlined } from '@ant-design/icons'
 import PropTypes from 'prop-types'
 import { useDatabase, useUser } from 'reactfire'
 import { push, ref, set } from 'firebase/database'
@@ -54,6 +55,15 @@ const CreateBoardModal = (props) => {
             <Select.Option value="private">Private</Select.Option>
             <Select.Option value="public">Public</Select.Option>
           </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="locked"
+          label="Lock"
+          help="Allow changes only by board admins"
+          valuePropName="checked"
+          initialValue={false}>
+          <Switch checkedChildren={<LockOutlined />} unCheckedChildren={<UnlockOutlined />} />
         </Form.Item>
       </Form>
     </Modal>

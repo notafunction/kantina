@@ -2,38 +2,36 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Form, Input, Switch, message, Select, Popconfirm } from 'antd'
 import { WarningOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons'
-import { useFirebase } from 'react-redux-firebase'
-import { useNavigate } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import SettingsDrawer from '../../../components/SettingsDrawer'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
+import { ref, remove, update } from 'firebase/database'
+import { useDatabase } from 'reactfire'
 
 const BoardSettingsDrawer = (props) => {
-  const [loading, setLoading] = React.useState(false)
+  const params = useParams()
+  const db = useDatabase()
   const navigate = useNavigate()
-  const firebase = useFirebase()
   const [form] = Form.useForm()
 
   const onSave = async () => {
-    setLoading(true)
     const values = await form.validateFields()
     try {
-      await firebase.update(`boards/${props.board.id}`, values)
-      message.success('Your changes have been saved')
+      await update(ref(db, `boards/${params.boardId}`), values)
     } catch (error) {
-      message.error('There was a problem saving your changes')
+      message.error(error.message)
       console.error(error)
-    } finally {
-      setLoading(false)
     }
   }
 
   const onDelete = async () => {
     try {
-      await firebase.remove(`boards/${props.board.id}`)
+      await remove(ref(db, `boards/${params.boardId}`))
       props.close()
       navigate('/')
     } catch (error) {
-      console.log(error)
+      message.error(error.message)
+      console.error(error)
     }
   }
 
@@ -43,7 +41,6 @@ const BoardSettingsDrawer = (props) => {
       visible={props.visible}
       close={props.close}
       onOk={onSave}
-      okButtonProps={{ loading }}
       destroyOnClose>
       <Form layout="vertical" onFinish={onSave} form={form} preserve={false}>
         <Form.Item

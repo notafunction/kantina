@@ -1,23 +1,20 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Droppable } from 'react-beautiful-dnd'
 import Item from '../Item/Item'
 import ListToolbar from './components/ListToolbar'
-import { useDatabase, useDatabaseListData } from 'reactfire'
+import { useDatabase, useDatabaseObjectData } from 'reactfire'
 import Styled from './components/Styled'
-import { equalTo, orderByChild, query, ref } from 'firebase/database'
+import { ref } from 'firebase/database'
 import { Spin } from 'antd'
 
 const List = (props) => {
   const db = useDatabase()
-  const items = useDatabaseListData(
-    query(ref(db, `items`), orderByChild('list'), equalTo(props.list.id)),
-    {
-      idField: 'id'
-    }
-  )
+  const itemIds = useDatabaseObjectData(ref(db, `lists/${props.list.id}/items`), { idField: false })
 
-  if (items.status === 'loading') return <Spin />
+  const renderItem = (id, props) => <Item key={id} id={id} {...props} />
+
+  if (itemIds.status === 'loading') return <Spin />
 
   return (
     <Droppable droppableId={props.list.id} type="ITEM">
@@ -28,11 +25,13 @@ const List = (props) => {
             <ListToolbar list={props.list} />
           </Styled.Header>
           <Styled.Dropzone ref={provided.innerRef}>
-            {items.data.map((item) => (
-              <Item key={item.id} item={item} list={props.list} provided={provided} />
-            ))}
-            {/* <Items list={props.list} onCreate={() => setCreateItemModalVisible(true)} />
-            {provided.placeholder} */}
+            {Object.keys(itemIds.data).map((id) =>
+              renderItem(id, {
+                list: props.list,
+                provided
+              })
+            )}
+            {provided.placeholder}
           </Styled.Dropzone>
         </Styled.Content>
       )}

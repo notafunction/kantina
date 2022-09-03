@@ -23,7 +23,7 @@ const RequireAccess = (props) => {
       return true
     }
 
-    if (signinCheckData.signedIn && board.createdBy === signinCheckData.user.uid) {
+    if (signinCheckData.signedIn && Object.keys(board.members).includes(signinCheckData.user.uid)) {
       return true
     }
   }

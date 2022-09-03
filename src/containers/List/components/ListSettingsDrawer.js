@@ -12,37 +12,27 @@ import { useDatabase } from 'reactfire'
 
 const ListSettingsDrawer = (props) => {
   const db = useDatabase()
-  const [loading, setLoading] = useState(false)
   const params = useParams()
   const [form] = Form.useForm()
 
   const onSave = async () => {
-    setLoading(true)
     const values = await form.validateFields()
     try {
-      await update(`lists/${props.list.id}`, values)
-      message.success('Your changes have been saved')
-      props.close()
+      await update(ref(db, `lists/${props.list.id}`), values)
     } catch (error) {
       message.error(error.message)
-    } finally {
-      setLoading(false)
     }
   }
 
   const onDelete = async () => {
-    setLoading(true)
     try {
       await Promise.all(
         remove(ref(db, `lists/${props.list.id}`)),
         remove(ref(db, `boards/${params.boardId}/lists/${props.list.id}`))
       )
-      message.success(`List has been deleted`)
       props.close()
     } catch (error) {
       message.error(error.message)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -52,7 +42,6 @@ const ListSettingsDrawer = (props) => {
       visible={props.visible}
       close={props.close}
       onOk={onSave}
-      okButtonProps={{ loading }}
       destroyOnClose>
       <Form layout="vertical" onFinish={onSave} form={form} preserve={false}>
         <Form.Item

@@ -25,11 +25,11 @@ const Board = () => {
   const params = useParams()
   const db = useDatabase()
 
-  const boardQuery = ref(db, `boards/${params.boardId}`)
-
-  const board = useDatabaseObjectData(boardQuery, {
+  const board = useDatabaseObjectData(ref(db, `boards/${params.boardId}`), {
     idField: 'id'
   })
+
+  console.log(board)
 
   const [boardSettingsVisible, setBoardSettingsVisible] = useState(false)
   const [createListModalVisible, setCreateListModalVisible] = useState(false)
