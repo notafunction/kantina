@@ -16,6 +16,7 @@ const CreateBoardModal = (props) => {
 
       set(boardRef, {
         ...values,
+        id: boardRef.key,
         members: {
           [user.data.uid]: true
         }

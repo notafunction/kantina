@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { useDatabase } from 'reactfire'
 import { WarningOutlined } from '@ant-design/icons'
@@ -10,33 +10,28 @@ import { colorPickerColors } from '../../../constants'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
 import { ListContext } from '../../List/List'
 import { ItemContext } from '../Item'
+import { BoardContext } from '../../Board/Board'
 
 const ItemSettingsDrawer = (props) => {
   const db = useDatabase()
-  const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
+  const board = useContext(BoardContext)
   const list = useContext(ListContext)
   const item = useContext(ItemContext)
 
   const onSave = async () => {
-    setLoading(true)
     const values = await form.validateFields()
     try {
-      await update(ref(db, `items/${item.id}`), values)
+      await update(ref(db, `boards/${board.id}/lists/${list.id}/items/${item.id}`), values)
       props.close()
     } catch (error) {
       message.error(error.message)
-    } finally {
-      setLoading(false)
     }
   }
 
   const onDelete = async () => {
     try {
-      await Promise.all([
-        remove(ref(db, `items/${item.id}`)),
-        remove(ref(db, `lists/${list.id}/items/${item.id}`))
-      ])
+      await remove(ref(db, `lists/${list.id}/items/${item.id}`))
     } catch (error) {
       message.error(error.message)
     }
@@ -48,7 +43,6 @@ const ItemSettingsDrawer = (props) => {
       visible={props.visible}
       close={props.close}
       onOk={onSave}
-      okButtonProps={{ loading }}
       destroyOnClose>
       <Form layout="vertical" onFinish={onSave} form={form} preserve={false}>
         <Form.Item

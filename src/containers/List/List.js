@@ -1,4 +1,5 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useContext, useState } from 'react'
+import _sortBy from 'lodash.sortby'
 import PropTypes from 'prop-types'
 import { Droppable } from 'react-beautiful-dnd'
 import Item from '../Item/Item'
@@ -8,13 +9,18 @@ import Styled from './components/Styled'
 import { ref } from 'firebase/database'
 import { Button, Spin } from 'antd'
 import CreateItemModal from './components/CreateItemModal'
+import { BoardContext } from '../Board/Board'
 
 export const ListContext = createContext()
 
 const List = (props) => {
   const auth = useSigninCheck()
   const db = useDatabase()
-  const list = useDatabaseObjectData(ref(db, `lists/${props.id}`), { idField: 'id' })
+  const board = useContext(BoardContext)
+
+  const list = useDatabaseObjectData(ref(db, `boards/${board.id}/lists/${props.id}`), {
+    idField: 'id'
+  })
 
   const [createItemVisible, setCreateItemVisible] = useState(false)
 
@@ -24,8 +30,8 @@ const List = (props) => {
 
   const renderItems = () => {
     if (list.data.items) {
-      return Object.keys(list.data.items).map((id, index) => (
-        <Item key={id} id={id} index={index} />
+      return _sortBy(list.data.items, (o) => o.position).map((item, index) => (
+        <Item key={item.id} id={item.id} index={index} />
       ))
     }
   }

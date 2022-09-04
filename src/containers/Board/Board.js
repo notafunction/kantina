@@ -1,4 +1,5 @@
 import React, { createContext, useState } from 'react'
+import _sortBy from 'lodash.sortby'
 import { CreateListModal } from '../../components/List'
 import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd'
 import { useParams, useNavigate } from 'react-router'
@@ -9,7 +10,6 @@ import Styled from './components/Styled'
 import List from '../List/List'
 import BoardSettingsDrawer from './components/BoardSettingsDrawer'
 import UserToolbar from './components/UserToolbar'
-import { set } from 'react-ga'
 
 export const BoardContext = createContext()
 
@@ -57,17 +57,17 @@ const Board = () => {
 
   const renderLists = () => {
     if (board.data.lists) {
-      return Object.keys(board.data.lists).map((id, index) => (
+      return _sortBy(board.data.lists, (o) => o.position).map((list, index) => (
         <Draggable
-          key={id}
+          key={list.id}
           index={index}
-          draggableId={id}
+          draggableId={list.id}
           isDragDisabled={auth.status !== 'success' || !auth.data.signedIn}>
           {(draggableProvided, _draggableSnapshot) => (
             <Styled.ListWrapper
               ref={draggableProvided.innerRef}
               {...draggableProvided.draggableProps}>
-              <List id={id} dragHandleProps={draggableProvided.dragHandleProps} />
+              <List id={list.id} dragHandleProps={draggableProvided.dragHandleProps} />
             </Styled.ListWrapper>
           )}
         </Draggable>

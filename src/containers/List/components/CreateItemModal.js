@@ -4,29 +4,33 @@ import { Form, Modal, Input } from 'antd'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
 import { useDatabase, useUser } from 'reactfire'
-import { ref, push, set } from 'firebase/database'
+import { ref, push, update } from 'firebase/database'
 import { ListContext } from '../List'
+import { BoardContext } from '../../Board/Board'
 
 const CreateItemModal = (props) => {
   const db = useDatabase()
   const user = useUser()
   const [form] = Form.useForm()
   const list = useContext(ListContext)
+  const board = useContext(BoardContext)
 
   const onCreateItem = async (values) => {
-    const result = push(ref(db, `items`), values)
+    const result = await push(ref(db, `boards/${board.id}/lists/${list.id}/items`), {
+      ...values,
+      list: list.id,
+      createdBy: user.data.uid,
+      position: list.items ? Object.keys(list.items).length : 0
+    })
 
-    await set(ref(db, `lists/${list.id}/items/${result.key}`), true)
+    await update(result, {
+      id: result.key
+    })
   }
 
   const onOk = async () => {
     const values = await form.validateFields()
-    await onCreateItem({
-      ...values,
-      createdBy: user.data.uid,
-      list: list.id,
-      position: list.items ? Object.keys(list.items).length : 0
-    })
+    await onCreateItem(values)
     form.resetFields()
     props.close()
   }

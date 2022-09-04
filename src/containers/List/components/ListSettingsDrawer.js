@@ -20,7 +20,7 @@ const ListSettingsDrawer = (props) => {
   const onSave = async () => {
     const values = await form.validateFields()
     try {
-      await update(ref(db, `lists/${list.id}`), values)
+      await update(ref(db, `boards/${board.id}/lists/${list.id}`), values)
       props.close()
     } catch (error) {
       message.error(error.message)
@@ -29,10 +29,7 @@ const ListSettingsDrawer = (props) => {
 
   const onDelete = async () => {
     try {
-      await Promise.all([
-        remove(ref(db, `lists/${list.id}`)),
-        remove(ref(db, `boards/${board.id}/lists/${list.id}`))
-      ])
+      await remove(ref(db, `boards/${board.id}/lists/${list.id}`))
       props.close()
     } catch (error) {
       message.error(error.message)
