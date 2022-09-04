@@ -1,25 +1,28 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useDatabase } from 'reactfire'
+import { WarningOutlined } from '@ant-design/icons'
 import { Button, Form, Input, message, Popconfirm } from 'antd'
 import { ref, update, remove } from 'firebase/database'
-import SettingsDrawer from '../../../components/SettingsDrawer'
 import { CirclePicker } from 'react-color'
+import SettingsDrawer from '../../../components/SettingsDrawer'
 import { colorPickerColors } from '../../../constants'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
-import { WarningOutlined } from '@ant-design/icons'
+import { ListContext } from '../../List/List'
+import { ItemContext } from '../Item'
 
 const ItemSettingsDrawer = (props) => {
   const db = useDatabase()
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
+  const list = useContext(ListContext)
+  const item = useContext(ItemContext)
 
   const onSave = async () => {
     setLoading(true)
     const values = await form.validateFields()
     try {
-      await update(ref(db, `items/${props.item.id}`), values)
-      message.success('Your changes have been saved')
+      await update(ref(db, `items/${item.id}`), values)
       props.close()
     } catch (error) {
       message.error(error.message)
@@ -31,8 +34,8 @@ const ItemSettingsDrawer = (props) => {
   const onDelete = async () => {
     try {
       await Promise.all([
-        remove(ref(db, `items/${props.item.id}`)),
-        remove(ref(db, `lists/${props.list.id}/items/${props.item.id}`))
+        remove(ref(db, `items/${item.id}`)),
+        remove(ref(db, `lists/${list.id}/items/${item.id}`))
       ])
     } catch (error) {
       message.error(error.message)
@@ -49,19 +52,19 @@ const ItemSettingsDrawer = (props) => {
       destroyOnClose>
       <Form layout="vertical" onFinish={onSave} form={form} preserve={false}>
         <Form.Item
-          initialValue={props.item.content}
+          initialValue={item.content}
           name="content"
           label="Content"
           rules={[{ required: true, message: 'Content is required' }]}>
-          <Input.TextArea>{props.item.content}</Input.TextArea>
+          <Input.TextArea>{item.content}</Input.TextArea>
         </Form.Item>
 
         <Form.Item
           name="color"
           label="Color"
-          initialValue={props.item.color}
+          initialValue={item.color}
           getValueFromEvent={({ hex }) => hex}>
-          <CirclePicker colors={colorPickerColors} color={props.item.color} />
+          <CirclePicker colors={colorPickerColors} color={item.color} />
         </Form.Item>
 
         <FormDangerZone>
@@ -82,8 +85,7 @@ const ItemSettingsDrawer = (props) => {
 ItemSettingsDrawer.propTypes = {
   visible: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired,
-  list: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired
 }
 
 export default ItemSettingsDrawer

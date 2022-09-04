@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { createContext } from 'react'
 import PropTypes from 'prop-types'
 import Styled from './components/Styled'
 import ItemToolbar from './components/ItemToolbar'
 import { useDatabase, useDatabaseObjectData } from 'reactfire'
 import { ref } from 'firebase/database'
 import { Spin } from 'antd'
+
+export const ItemContext = createContext()
 
 const Item = (props) => {
   const db = useDatabase()
@@ -17,18 +19,20 @@ const Item = (props) => {
   }
 
   return (
-    <Styled.Container
-      style={{
-        backgroundColor: item.data.color
-      }}
-      ref={props.provided.innerRef}
-      {...props.provided.draggableProps}
-      {...props.provided.dragHandleProps}>
-      <Styled.Content isDragging={props.provided.isDragging} itemColor={item.data.color}>
-        <ItemToolbar item={item.data} list={props.list} />
-        <div>{item.data.content}</div>
-      </Styled.Content>
-    </Styled.Container>
+    <ItemContext.Provider value={item.data}>
+      <Styled.Container
+        style={{
+          backgroundColor: item.data.color
+        }}
+        ref={props.provided.innerRef}
+        {...props.provided.draggableProps}
+        {...props.provided.dragHandleProps}>
+        <Styled.Content isDragging={props.provided.isDragging} itemColor={item.data.color}>
+          <ItemToolbar item={item.data} list={props.list} />
+          <div>{item.data.content}</div>
+        </Styled.Content>
+      </Styled.Container>
+    </ItemContext.Provider>
   )
 }
 

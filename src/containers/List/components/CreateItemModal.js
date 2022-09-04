@@ -1,20 +1,22 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Modal, Input } from 'antd'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
 import { useDatabase, useUser } from 'reactfire'
 import { ref, push, set } from 'firebase/database'
+import { ListContext } from '../List'
 
 const CreateItemModal = (props) => {
   const db = useDatabase()
   const user = useUser()
   const [form] = Form.useForm()
+  const list = useContext(ListContext)
 
   const onCreateItem = async (values) => {
     const result = push(ref(db, `items`), values)
 
-    await set(ref(db, `lists/${props.list.id}/items/${result.key}`), true)
+    await set(ref(db, `lists/${list.id}/items/${result.key}`), true)
   }
 
   const onOk = async () => {
@@ -22,7 +24,7 @@ const CreateItemModal = (props) => {
     await onCreateItem({
       ...values,
       createdBy: user.data.uid,
-      list: props.list.id
+      list: list.id
     })
     form.resetFields()
     props.close()
@@ -55,7 +57,6 @@ const CreateItemModal = (props) => {
 }
 
 CreateItemModal.propTypes = {
-  list: PropTypes.object.isRequired,
   visible: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired
 }

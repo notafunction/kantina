@@ -1,24 +1,27 @@
-import React, { useState } from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Form, Input, message, Popconfirm } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 import { useParams } from 'react-router'
 import { CirclePicker } from 'react-color'
+import { ref, remove, update } from 'firebase/database'
+import { useDatabase } from 'reactfire'
 import { colorPickerColors } from '../../../constants'
 import SettingsDrawer from '../../../components/SettingsDrawer'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
-import { ref, remove, update } from 'firebase/database'
-import { useDatabase } from 'reactfire'
+import { ListContext } from '../List'
 
 const ListSettingsDrawer = (props) => {
   const db = useDatabase()
   const params = useParams()
   const [form] = Form.useForm()
+  const list = useContext(ListContext)
 
   const onSave = async () => {
     const values = await form.validateFields()
     try {
-      await update(ref(db, `lists/${props.list.id}`), values)
+      await update(ref(db, `lists/${list.id}`), values)
+      props.close()
     } catch (error) {
       message.error(error.message)
     }
@@ -27,8 +30,8 @@ const ListSettingsDrawer = (props) => {
   const onDelete = async () => {
     try {
       await Promise.all(
-        remove(ref(db, `lists/${props.list.id}`)),
-        remove(ref(db, `boards/${params.boardId}/lists/${props.list.id}`))
+        remove(ref(db, `lists/${list.id}`)),
+        remove(ref(db, `boards/${params.boardId}/lists/${list.id}`))
       )
       props.close()
     } catch (error) {
@@ -38,14 +41,14 @@ const ListSettingsDrawer = (props) => {
 
   return (
     <SettingsDrawer
-      title={`${props.list.title} Settings`}
+      title={`${list.title} Settings`}
       visible={props.visible}
       close={props.close}
       onOk={onSave}
       destroyOnClose>
       <Form layout="vertical" onFinish={onSave} form={form} preserve={false}>
         <Form.Item
-          initialValue={props.list.title}
+          initialValue={list.title}
           name="title"
           label="Title"
           rules={[{ required: true, message: 'A title is required.' }]}>
@@ -54,9 +57,9 @@ const ListSettingsDrawer = (props) => {
         <Form.Item
           name="color"
           label="Color"
-          initialValue={props.list.color}
+          initialValue={list.color}
           getValueFromEvent={({ hex }) => hex}>
-          <CirclePicker colors={colorPickerColors} color={props.list.color} />
+          <CirclePicker colors={colorPickerColors} color={list.color} />
         </Form.Item>
 
         <FormDangerZone>
@@ -76,8 +79,7 @@ const ListSettingsDrawer = (props) => {
 
 ListSettingsDrawer.propTypes = {
   visible: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired,
-  list: PropTypes.object.isRequired
+  close: PropTypes.func.isRequired
 }
 
 export default ListSettingsDrawer

@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { Button } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
-import PropTypes from 'prop-types'
 import { useSigninCheck } from 'reactfire'
 import Styled from './Styled'
 import ItemSettingsDrawer from './ItemSettingsDrawer'
 
-const ItemToolbar = (props) => {
+const ItemToolbar = () => {
   const auth = useSigninCheck()
+
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   if (auth.status === 'loading' || !auth.data.signedIn) {
@@ -22,19 +22,11 @@ const ItemToolbar = (props) => {
         onClick={() => setIsSettingsOpen(true)}
         icon={<EditOutlined />}></Button>
 
-      <ItemSettingsDrawer
-        item={props.item}
-        list={props.list}
-        visible={isSettingsOpen}
-        close={() => setIsSettingsOpen(false)}
-      />
+      <ItemSettingsDrawer visible={isSettingsOpen} close={() => setIsSettingsOpen(false)} />
     </Styled.Toolbar>
   )
 }
 
-ItemToolbar.propTypes = {
-  item: PropTypes.object.isRequired,
-  list: PropTypes.object.isRequired
-}
+ItemToolbar.propTypes = {}
 
 export default ItemToolbar
