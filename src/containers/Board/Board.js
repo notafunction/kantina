@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { createContext, useState } from 'react'
 import { CreateListModal } from '../../components/List'
 import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd'
 import { useParams, useNavigate } from 'react-router'
@@ -9,6 +9,8 @@ import Styled from './components/Styled'
 import List from '../List/List'
 import BoardSettingsDrawer from './components/BoardSettingsDrawer'
 import UserToolbar from './components/UserToolbar'
+
+export const BoardContext = createContext()
 
 const Board = () => {
   const navigate = useNavigate()
@@ -59,7 +61,7 @@ const Board = () => {
       key={id}
       index={index}
       draggableId={id}
-      isDragDisabled={!auth.status !== 'success' || !auth.data.signedIn}>
+      isDragDisabled={auth.status !== 'success' || !auth.data.signedIn}>
       {(draggableProvided, draggableSnapshot) => (
         <Styled.ListWrapper ref={draggableProvided.innerRef} {...draggableProvided.draggableProps}>
           <List
@@ -74,37 +76,38 @@ const Board = () => {
   )
 
   return (
-    <Styled.BoardContainer>
-      <PageHeader title={board.data.title} extra={<UserToolbar onClick={handleToolbarClick} />} />
+    <BoardContext.Provider value={board.data}>
+      <Styled.BoardContainer>
+        <PageHeader title={board.data.title} extra={<UserToolbar onClick={handleToolbarClick} />} />
 
-      <Styled.Content>
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId={params.boardId} type="LIST" direction="horizontal">
-            {(droppableProvided, _droppableSnapshot) => (
-              <Styled.ListsContainer
-                flex
-                ref={droppableProvided.innerRef}
-                {...droppableProvided.droppableProps}>
-                {Object.keys(board.data.lists).map((id, index) => renderList(id, index))}
-                {droppableProvided.placeholder}
-              </Styled.ListsContainer>
-            )}
-          </Droppable>
-        </DragDropContext>
-      </Styled.Content>
+        <Styled.Content>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId={params.boardId} type="LIST" direction="horizontal">
+              {(droppableProvided, _droppableSnapshot) => (
+                <Styled.ListsContainer
+                  flex
+                  ref={droppableProvided.innerRef}
+                  {...droppableProvided.droppableProps}>
+                  {Object.keys(board.data.lists).map((id, index) => renderList(id, index))}
+                  {droppableProvided.placeholder}
+                </Styled.ListsContainer>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </Styled.Content>
 
-      <CreateListModal
-        visible={createListModalVisible}
-        close={() => setCreateListModalVisible(false)}
-        board={board.data}
-      />
+        <CreateListModal
+          visible={createListModalVisible}
+          close={() => setCreateListModalVisible(false)}
+          nextPosition={Object.keys(board.data.lists).length}
+        />
 
-      <BoardSettingsDrawer
-        board={board.data}
-        visible={boardSettingsVisible}
-        close={() => setBoardSettingsVisible(false)}
-      />
-    </Styled.BoardContainer>
+        <BoardSettingsDrawer
+          visible={boardSettingsVisible}
+          close={() => setBoardSettingsVisible(false)}
+        />
+      </Styled.BoardContainer>
+    </BoardContext.Provider>
   )
 }
 

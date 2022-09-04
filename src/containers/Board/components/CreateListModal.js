@@ -58,7 +58,6 @@ const CreateListModal = (props) => {
 }
 
 CreateListModal.propTypes = {
-  board: PropTypes.object.isRequired,
   visible: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired
 }
