@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Form, Input, message, Popconfirm } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
-import { useParams } from 'react-router'
 import { CirclePicker } from 'react-color'
 import { ref, remove, update } from 'firebase/database'
 import { useDatabase } from 'reactfire'
@@ -10,12 +9,13 @@ import { colorPickerColors } from '../../../constants'
 import SettingsDrawer from '../../../components/SettingsDrawer'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
 import { ListContext } from '../List'
+import { BoardContext } from '../../Board/Board'
 
 const ListSettingsDrawer = (props) => {
   const db = useDatabase()
-  const params = useParams()
   const [form] = Form.useForm()
   const list = useContext(ListContext)
+  const board = useContext(BoardContext)
 
   const onSave = async () => {
     const values = await form.validateFields()
@@ -29,13 +29,14 @@ const ListSettingsDrawer = (props) => {
 
   const onDelete = async () => {
     try {
-      await Promise.all(
+      await Promise.all([
         remove(ref(db, `lists/${list.id}`)),
-        remove(ref(db, `boards/${params.boardId}/lists/${list.id}`))
-      )
+        remove(ref(db, `boards/${board.id}/lists/${list.id}`))
+      ])
       props.close()
     } catch (error) {
       message.error(error.message)
+      console.log(error)
     }
   }
 

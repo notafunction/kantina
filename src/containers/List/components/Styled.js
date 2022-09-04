@@ -17,7 +17,7 @@ const Styled = {
 }
 
 Styled.Content = styled.div`
-  background-color: ${(props) => props.itemColor};
+  background-color: ${(props) => props.backgroundColor};
 
   ${tw`
     max-h-full

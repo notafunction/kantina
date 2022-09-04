@@ -1,21 +1,21 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Form, Input, message } from 'antd'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
 import { useDatabase } from 'reactfire'
 import { push, ref, set } from 'firebase/database'
-import { useParams } from 'react-router'
+import { BoardContext } from '../Board'
 
 const CreateListModal = (props) => {
-  const params = useParams()
   const db = useDatabase()
   const [form] = Form.useForm()
+  const board = useContext(BoardContext)
 
   const onCreateList = async (values) => {
     try {
       const result = await push(ref(db, `lists`), values)
-      await set(ref(db, `boards/${params.boardId}/lists/${result.key}`), true)
+      await set(ref(db, `boards/${board.id}/lists/${result.key}`), true)
     } catch (error) {
       message.error(error.code)
     }
@@ -25,7 +25,8 @@ const CreateListModal = (props) => {
     const values = await form.validateFields()
     await onCreateList({
       ...values,
-      board: params.boardId
+      board: board.id,
+      position: board.lists ? Object.keys(board.lists).length : 0
     })
     form.resetFields()
     props.close()

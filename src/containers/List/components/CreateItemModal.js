@@ -24,7 +24,8 @@ const CreateItemModal = (props) => {
     await onCreateItem({
       ...values,
       createdBy: user.data.uid,
-      list: list.id
+      list: list.id,
+      position: list.items ? Object.keys(list.items).length : 0
     })
     form.resetFields()
     props.close()

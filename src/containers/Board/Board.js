@@ -9,6 +9,7 @@ import Styled from './components/Styled'
 import List from '../List/List'
 import BoardSettingsDrawer from './components/BoardSettingsDrawer'
 import UserToolbar from './components/UserToolbar'
+import { set } from 'react-ga'
 
 export const BoardContext = createContext()
 
@@ -54,26 +55,38 @@ const Board = () => {
     )
   }
 
-  const onDragEnd = console.log
+  const renderLists = () => {
+    if (board.data.lists) {
+      return Object.keys(board.data.lists).map((id, index) => (
+        <Draggable
+          key={id}
+          index={index}
+          draggableId={id}
+          isDragDisabled={auth.status !== 'success' || !auth.data.signedIn}>
+          {(draggableProvided, _draggableSnapshot) => (
+            <Styled.ListWrapper
+              ref={draggableProvided.innerRef}
+              {...draggableProvided.draggableProps}>
+              <List id={id} dragHandleProps={draggableProvided.dragHandleProps} />
+            </Styled.ListWrapper>
+          )}
+        </Draggable>
+      ))
+    }
+  }
 
-  const renderList = (id, index) => (
-    <Draggable
-      key={id}
-      index={index}
-      draggableId={id}
-      isDragDisabled={auth.status !== 'success' || !auth.data.signedIn}>
-      {(draggableProvided, draggableSnapshot) => (
-        <Styled.ListWrapper ref={draggableProvided.innerRef} {...draggableProvided.draggableProps}>
-          <List
-            id={id}
-            index={index}
-            dragHandleProps={draggableProvided.dragHandleProps}
-            isDragging={draggableSnapshot.isDragging}
-          />
-        </Styled.ListWrapper>
-      )}
-    </Draggable>
-  )
+  const onDragEnd = (event) => {
+    console.log(event)
+
+    const { type, destination, source, draggableId } = event
+
+    switch (type) {
+      case 'ITEM': {
+        if (source.droppableId === destination.droppableId) {
+        }
+      }
+    }
+  }
 
   return (
     <BoardContext.Provider value={board.data}>
@@ -88,7 +101,7 @@ const Board = () => {
                   flex
                   ref={droppableProvided.innerRef}
                   {...droppableProvided.droppableProps}>
-                  {Object.keys(board.data.lists).map((id, index) => renderList(id, index))}
+                  {renderLists()}
                   {droppableProvided.placeholder}
                 </Styled.ListsContainer>
               )}
@@ -99,7 +112,6 @@ const Board = () => {
         <CreateListModal
           visible={createListModalVisible}
           close={() => setCreateListModalVisible(false)}
-          nextPosition={Object.keys(board.data.lists).length}
         />
 
         <BoardSettingsDrawer

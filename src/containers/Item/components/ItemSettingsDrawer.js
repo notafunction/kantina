@@ -84,8 +84,7 @@ const ItemSettingsDrawer = (props) => {
 
 ItemSettingsDrawer.propTypes = {
   visible: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
+  close: PropTypes.func.isRequired
 }
 
 export default ItemSettingsDrawer

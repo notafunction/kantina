@@ -9,6 +9,10 @@ const Styled = {
       outline: 2px solid eggplant;
       box-shadow: none;
     }
+
+    ${(props) => `
+      background-color: ${props.backgroundColor}
+    `}
   `,
   Content: styled.div`
     ${tw`transition-all p-2 overflow-hidden border`}
