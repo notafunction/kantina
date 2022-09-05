@@ -51,10 +51,10 @@ const CreateBoardModal = (props) => {
           rules={[{ required: true, message: 'Please enter a title' }]}>
           <Input />
         </Form.Item>
-        <Form.Item name="type" label="Type" initialValue="public">
+        <Form.Item name="public" label="Type" initialValue={true}>
           <Select>
-            <Select.Option value="private">Private</Select.Option>
-            <Select.Option value="public">Public</Select.Option>
+            <Select.Option value={false}>Private</Select.Option>
+            <Select.Option value={true}>Public</Select.Option>
           </Select>
         </Form.Item>
 

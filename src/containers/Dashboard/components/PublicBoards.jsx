@@ -1,0 +1,39 @@
+import React from 'react'
+import { useDatabase, useDatabaseListData } from 'reactfire'
+import { query, ref, orderByChild, equalTo, limitToLast } from 'firebase/database'
+import { Link } from 'react-router-dom'
+import { Card, Spin } from 'antd'
+import DashboardBoardItem from './DashboardBoardItem'
+import Styled from './Styled'
+
+const PublicBoards = () => {
+  const db = useDatabase()
+  const publicBoards = useDatabaseListData(
+    query(ref(db, `boards`), orderByChild('public'), equalTo(true), limitToLast(10)),
+    {
+      idField: 'id'
+    }
+  )
+
+  if (publicBoards.status === 'loading') {
+    return <Spin />
+  }
+
+  if (!Array.isArray(publicBoards.data) || !publicBoards.data.length) {
+    return null
+  }
+
+  return (
+    <Card title="Public Boards" bordered={false}>
+      <Styled.Grid>
+        {publicBoards.data.map((board) => (
+          <Link to={`/b/${board.id}`} key={board.id}>
+            <DashboardBoardItem board={board} />
+          </Link>
+        ))}
+      </Styled.Grid>
+    </Card>
+  )
+}
+
+export default PublicBoards

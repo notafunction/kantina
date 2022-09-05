@@ -3,27 +3,35 @@ import PropTypes from 'prop-types'
 import { useParams } from 'react-router'
 import { Navigate } from 'react-router-dom'
 import { useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
-import { query, ref } from 'firebase/database'
+import { ref } from 'firebase/database'
 import { Spin } from 'antd'
 
 const RequireAccess = (props) => {
   const params = useParams()
-
   const db = useDatabase()
-  const boardQuery = query(ref(db, `boards/${params.boardId}`))
-  const { status: boardStatus, data: board } = useDatabaseObjectData(boardQuery, {
+  const auth = useSigninCheck()
+  const board = useDatabaseObjectData(ref(db, `boards/${params.boardId}`), {
     idField: 'id'
   })
-  const { status: signinCheckStatus, data: signinCheckData } = useSigninCheck()
 
-  if (boardStatus === 'loading' || signinCheckStatus === 'loading') return <Spin />
+  if (auth.status === 'loading' || board.status === 'loading') {
+    return <Spin />
+  }
 
   const canViewBoard = () => {
-    if (board.type === 'public') {
+    if (board.data.public) {
       return true
     }
 
-    if (signinCheckData.signedIn && Object.keys(board.members).includes(signinCheckData.user.uid)) {
+    if (auth.data === null) {
+      return false
+    }
+
+    if (
+      auth.data.signedIn &&
+      board.data.members &&
+      Object.keys(board.data.members).includes(auth.data.user.uid)
+    ) {
       return true
     }
   }

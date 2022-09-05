@@ -2,17 +2,18 @@ import React, { useEffect, useState } from 'react'
 import _sortBy from 'lodash.sortby'
 import { arrayMoveImmutable } from 'array-move'
 import ihUpdate from 'immutability-helper'
-import { CreateListModal } from '../../components/List'
 import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd'
 import { useParams, useNavigate } from 'react-router'
 import { useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
 import { ref, runTransaction, set } from 'firebase/database'
 import { Button, Result, PageHeader, Spin, message } from 'antd'
+import CreateListModal from './components/CreateListModal'
 import Styled from './components/Styled'
 import List from '../List/List'
 import BoardSettingsDrawer from './components/BoardSettingsDrawer'
 import UserToolbar from './components/UserToolbar'
 import { BoardContext } from './components/BoardContext'
+import { useModal } from 'react-modal-hook'
 
 const Board = () => {
   const navigate = useNavigate()
@@ -27,6 +28,14 @@ const Board = () => {
   const [boardSettingsVisible, setBoardSettingsVisible] = useState(false)
   const [createListModalVisible, setCreateListModalVisible] = useState(false)
   const [state, setState] = useState({})
+
+  const [showBoardSettingsModal, closeBoardSettingsModal] = useModal(() => (
+    <BoardSettingsDrawer visible={true} close={closeBoardSettingsModal} />
+  ))
+
+  const [showCreateListModal, closeCreateListModal] = useModal(() => (
+    <CreateListModal visible={true} close={closeCreateListModal} />
+  ))
 
   if (board.status === 'loading') return <Spin />
 
@@ -56,11 +65,11 @@ const Board = () => {
   const handleToolbarClick = (event) => {
     switch (event.key) {
       case 'list:create': {
-        setCreateListModalVisible(true)
+        showCreateListModal()
         break
       }
       case 'board:settings': {
-        setBoardSettingsVisible(true)
+        showBoardSettingsModal()
       }
     }
   }

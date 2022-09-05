@@ -1,9 +1,10 @@
 import React from 'react'
-import { render } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import registerServiceWorker from './registerServiceWorker'
 import ErrorBoundary from './components/ErrorBoundary'
 import FirebaseServicesProvider from './providers/FirebaseServicesProvider'
 import App from './App'
+import { ModalProvider } from 'react-modal-hook'
 import { BrowserRouter } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
 import { ConfigProvider } from 'antd'
@@ -14,17 +15,20 @@ const history = createBrowserHistory()
 
 ConfigProvider.config({})
 
-render(
+const root = createRoot(document.getElementById('root'))
+
+root.render(
   <FirebaseAppProvider firebaseConfig={firebaseConfig}>
     <FirebaseServicesProvider>
       <BrowserRouter history={history}>
         <ErrorBoundary>
-          <App />
+          <ModalProvider>
+            <App />
+          </ModalProvider>
         </ErrorBoundary>
       </BrowserRouter>
     </FirebaseServicesProvider>
-  </FirebaseAppProvider>,
-  document.getElementById('root')
+  </FirebaseAppProvider>
 )
 
 registerServiceWorker()
