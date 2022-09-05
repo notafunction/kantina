@@ -6,7 +6,7 @@ import { CreateListModal } from '../../components/List'
 import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd'
 import { useParams, useNavigate } from 'react-router'
 import { useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
-import { ref, set } from 'firebase/database'
+import { ref, runTransaction, set } from 'firebase/database'
 import { Button, Result, PageHeader, Spin, message } from 'antd'
 import Styled from './components/Styled'
 import List from '../List/List'
@@ -186,16 +186,20 @@ const Board = () => {
           })
 
           try {
-            await Promise.all([
-              set(
-                ref(db, `boards/${state.id}/lists/${source.droppableId}/items`),
-                updatedSourceItemsPayload
-              ),
-              set(
-                ref(db, `boards/${state.id}/lists/${destination.droppableId}/items`),
-                updatedDestinationItemsPayload
-              )
-            ])
+            await runTransaction(ref(db, `boards/${state.id}/lists`), (lists) => {
+              return ihUpdate(lists, {
+                [source.droppableId]: {
+                  items: {
+                    $set: updatedSourceItemsPayload
+                  }
+                },
+                [destination.droppableId]: {
+                  items: {
+                    $set: updatedDestinationItemsPayload
+                  }
+                }
+              })
+            })
           } catch (error) {
             console.error(error)
             message.error(error.message)

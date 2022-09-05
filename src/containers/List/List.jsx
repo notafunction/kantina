@@ -29,7 +29,7 @@ const List = (props) => {
         {(provided, _snapshot) => (
           <Styled.Content backgroundColor={props.list.color}>
             <Styled.Header>
-              <h3 {...props.dragHandleProps}>{props.list.id}</h3>
+              <h3 {...props.dragHandleProps}>{props.list.title}</h3>
               <ListToolbar />
             </Styled.Header>
             <Styled.Dropzone ref={provided.innerRef}>

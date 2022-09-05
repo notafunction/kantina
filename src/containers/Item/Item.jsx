@@ -24,7 +24,7 @@ const Item = (props) => {
             {...draggableProvided.dragHandleProps}>
             <Styled.Content isDragging={draggableProvided.isDragging} itemColor={props.item.color}>
               <ItemToolbar item={props.item} />
-              <div>{props.item.id}</div>
+              <div>{props.item.content}</div>
             </Styled.Content>
           </Styled.Container>
         )}
