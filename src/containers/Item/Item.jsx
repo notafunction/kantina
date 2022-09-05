@@ -1,51 +1,30 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Styled from './components/Styled'
 import ItemToolbar from './components/ItemToolbar'
-import { useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
-import { ref } from 'firebase/database'
-import { Spin } from 'antd'
+import { useSigninCheck } from 'reactfire'
 import { Draggable } from 'react-beautiful-dnd'
-import { BoardContext } from '../Board/components/BoardContext'
 import { ItemContext } from './components/ItemContext'
-import { ListContext } from '../List/components/ListContext'
 
 const Item = (props) => {
   const auth = useSigninCheck()
-  const db = useDatabase()
-  const board = useContext(BoardContext)
-  const list = useContext(ListContext)
-  const item = useDatabaseObjectData(
-    ref(db, `boards/${board.id}/lists/${list.id}/items/${props.id}`),
-    {
-      idField: 'id'
-    }
-  )
-
-  if (item.status === 'loading') {
-    return <Spin />
-  }
-
-  if (item.data === null) {
-    return null
-  }
 
   return (
-    <ItemContext.Provider value={item.data}>
+    <ItemContext.Provider value={props.item}>
       <Draggable
-        key={props.id}
+        key={props.item.id}
         index={props.index}
-        draggableId={props.id}
+        draggableId={props.item.id}
         isDragDisabled={auth.status !== 'success' || !auth.data.signedIn}>
         {(draggableProvided, _draggableSnapshot) => (
           <Styled.Container
-            backgroundColor={item.data.color}
+            backgroundColor={props.item.color}
             ref={draggableProvided.innerRef}
             {...draggableProvided.draggableProps}
             {...draggableProvided.dragHandleProps}>
-            <Styled.Content isDragging={draggableProvided.isDragging} itemColor={item.data.color}>
-              <ItemToolbar item={item.data} />
-              <div>{item.data.id}</div>
+            <Styled.Content isDragging={draggableProvided.isDragging} itemColor={props.item.color}>
+              <ItemToolbar item={props.item} />
+              <div>{props.item.id}</div>
             </Styled.Content>
           </Styled.Container>
         )}
@@ -55,7 +34,7 @@ const Item = (props) => {
 }
 
 Item.propTypes = {
-  id: PropTypes.string.isRequired,
+  item: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired
 }
 

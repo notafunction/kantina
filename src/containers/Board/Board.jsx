@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import _sortBy from 'lodash.sortby'
 import { arrayMoveImmutable } from 'array-move'
+import ihUpdate from 'immutability-helper'
 import { CreateListModal } from '../../components/List'
 import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd'
 import { useParams, useNavigate } from 'react-router'
 import { useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
-import { ref, remove, update } from 'firebase/database'
-import { Button, Result, PageHeader, Spin } from 'antd'
+import { ref, set } from 'firebase/database'
+import { Button, Result, PageHeader, Spin, message } from 'antd'
 import Styled from './components/Styled'
 import List from '../List/List'
 import BoardSettingsDrawer from './components/BoardSettingsDrawer'
@@ -25,17 +26,7 @@ const Board = () => {
 
   const [boardSettingsVisible, setBoardSettingsVisible] = useState(false)
   const [createListModalVisible, setCreateListModalVisible] = useState(false)
-
-  const [lists, setLists] = useState([])
-  const [items, setItems] = useState([])
-
-  useEffect(() => {
-    if (board.status === 'success') {
-      if (board.data.lists) {
-        setLists(_sortBy(board.data.lists, (o) => o.position))
-      }
-    }
-  }, [board.data])
+  const [state, setState] = useState({})
 
   if (board.status === 'loading') return <Spin />
 
@@ -54,6 +45,14 @@ const Board = () => {
     )
   }
 
+  useEffect(() => {
+    if (board.status === 'success') {
+      if (board.data) {
+        setState(board.data)
+      }
+    }
+  }, [board.data])
+
   const handleToolbarClick = (event) => {
     switch (event.key) {
       case 'list:create': {
@@ -67,8 +66,8 @@ const Board = () => {
   }
 
   const renderLists = () => {
-    if (lists.length) {
-      return lists.map((list, index) => (
+    if (state.lists) {
+      return _sortBy(state.lists, (o) => o.position).map((list, index) => (
         <Draggable
           key={list.id}
           index={index}
@@ -78,7 +77,7 @@ const Board = () => {
             <Styled.ListWrapper
               ref={draggableProvided.innerRef}
               {...draggableProvided.draggableProps}>
-              <List id={list.id} dragHandleProps={draggableProvided.dragHandleProps} />
+              <List list={list} dragHandleProps={draggableProvided.dragHandleProps} />
             </Styled.ListWrapper>
           )}
         </Draggable>
@@ -95,67 +94,161 @@ const Board = () => {
         if (source.droppableId === destination.droppableId) {
           if (source.index === destination.index) return
 
-          const items = _sortBy(board.data.lists[source.droppableId].items, (o) => o.position)
+          const updatedItems = arrayMoveImmutable(
+            _sortBy(board.data.lists[source.droppableId].items, (o) => o.position),
+            source.index,
+            destination.index
+          )
 
-          const updatedItems = arrayMoveImmutable(items, source.index, destination.index)
-
-          updatedItems.forEach((item, index) => {
-            update(
-              ref(db, `boards/${board.data.id}/lists/${source.droppableId}/items/${item.id}`),
-              {
+          const updatedItemsPayload = updatedItems.reduce(
+            (payload, item, index) => ({
+              ...payload,
+              [item.id]: {
+                ...item,
                 position: index
               }
-            )
+            }),
+            {}
+          )
+
+          set(
+            ref(db, `boards/${board.data.id}/lists/${source.droppableId}/items`),
+            updatedItemsPayload
+          )
+
+          setState((state) => {
+            return ihUpdate(state, {
+              lists: {
+                [destination.droppableId]: {
+                  items: {
+                    $set: updatedItemsPayload
+                  }
+                }
+              }
+            })
           })
         } else {
-          const sourceItemRef = ref(
-            db,
-            `boards/${board.data.id}/lists/${source.droppableId}/items/${draggableId}`
+          const prevState = state
+
+          const updatedSourceItems = _sortBy(
+            state.lists[source.droppableId].items,
+            (o) => o.position
+          ).filter((item) => item.id !== draggableId)
+
+          const updatedSourceItemsPayload = updatedSourceItems.reduce(
+            (payload, item, index) => ({
+              ...payload,
+              [item.id]: {
+                ...item,
+                position: index
+              }
+            }),
+            {}
           )
 
           const destinationItems = _sortBy(
-            board.data.lists[destination.droppableId].items,
+            state.lists[destination.droppableId].items,
             (o) => o.position
           )
 
           const updatedDestinationItems = [
             ...(destinationItems ? destinationItems.slice(0, destination.index) : []),
-            board.data.lists[source.droppableId].items[draggableId],
+            state.lists[source.droppableId].items[draggableId],
             ...(destinationItems ? destinationItems.slice(destination.index) : [])
           ]
 
-          updatedDestinationItems.forEach((item, index) => {
-            update(
-              ref(db, `boards/${board.data.id}/lists/${destination.droppableId}/items/${item.id}`),
-              {
+          const updatedDestinationItemsPayload = updatedDestinationItems.reduce(
+            (payload, item, index) => ({
+              ...payload,
+              [item.id]: {
+                ...item,
                 position: index
               }
-            )
+            }),
+            {}
+          )
+
+          setState((prevState) => {
+            return ihUpdate(prevState, {
+              lists: {
+                [source.droppableId]: {
+                  items: {
+                    $set: updatedSourceItemsPayload
+                  }
+                },
+                [destination.droppableId]: {
+                  items: {
+                    $set: updatedDestinationItemsPayload
+                  }
+                }
+              }
+            })
           })
-          remove(sourceItemRef)
+
+          try {
+            await Promise.all([
+              set(
+                ref(db, `boards/${state.id}/lists/${source.droppableId}/items`),
+                updatedSourceItemsPayload
+              ),
+              set(
+                ref(db, `boards/${state.id}/lists/${destination.droppableId}/items`),
+                updatedDestinationItemsPayload
+              )
+            ])
+          } catch (error) {
+            console.error(error)
+            message.error(error.message)
+            setState(prevState)
+          }
         }
 
         break
       }
 
       case 'LIST': {
-        const updatedLists = arrayMoveImmutable(lists, source.index, destination.index)
+        const updatedLists = arrayMoveImmutable(
+          _sortBy(state.lists, (o) => o.position),
+          source.index,
+          destination.index
+        )
 
-        setLists(updatedLists)
+        const updatedListsPayload = updatedLists.reduce(
+          (payload, list, index) => ({
+            ...payload,
+            [list.id]: {
+              ...list,
+              position: index
+            }
+          }),
+          {}
+        )
 
-        updatedLists.forEach((list, index) => {
-          update(ref(db, `boards/${board.data.id}/lists/${list.id}`), {
-            position: index
+        const prevState = state
+
+        setState((prevState) => {
+          return ihUpdate(prevState, {
+            lists: {
+              $set: updatedListsPayload
+            }
           })
         })
+
+        try {
+          set(ref(db, `boards/${board.data.id}/lists`), updatedListsPayload)
+        } catch (error) {
+          console.error(error)
+          message.error(error.message)
+          setState(prevState)
+        }
       }
     }
   }
 
   return (
-    <BoardContext.Provider value={board.data}>
+    <BoardContext.Provider value={state}>
       <Styled.BoardContainer>
-        <PageHeader title={board.data.title} extra={<UserToolbar onClick={handleToolbarClick} />} />
+        <PageHeader title={state.title} extra={<UserToolbar onClick={handleToolbarClick} />} />
 
         <Styled.Content>
           <DragDropContext onDragEnd={onDragEnd}>
