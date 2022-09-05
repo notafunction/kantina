@@ -5,15 +5,14 @@ import { LogoutOutlined, GroupOutlined, SettingOutlined } from '@ant-design/icon
 import { useNavigate } from 'react-router'
 import { CreateBoardModal } from '../Board'
 import UserSettingsDrawer from './UserSettingsDrawer'
-import { useUser, useDatabase, useDatabaseObjectData, useAuth } from 'reactfire'
+import { useDatabase, useDatabaseObjectData, useAuth } from 'reactfire'
 import { ref, get } from 'firebase/database'
 function UserMenu(props) {
   const navigate = useNavigate()
-  const user = useUser()
   const auth = useAuth()
   const db = useDatabase()
 
-  const userBoards = useDatabaseObjectData(ref(db, `users/${user.data.uid}/boards`), {
+  const userBoards = useDatabaseObjectData(ref(db, `users/${props.user.uid}/boards`), {
     idField: false
   })
 
