@@ -5,7 +5,7 @@ import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
 import { useDatabase, useUser } from 'reactfire'
 import { push, ref, update } from 'firebase/database'
-import { BoardContext } from '../Board'
+import { BoardContext } from './BoardContext'
 
 const CreateListModal = (props) => {
   const user = useUser()

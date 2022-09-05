@@ -8,8 +8,8 @@ import { useDatabase } from 'reactfire'
 import { colorPickerColors } from '../../../constants'
 import SettingsDrawer from '../../../components/SettingsDrawer'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
-import { ListContext } from '../List'
-import { BoardContext } from '../../Board/Board'
+import { ListContext } from './ListContext'
+import { BoardContext } from '../../Board/components/BoardContext'
 
 const ListSettingsDrawer = (props) => {
   const db = useDatabase()

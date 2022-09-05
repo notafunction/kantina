@@ -8,9 +8,9 @@ import { CirclePicker } from 'react-color'
 import SettingsDrawer from '../../../components/SettingsDrawer'
 import { colorPickerColors } from '../../../constants'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
-import { ListContext } from '../../List/List'
-import { ItemContext } from '../Item'
-import { BoardContext } from '../../Board/Board'
+import { ListContext } from '../../List/components/ListContext'
+import { ItemContext } from './ItemContext'
+import { BoardContext } from '../../Board/components/BoardContext'
 
 const ItemSettingsDrawer = (props) => {
   const db = useDatabase()

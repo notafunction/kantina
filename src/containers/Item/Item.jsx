@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import Styled from './components/Styled'
 import ItemToolbar from './components/ItemToolbar'
@@ -6,10 +6,9 @@ import { useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
 import { ref } from 'firebase/database'
 import { Spin } from 'antd'
 import { Draggable } from 'react-beautiful-dnd'
-import { BoardContext } from '../Board/Board'
-import { ListContext } from '../List/List'
-
-export const ItemContext = createContext()
+import { BoardContext } from '../Board/components/BoardContext'
+import { ItemContext } from './components/ItemContext'
+import { ListContext } from '../List/components/ListContext'
 
 const Item = (props) => {
   const auth = useSigninCheck()

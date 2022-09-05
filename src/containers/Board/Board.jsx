@@ -1,18 +1,17 @@
-import React, { createContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import _sortBy from 'lodash.sortby'
 import { arrayMoveImmutable } from 'array-move'
 import { CreateListModal } from '../../components/List'
 import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd'
 import { useParams, useNavigate } from 'react-router'
 import { useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
-import { ref, remove, update, set, get } from 'firebase/database'
+import { ref, remove, update } from 'firebase/database'
 import { Button, Result, PageHeader, Spin } from 'antd'
 import Styled from './components/Styled'
 import List from '../List/List'
 import BoardSettingsDrawer from './components/BoardSettingsDrawer'
 import UserToolbar from './components/UserToolbar'
-
-export const BoardContext = createContext()
+import { BoardContext } from './components/BoardContext'
 
 const Board = () => {
   const navigate = useNavigate()

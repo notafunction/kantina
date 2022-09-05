@@ -7,7 +7,7 @@ import SettingsDrawer from '../../../components/SettingsDrawer'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
 import { ref, remove, update } from 'firebase/database'
 import { useDatabase } from 'reactfire'
-import { BoardContext } from '../Board'
+import { BoardContext } from './BoardContext'
 
 const BoardSettingsDrawer = (props) => {
   const params = useParams()

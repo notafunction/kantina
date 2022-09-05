@@ -5,8 +5,8 @@ import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
 import { useDatabase, useUser } from 'reactfire'
 import { ref, push, update } from 'firebase/database'
-import { ListContext } from '../List'
-import { BoardContext } from '../../Board/Board'
+import { ListContext } from './ListContext'
+import { BoardContext } from '../../Board/components/BoardContext'
 
 const CreateItemModal = (props) => {
   const db = useDatabase()

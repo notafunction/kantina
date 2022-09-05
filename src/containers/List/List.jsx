@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import _sortBy from 'lodash.sortby'
 import PropTypes from 'prop-types'
 import { Droppable } from 'react-beautiful-dnd'
@@ -9,9 +9,8 @@ import Styled from './components/Styled'
 import { ref } from 'firebase/database'
 import { Button, Spin } from 'antd'
 import CreateItemModal from './components/CreateItemModal'
-import { BoardContext } from '../Board/Board'
-
-export const ListContext = createContext()
+import { ListContext } from './components/ListContext'
+import { BoardContext } from '../Board/components/BoardContext'
 
 const List = (props) => {
   const auth = useSigninCheck()
@@ -48,17 +47,16 @@ const List = (props) => {
             <Styled.Dropzone ref={provided.innerRef}>
               {renderItems()}
               {provided.placeholder}
+              {auth.status === 'success' && auth.data.signedIn ? (
+                <Button type="text" onClick={() => setCreateItemVisible(true)} className="mt-auto">
+                  Add Item
+                  <CreateItemModal
+                    visible={createItemVisible}
+                    close={() => setCreateItemVisible(false)}
+                  />
+                </Button>
+              ) : null}
             </Styled.Dropzone>
-
-            {auth.status === 'success' && auth.data.signedIn ? (
-              <Button type="text" onClick={() => setCreateItemVisible(true)}>
-                Add Item
-                <CreateItemModal
-                  visible={createItemVisible}
-                  close={() => setCreateItemVisible(false)}
-                />
-              </Button>
-            ) : null}
           </Styled.Content>
         )}
       </Droppable>
