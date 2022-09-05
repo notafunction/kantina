@@ -2,16 +2,16 @@ import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Form, Input, Switch, message, Select, Popconfirm } from 'antd'
 import { WarningOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons'
-import { useNavigate, useParams } from 'react-router'
+import { useNavigate } from 'react-router'
 import SettingsDrawer from '../../../components/SettingsDrawer'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
 import { ref, remove, update } from 'firebase/database'
-import { useDatabase } from 'reactfire'
+import { useDatabase, useUser } from 'reactfire'
 import { BoardContext } from './BoardContext'
 
 const BoardSettingsDrawer = (props) => {
-  const params = useParams()
   const db = useDatabase()
+  const user = useUser()
   const navigate = useNavigate()
   const [form] = Form.useForm()
   const board = useContext(BoardContext)
@@ -19,7 +19,7 @@ const BoardSettingsDrawer = (props) => {
   const onSave = async () => {
     const values = await form.validateFields()
     try {
-      await update(ref(db, `boards/${params.boardId}`), values)
+      await update(ref(db, `boards/${board.id}`), values)
       props.close()
     } catch (error) {
       message.error(error.message)
@@ -28,9 +28,10 @@ const BoardSettingsDrawer = (props) => {
 
   const onDelete = async () => {
     try {
-      await remove(ref(db, `boards/${params.boardId}`))
-      props.close()
       navigate('/')
+      remove(ref(db, `boards/${board.id}`))
+      remove(ref(db, `users/${user.data.uid}/boards/${board.id}`))
+      props.close()
     } catch (error) {
       message.error(error.message)
     }

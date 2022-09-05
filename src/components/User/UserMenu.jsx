@@ -25,6 +25,10 @@ function UserMenu(props) {
     if (userBoards.status === 'loading') return
 
     const fetchData = async () => {
+      if (userBoards.data === null) {
+        return setBoards([])
+      }
+
       const boardIds = Object.keys(userBoards.data)
 
       const boards = await Promise.all(

@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
-import { query, ref } from 'firebase/database'
 import { useDatabase, useDatabaseListData } from 'reactfire'
 import { Card, Spin } from 'antd'
 import DashboardBoardItem from '../../components/Dashboard/DashboardBoardItem'
 import { Link } from 'react-router-dom'
+import { ref } from 'firebase/database'
 
 const Styled = {
   Grid: styled.div`
@@ -15,19 +15,21 @@ const Styled = {
 
 function Dashboard() {
   const db = useDatabase()
-  const recentBoardsQuery = query(ref(db, 'boards'))
-  const { status, data: recentBoards } = useDatabaseListData(recentBoardsQuery, {
+
+  const boards = useDatabaseListData(ref(db, `boards`), {
     idField: 'id'
   })
 
-  if (status === 'loading') return <Spin />
+  if (boards.status === 'loading') {
+    return <Spin />
+  }
 
   return (
     <div className="flex flex-col gap-4">
       <Card title="Recent Boards" bordered={false}>
         <Styled.Grid>
-          {recentBoards &&
-            recentBoards.map((board) => (
+          {boards.data &&
+            boards.data.map((board) => (
               <Link to={`/b/${board.id}`} key={board.id}>
                 <DashboardBoardItem board={board} />
               </Link>

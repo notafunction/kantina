@@ -64,7 +64,7 @@ const ListSettingsDrawer = (props) => {
           <Popconfirm
             onConfirm={onDelete}
             okText="Yes"
-            title="Are you sure? This cannot be undone"
+            title="Are you sure?"
             okButtonProps={{ danger: true }}
             icon={<WarningOutlined />}>
             <Button danger>Delete List</Button>

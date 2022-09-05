@@ -31,7 +31,8 @@ const ItemSettingsDrawer = (props) => {
 
   const onDelete = async () => {
     try {
-      await remove(ref(db, `lists/${list.id}/items/${item.id}`))
+      await remove(ref(db, `boards/${board.id}/lists/${list.id}/items/${item.id}`))
+      props.close()
     } catch (error) {
       message.error(error.message)
     }
