@@ -4,5 +4,6 @@
   },
   "eslint.validate": [
     "javascript"
-  ]
+  ],
+  "jest.jestCommandLine": "npm run test --"
  }

@@ -5,7 +5,7 @@ import NavBar from './components/Navbar/NavBar'
 import RequireAccess from './containers/RequireAccess'
 import { useGoogleAnalytics } from './hooks'
 import './App.css'
-import Dashboard from './containers/Dashboard'
+import Dashboard from './containers/Dashboard/Dashboard'
 
 const App = () => {
   useGoogleAnalytics()

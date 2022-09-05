@@ -3,9 +3,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Form, Input, Divider } from 'antd'
 import PropTypes from 'prop-types'
-import { useSelector } from 'react-redux'
 import GoogleButton from 'react-google-button'
-import { useFirebase } from 'react-redux-firebase'
 
 const StyledProviderLogins = styled.div`
   display: flex;
@@ -24,8 +22,6 @@ const getAuthErrorMessage = (error) => {
 }
 
 const LoginForm = (props) => {
-  const firebase = useFirebase()
-
   return (
     <Form {...props.formProps}>
       <Form.Item

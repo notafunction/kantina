@@ -6,9 +6,15 @@
     "url": "https://github.com/notafunction/kantina.git"
   },
   "private": true,
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
+  },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
-    "@reduxjs/toolkit": "^1.7.1",
     "@sentry/react": "^6.16.1",
     "@sentry/tracing": "^6.16.1",
     "@sentry/webpack-plugin": "^1.18.3",
@@ -18,34 +24,23 @@
     "immutability-helper": "^3.1.1",
     "lodash.sortby": "^4.7.0",
     "prop-types": "^15.8.0",
-    "react": "^17.0.2",
+    "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.0",
     "react-color": "^2.19.3",
-    "react-dom": "^17.0.2",
+    "react-dom": "^18.2.0",
     "react-ga": "^3.3.0",
     "react-google-button": "^0.7.2",
     "react-redux": "^7.2.6",
-    "react-redux-firebase": "^3.11.0",
     "react-router": "^6.2.1",
     "react-router-dom": "^6.2.1",
-    "react-scripts": "5.0.0",
     "reactfire": "^4.2.2",
     "styled-components": "^5.3.3"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix",
-    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
-  },
   "devDependencies": {
+    "@vitejs/plugin-react": "^2.0.1",
     "autoprefixer": "^10.4.8",
     "babel-plugin-macros": "^3.1.0",
     "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.6",
     "eslint": "^8.6.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -55,7 +50,9 @@
     "prettier": "^2.5.1",
     "sinon": "^12.0.1",
     "tailwindcss": "^3.1.8",
-    "twin.macro": "^2.8.2"
+    "twin.macro": "^2.8.2",
+    "vite": "^3.0.9",
+    "vite-plugin-babel-macros": "^1.0.6"
   },
   "browserslist": {
     "production": [

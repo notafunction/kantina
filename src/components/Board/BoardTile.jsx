@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Card, Statistic } from 'antd'
-import Spin from '../Spin'
+import { Card, Statistic, Spin } from 'antd'
 import { useDatabase, useDatabaseListData } from 'reactfire'
 import { query, ref } from 'firebase/database'
 
