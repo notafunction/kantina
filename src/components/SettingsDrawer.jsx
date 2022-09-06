@@ -28,7 +28,7 @@ const SettingsDrawer = ({
   return (
     <Drawer
       onClose={close}
-      width={viewportWidth > 800 ? 700 : viewportWidth - 32}
+      width={viewportWidth > 800 ? 400 : viewportWidth - 32}
       extra={
         <Space>
           <Button onClick={close} {...cancelButtonProps}>

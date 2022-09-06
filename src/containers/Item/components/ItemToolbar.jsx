@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Button } from 'antd'
-import { EditOutlined } from '@ant-design/icons'
+import { Button, Tooltip } from 'antd'
+import { SettingOutlined } from '@ant-design/icons'
 import { useSigninCheck } from 'reactfire'
 import Styled from './Styled'
 import ItemSettingsDrawer from './ItemSettingsDrawer'
@@ -8,7 +8,7 @@ import ItemSettingsDrawer from './ItemSettingsDrawer'
 const ItemToolbar = () => {
   const auth = useSigninCheck()
 
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [isItemSettingsDrawerVisible, setIsItemSettingsDrawerVisible] = useState(false)
 
   if (auth.status === 'loading' || !auth.data.signedIn) {
     return null
@@ -16,13 +16,18 @@ const ItemToolbar = () => {
 
   return (
     <Styled.Toolbar>
-      <Button
-        size="small"
-        type="text"
-        onClick={() => setIsSettingsOpen(true)}
-        icon={<EditOutlined />}></Button>
+      <Tooltip title="Manage Item">
+        <Button
+          size="small"
+          type="text"
+          onClick={() => setIsItemSettingsDrawerVisible(true)}
+          icon={<SettingOutlined />}></Button>
+      </Tooltip>
 
-      <ItemSettingsDrawer visible={isSettingsOpen} close={() => setIsSettingsOpen(false)} />
+      <ItemSettingsDrawer
+        visible={isItemSettingsDrawerVisible}
+        close={() => setIsItemSettingsDrawerVisible(false)}
+      />
     </Styled.Toolbar>
   )
 }

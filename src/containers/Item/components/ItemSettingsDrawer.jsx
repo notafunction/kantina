@@ -44,6 +44,7 @@ const ItemSettingsDrawer = (props) => {
       visible={props.visible}
       close={props.close}
       onOk={onSave}
+      size="default"
       destroyOnClose>
       <Form layout="vertical" onFinish={onSave} form={form} preserve={false}>
         <Form.Item

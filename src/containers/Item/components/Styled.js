@@ -25,11 +25,22 @@ const Styled = {
       ${tw`overflow-hidden block`}
       word-wrap: break-word;
     }
-  `,
-
-  Toolbar: styled.div`
-    ${tw`flex justify-end gap-2 mb-1`}
   `
 }
+
+Styled.Toolbar = styled.div`
+  ${tw`
+    transition-all
+    flex
+    justify-end
+    gap-2
+    mb-1
+    opacity-0
+  `}
+
+  ${Styled.Container}:hover & {
+    ${tw`opacity-100`}
+  }
+`
 
 export default Styled

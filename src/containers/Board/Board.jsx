@@ -7,13 +7,10 @@ import { useParams, useNavigate } from 'react-router'
 import { useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
 import { ref, runTransaction, set } from 'firebase/database'
 import { Button, Result, PageHeader, Spin, message } from 'antd'
-import CreateListModal from './components/CreateListModal'
 import Styled from './components/Styled'
 import List from '../List/List'
-import BoardSettingsDrawer from './components/BoardSettingsDrawer'
-import UserToolbar from './components/UserToolbar'
 import { BoardContext } from './components/BoardContext'
-import { useModal } from 'react-modal-hook'
+import BoardToolbar from './components/BoardToolbar'
 
 const Board = () => {
   const navigate = useNavigate()
@@ -24,18 +21,7 @@ const Board = () => {
   const board = useDatabaseObjectData(ref(db, `boards/${params.boardId}`), {
     idField: 'id'
   })
-
-  const [boardSettingsVisible, setBoardSettingsVisible] = useState(false)
-  const [createListModalVisible, setCreateListModalVisible] = useState(false)
   const [state, setState] = useState({})
-
-  const [showBoardSettingsModal, closeBoardSettingsModal] = useModal(() => (
-    <BoardSettingsDrawer visible={true} close={closeBoardSettingsModal} />
-  ))
-
-  const [showCreateListModal, closeCreateListModal] = useModal(() => (
-    <CreateListModal visible={true} close={closeCreateListModal} />
-  ))
 
   if (board.status === 'loading') return <Spin />
 
@@ -61,18 +47,6 @@ const Board = () => {
       }
     }
   }, [board.data])
-
-  const handleToolbarClick = (event) => {
-    switch (event.key) {
-      case 'list:create': {
-        showCreateListModal()
-        break
-      }
-      case 'board:settings': {
-        showBoardSettingsModal()
-      }
-    }
-  }
 
   const renderLists = () => {
     if (state.lists) {
@@ -261,7 +235,7 @@ const Board = () => {
   return (
     <BoardContext.Provider value={state}>
       <Styled.BoardContainer>
-        <PageHeader title={state.title} extra={<UserToolbar onClick={handleToolbarClick} />} />
+        <PageHeader title={state.title} extra={<BoardToolbar />} />
 
         <Styled.Content>
           <DragDropContext onDragEnd={onDragEnd}>
@@ -278,16 +252,6 @@ const Board = () => {
             </Droppable>
           </DragDropContext>
         </Styled.Content>
-
-        <CreateListModal
-          visible={createListModalVisible}
-          close={() => setCreateListModalVisible(false)}
-        />
-
-        <BoardSettingsDrawer
-          visible={boardSettingsVisible}
-          close={() => setBoardSettingsVisible(false)}
-        />
       </Styled.BoardContainer>
     </BoardContext.Provider>
   )

@@ -30,7 +30,6 @@
     "react-dom": "^18.2.0",
     "react-ga": "^3.3.0",
     "react-google-button": "^0.7.2",
-    "react-modal-hook": "^3.0.2",
     "react-redux": "^7.2.6",
     "react-router": "^6.2.1",
     "react-router-dom": "^6.2.1",

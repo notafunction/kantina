@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
-import { Button } from 'antd'
-import { EditOutlined } from '@ant-design/icons'
-import ListSettingsDrawer from './ListSettingsDrawer'
+import { Button, Tooltip } from 'antd'
+import { SettingOutlined, PlusOutlined } from '@ant-design/icons'
 import { useSigninCheck } from 'reactfire'
+import ListSettingsDrawer from './ListSettingsDrawer'
+import CreateItemModal from './CreateItemModal'
 
 const ListToolbar = () => {
   const auth = useSigninCheck()
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [isListSettingsDrawerVisible, setIsListSettingsDrawerVisible] = useState(false)
+  const [isCreateItemModalVisible, setIsCreateItemModalVisible] = useState(false)
 
   if (auth.status === 'loading') {
     return null
@@ -17,15 +19,34 @@ const ListToolbar = () => {
   }
 
   return (
-    <div>
-      <Button
-        size="small"
-        type="text"
-        onClick={() => setIsSettingsOpen(true)}
-        icon={<EditOutlined />}></Button>
+    <>
+      <Tooltip title="Add Item">
+        <Button
+          size="small"
+          type="text"
+          icon={<PlusOutlined />}
+          onClick={() => setIsCreateItemModalVisible(true)}
+        />
+      </Tooltip>
 
-      <ListSettingsDrawer visible={isSettingsOpen} close={() => setIsSettingsOpen(false)} />
-    </div>
+      <Tooltip title="Manage List">
+        <Button
+          size="small"
+          type="text"
+          onClick={() => setIsListSettingsDrawerVisible(true)}
+          icon={<SettingOutlined />}></Button>
+      </Tooltip>
+
+      <ListSettingsDrawer
+        visible={isListSettingsDrawerVisible}
+        close={() => setIsListSettingsDrawerVisible(false)}
+      />
+
+      <CreateItemModal
+        visible={isCreateItemModalVisible}
+        close={() => setIsCreateItemModalVisible(false)}
+      />
+    </>
   )
 }
 

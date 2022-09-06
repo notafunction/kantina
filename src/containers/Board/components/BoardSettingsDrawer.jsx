@@ -1,7 +1,13 @@
 import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Form, Input, Switch, message, Select, Popconfirm } from 'antd'
-import { WarningOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons'
+import { Button, Form, Input, Switch, message, Popconfirm } from 'antd'
+import {
+  WarningOutlined,
+  LockOutlined,
+  UnlockOutlined,
+  CheckOutlined,
+  CloseOutlined
+} from '@ant-design/icons'
 import { useNavigate } from 'react-router'
 import SettingsDrawer from '../../../components/SettingsDrawer'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
@@ -52,12 +58,19 @@ const BoardSettingsDrawer = (props) => {
           rules={[{ required: true, message: 'A title is required.' }]}>
           <Input />
         </Form.Item>
-        <Form.Item name="type" label="Type" initialValue={board.type}>
-          <Select>
-            <Select.Option value="private">Private</Select.Option>
-            <Select.Option value="public">Public</Select.Option>
-          </Select>
+        <Form.Item
+          name="public"
+          label="Public Board"
+          help="Anyone with URL can view and edit"
+          valuePropName="checked"
+          initialValue={board.public}>
+          <Switch
+            checkedChildren={<CheckOutlined />}
+            unCheckedChildren={<CloseOutlined />}
+            checked={board.public}
+          />
         </Form.Item>
+
         <Form.Item
           name="locked"
           label="Lock"

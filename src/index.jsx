@@ -4,7 +4,6 @@ import registerServiceWorker from './registerServiceWorker'
 import ErrorBoundary from './components/ErrorBoundary'
 import FirebaseServicesProvider from './providers/FirebaseServicesProvider'
 import App from './App'
-import { ModalProvider } from 'react-modal-hook'
 import { BrowserRouter } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
 import { ConfigProvider } from 'antd'
@@ -22,9 +21,7 @@ root.render(
     <FirebaseServicesProvider>
       <BrowserRouter history={history}>
         <ErrorBoundary>
-          <ModalProvider>
-            <App />
-          </ModalProvider>
+          <App />
         </ErrorBoundary>
       </BrowserRouter>
     </FirebaseServicesProvider>

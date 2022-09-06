@@ -63,7 +63,6 @@ const UserSettingsDrawer = (props) => {
   }
 
   const onSave = async () => {
-    setLoading(true)
     const { avatar: _avatar, ...values } = await form.validateFields()
     try {
       const payload = values
@@ -72,16 +71,11 @@ const UserSettingsDrawer = (props) => {
         payload.photoURL = await uploadAndGetAvatarUrl()
       }
 
-      console.log(payload)
-
       await updateProfile(auth.currentUser, payload)
-      message.success('Your settings have been saved')
       props.close()
     } catch (error) {
       console.log(error)
-      message.error('There was a problem saving your changes')
-    } finally {
-      setLoading(false)
+      message.error(error.message)
     }
   }
 
