@@ -37,13 +37,16 @@ const List = (props) => {
               {provided.placeholder}
             </Styled.Dropzone>
             {auth.status === 'success' && auth.data.signedIn ? (
-              <Button type="text" onClick={() => setCreateItemVisible(true)} className="mt-auto">
-                Add Item
+              <>
+                <Button type="text" onClick={() => setCreateItemVisible(true)} className="mt-auto">
+                  Add Item
+                </Button>
+
                 <CreateItemModal
                   visible={createItemVisible}
                   close={() => setCreateItemVisible(false)}
                 />
-              </Button>
+              </>
             ) : null}
           </Styled.Content>
         )}
