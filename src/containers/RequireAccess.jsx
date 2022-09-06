@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useParams } from 'react-router'
+import { useParams, useNavigate } from 'react-router'
 import { Navigate } from 'react-router-dom'
 import { useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
 import { ref } from 'firebase/database'
-import { Spin } from 'antd'
+import { Spin, Result, Button } from 'antd'
 
 const RequireAccess = (props) => {
+  const navigate = useNavigate()
   const params = useParams()
   const db = useDatabase()
   const auth = useSigninCheck()
@@ -16,6 +17,21 @@ const RequireAccess = (props) => {
 
   if (auth.status === 'loading' || board.status === 'loading') {
     return <Spin />
+  }
+
+  if (board.data === null) {
+    return (
+      <Result
+        status="404"
+        title="404"
+        subTitle="This isn't the board you're looking for"
+        extra={
+          <Button type="primary" onClick={() => navigate('/')}>
+            Back Home
+          </Button>
+        }
+      />
+    )
   }
 
   const canViewBoard = () => {

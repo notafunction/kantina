@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom'
 import { get, ref } from 'firebase/database'
 import DashboardBoardItem from './DashboardBoardItem'
 import Styled from './Styled'
-import { useModal } from 'react-modal-hook'
 import CreateBoardModal from '../../Board/components/CreateBoardModal'
 
 const UserBoards = (props) => {
@@ -16,10 +15,7 @@ const UserBoards = (props) => {
   })
 
   const [boards, setBoards] = useState([])
-
-  const [showCreateBoardModal, closeCreateBoardModal] = useModal(() => (
-    <CreateBoardModal visible={true} close={closeCreateBoardModal} />
-  ))
+  const [isCreateBoardModalVisible, setIsCreateBoardModalVisible] = useState(false)
 
   useEffect(() => {
     if (userBoardIds.status === 'success') {
@@ -64,9 +60,14 @@ const UserBoards = (props) => {
         <Styled.Grid>{boards.map((board) => renderBoard(board))}</Styled.Grid>
       ) : (
         <Empty>
-          <Button type="primary" onClick={showCreateBoardModal}>
+          <Button type="primary" onClick={() => setIsCreateBoardModalVisible(true)}>
             Create Board
           </Button>
+
+          <CreateBoardModal
+            visible={isCreateBoardModalVisible}
+            close={() => setIsCreateBoardModalVisible(false)}
+          />
         </Empty>
       )}
     </Card>
