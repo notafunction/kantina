@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Form, Input, Switch, message, Popconfirm } from 'antd'
+import { Button, Form, Input, Switch, message, Popconfirm, Divider, Avatar, Tag } from 'antd'
 import {
   WarningOutlined,
   LockOutlined,
@@ -11,9 +11,10 @@ import {
 import { useNavigate } from 'react-router'
 import SettingsDrawer from '../../../components/SettingsDrawer'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
-import { ref, remove, update } from 'firebase/database'
+import { get, ref, remove, update } from 'firebase/database'
 import { useDatabase, useUser } from 'reactfire'
 import { BoardContext } from './BoardContext'
+import { useEffect } from 'react'
 
 const BoardSettingsDrawer = (props) => {
   const db = useDatabase()
@@ -21,6 +22,33 @@ const BoardSettingsDrawer = (props) => {
   const navigate = useNavigate()
   const [form] = Form.useForm()
   const board = useContext(BoardContext)
+
+  const [members, setMembers] = useState([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!board.members) {
+        setMembers([])
+      }
+
+      const members = await Promise.all(
+        Object.keys(board.members).map(async (id) => {
+          const snap = await get(ref(db, `users/${id}`))
+
+          if (snap.exists()) {
+            return {
+              id,
+              ...snap.val()
+            }
+          }
+        })
+      )
+
+      setMembers(members)
+    }
+
+    fetchData().catch(console.error)
+  }, [board.members])
 
   const onSave = async () => {
     const values = await form.validateFields()
@@ -42,6 +70,8 @@ const BoardSettingsDrawer = (props) => {
       message.error(error.message)
     }
   }
+
+  console.log(members)
 
   return (
     <SettingsDrawer
@@ -83,6 +113,31 @@ const BoardSettingsDrawer = (props) => {
             checked={board.locked}
           />
         </Form.Item>
+
+        <Divider orientation="left" orientationMargin={0}>
+          Board Members
+        </Divider>
+
+        {members.map((member) => (
+          <div key={member.id} className="flex items-center gap-2">
+            <Avatar src={member.photoURL ?? null}>
+              {!member.photoURL
+                ? member.displayName
+                    .split(' ')
+                    .map((word) => word.charAt(0))
+                    .join('')
+                : null}
+            </Avatar>
+
+            <div className="flex flex-col items-start text-sm">
+              <span>
+                {member.displayName}
+                {member.role && member.role === 'admin' ? <Tag color="red">admin</Tag> : null}
+              </span>
+              <span>{member.email}</span>
+            </div>
+          </div>
+        ))}
 
         <FormDangerZone>
           <Popconfirm

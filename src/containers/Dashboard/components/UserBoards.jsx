@@ -28,6 +28,8 @@ const UserBoards = (props) => {
           Object.keys(userBoardIds.data).map(async (id) => {
             const snap = await get(ref(db, `boards/${id}`))
 
+            console.log(snap, id)
+
             if (snap.exists()) {
               return {
                 id,

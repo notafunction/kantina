@@ -7,10 +7,14 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword
 } from 'firebase/auth'
+import { ref, update } from 'firebase/database'
+import { useDatabase } from 'reactfire'
 import { Button, Space, Modal, Form, message } from 'antd'
 import { LoginOutlined, UserAddOutlined } from '@ant-design/icons'
-import LoginForm from './LoginForm'
-import SignupForm from './SignupForm'
+import LoginForm from './components/LoginForm'
+import SignupForm from './components/SignupForm'
+import Styled from './components/Styled'
+import authErrorMessageMap from './components/authErrorMessageMap'
 
 const TOGGLE_LOADING = 'TOGGLE_LOADING'
 const TOGGLE_REGISTER = 'TOGGLE_REGISTER'
@@ -56,27 +60,35 @@ function stateReducer(state, action) {
   }
 }
 
-const ModalActions = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`
-
 const Auth = () => {
   const [state, dispatch] = useReducer(stateReducer, defaultState)
 
   const [loginForm] = Form.useForm()
   const [signupForm] = Form.useForm()
   const auth = getAuth()
+  const db = useDatabase()
+
+  const populateProfile = async (user) => {
+    const userRef = ref(db, `users/${user.uid}`)
+
+    return await update(userRef, {
+      displayName: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL
+    })
+  }
 
   const onLoginWithEmailAndPassword = async ({ email, password }) => {
     try {
       dispatch({ type: TOGGLE_LOADING })
-      await signInWithEmailAndPassword(auth, email, password)
+
+      const { user } = await signInWithEmailAndPassword(auth, email, password)
+      await populateProfile(user)
+
       dispatch({ type: TOGGLE_MODAL })
       message.success('You are now logged in')
     } catch (error) {
-      message.error('There was a problem logging you in')
+      message.error(authErrorMessageMap[error.code])
     } finally {
       dispatch({ type: TOGGLE_LOADING })
     }
@@ -85,11 +97,14 @@ const Auth = () => {
   const onLoginWithGoogleProvider = async () => {
     try {
       dispatch({ type: TOGGLE_LOADING })
-      await signInWithPopup(auth, new GoogleAuthProvider())
+
+      const { user } = await signInWithPopup(auth, new GoogleAuthProvider())
+      await populateProfile(user)
+
       dispatch({ type: TOGGLE_MODAL })
       message.success('You are now logged in')
     } catch (error) {
-      message.error(error.message)
+      message.error(authErrorMessageMap[error.code])
     } finally {
       dispatch({ type: TOGGLE_LOADING })
     }
@@ -97,13 +112,16 @@ const Auth = () => {
 
   const onSignup = async ({ email, password }) => {
     dispatch({ type: TOGGLE_LOADING })
+
     try {
-      await createUserWithEmailAndPassword(auth, email, password)
+      const { user } = await createUserWithEmailAndPassword(auth, email, password)
+      await populateProfile(user)
+
       message.success('You are now logged in')
-    } catch (error) {
-      message.error('There was a problem signing you up')
-    } finally {
       dispatch({ type: TOGGLE_MODAL })
+    } catch (error) {
+      message.error(authErrorMessageMap[error.code])
+    } finally {
       dispatch({ type: TOGGLE_LOADING })
     }
   }
@@ -147,7 +165,7 @@ const Auth = () => {
 
   function renderModalFooter() {
     return (
-      <ModalActions>
+      <Styled.ModalActions>
         <Button
           type="text"
           onClick={() => dispatch({ type: TOGGLE_REGISTER })}
@@ -164,7 +182,7 @@ const Auth = () => {
             {getActionText()}
           </Button>
         </div>
-      </ModalActions>
+      </Styled.ModalActions>
     )
   }
 
@@ -175,6 +193,7 @@ const Auth = () => {
       </Button>
 
       <Modal
+        centered
         destroyOnClose
         visible={state.isModalVisible}
         title={getActionText()}

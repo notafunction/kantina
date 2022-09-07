@@ -18,12 +18,16 @@ const CreateBoardModal = (props) => {
         ...values,
         id: boardRef.key,
         members: {
-          [user.data.uid]: true
+          [user.data.uid]: {
+            role: 'admin'
+          }
         }
       })
 
       set(ref(db, `users/${user.data.uid}/boards`), {
-        [boardRef.key]: true
+        [boardRef.key]: {
+          role: 'admin'
+        }
       })
     } catch (error) {
       message.error(error)

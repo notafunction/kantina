@@ -6,7 +6,14 @@ const Styled = {
     ${tw`p-2 text-base font-bold flex justify-between items-start`}
 
     h3 {
-      ${tw`flex-1 mb-0`}
+      ${tw`
+        flex-1
+        mb-0
+        whitespace-nowrap
+        overflow-hidden
+        overflow-ellipsis
+        min-w-0
+      `}
     }
   `,
 

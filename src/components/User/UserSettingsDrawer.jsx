@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import { Upload, Form, Input, message, Spin, Image } from 'antd'
 import SettingsDrawer from '../SettingsDrawer'
 import styled from 'styled-components'
-import { useAuth, useStorage, useUser } from 'reactfire'
+import { useDatabase, useStorage, useUser } from 'reactfire'
+import { uploadBytes, ref as storageRef, getDownloadURL } from 'firebase/storage'
+import { update, ref as databaseRef } from 'firebase/database'
 import { updateProfile } from 'firebase/auth'
-import { uploadBytes, ref, getDownloadURL } from 'firebase/storage'
 
 const StyledUpload = styled(Upload)`
   .ant-upload {
@@ -29,7 +30,7 @@ const getBase64 = (image, callback) => {
 
 const UserSettingsDrawer = (props) => {
   const { status, data: user } = useUser()
-  const auth = useAuth()
+  const db = useDatabase()
   const storage = useStorage()
 
   const [avatarFileList, setAvatarFileList] = useState([])
@@ -53,7 +54,7 @@ const UserSettingsDrawer = (props) => {
   const uploadAndGetAvatarUrl = async () => {
     try {
       const result = await uploadBytes(
-        ref(storage, `userAvatars/${props.user.uid}`),
+        storageRef(storage, `userAvatars/${props.user.uid}`),
         avatarFileList[0]
       )
       return await getDownloadURL(result.ref)
@@ -71,7 +72,11 @@ const UserSettingsDrawer = (props) => {
         payload.photoURL = await uploadAndGetAvatarUrl()
       }
 
-      await updateProfile(auth.currentUser, payload)
+      await Promise.all([
+        update(databaseRef(db, `users/${props.user.uid}`), payload),
+        updateProfile(props.user, payload)
+      ])
+
       props.close()
     } catch (error) {
       console.log(error)

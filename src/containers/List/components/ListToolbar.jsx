@@ -19,7 +19,7 @@ const ListToolbar = () => {
   }
 
   return (
-    <>
+    <div className="flex items-center gap-1">
       <Tooltip title="Add Item">
         <Button
           size="small"
@@ -46,7 +46,7 @@ const ListToolbar = () => {
         visible={isCreateItemModalVisible}
         close={() => setIsCreateItemModalVisible(false)}
       />
-    </>
+    </div>
   )
 }
 

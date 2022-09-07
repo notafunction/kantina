@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { Avatar, Dropdown, Menu, Spin } from 'antd'
-import { LogoutOutlined, GroupOutlined, SettingOutlined } from '@ant-design/icons'
-import { useNavigate } from 'react-router'
-import CreateBoardModal from '../../containers/Board/components/CreateBoardModal'
+import { Avatar, Dropdown, Menu } from 'antd'
+import { LogoutOutlined, SettingOutlined } from '@ant-design/icons'
+import { useAuth } from 'reactfire'
 import UserSettingsDrawer from './UserSettingsDrawer'
-import { useDatabase, useAuth } from 'reactfire'
-import { ref, get } from 'firebase/database'
 function UserMenu(props) {
-  const navigate = useNavigate()
   const auth = useAuth()
-  const db = useDatabase()
 
-  const [boards, setBoards] = useState([])
-  const [createBoardModalVisible, setCreateBoardModalVisible] = React.useState(false)
   const [userSettingsDrawerVisible, setUserSettingsDrawerVisible] = React.useState(false)
 
   const handleMenuClick = (event) => {
@@ -25,9 +18,6 @@ function UserMenu(props) {
       case '$settings': {
         setUserSettingsDrawerVisible(true)
         break
-      }
-      default: {
-        navigate(`/b/${event.key}`)
       }
     }
   }
@@ -55,11 +45,6 @@ function UserMenu(props) {
           style={{ cursor: 'pointer' }}
         />
       </Dropdown>
-
-      <CreateBoardModal
-        close={() => setCreateBoardModalVisible(false)}
-        visible={createBoardModalVisible}
-      />
 
       <UserSettingsDrawer
         user={props.user}
