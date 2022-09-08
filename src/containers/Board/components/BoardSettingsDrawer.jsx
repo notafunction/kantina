@@ -1,5 +1,9 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import { useNavigate } from 'react-router'
+import { get, ref, remove, update } from 'firebase/database'
+import { useDatabase, useUser } from 'reactfire'
+import { BoardContext } from './BoardContext'
 import { Button, Form, Input, Switch, message, Popconfirm, Divider, Avatar, Tag } from 'antd'
 import {
   WarningOutlined,
@@ -8,13 +12,9 @@ import {
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
-import { useNavigate } from 'react-router'
 import SettingsDrawer from '../../../components/SettingsDrawer'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
-import { get, ref, remove, update } from 'firebase/database'
-import { useDatabase, useUser } from 'reactfire'
-import { BoardContext } from './BoardContext'
-import { useEffect } from 'react'
+import BoardSettingsMember from './BoardSettingsMember'
 
 const BoardSettingsDrawer = (props) => {
   const db = useDatabase()
@@ -32,12 +32,12 @@ const BoardSettingsDrawer = (props) => {
       }
 
       const members = await Promise.all(
-        Object.keys(board.members).map(async (id) => {
-          const snap = await get(ref(db, `users/${id}`))
+        Object.keys(board.members).map(async (uid) => {
+          const snap = await get(ref(db, `users/${uid}`))
 
           if (snap.exists()) {
             return {
-              id,
+              uid,
               ...snap.val()
             }
           }
@@ -70,8 +70,6 @@ const BoardSettingsDrawer = (props) => {
       message.error(error.message)
     }
   }
-
-  console.log(members)
 
   return (
     <SettingsDrawer
@@ -119,24 +117,7 @@ const BoardSettingsDrawer = (props) => {
         </Divider>
 
         {members.map((member) => (
-          <div key={member.id} className="flex items-center gap-2">
-            <Avatar src={member.photoURL ?? null}>
-              {!member.photoURL
-                ? member.displayName
-                    .split(' ')
-                    .map((word) => word.charAt(0))
-                    .join('')
-                : null}
-            </Avatar>
-
-            <div className="flex flex-col items-start text-sm">
-              <span>
-                {member.displayName}
-                {member.role && member.role === 'admin' ? <Tag color="red">admin</Tag> : null}
-              </span>
-              <span>{member.email}</span>
-            </div>
-          </div>
+          <BoardSettingsMember user={member} key={member.uid} />
         ))}
 
         <FormDangerZone>
