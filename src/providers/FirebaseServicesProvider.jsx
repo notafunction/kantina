@@ -3,22 +3,20 @@ import PropTypes from 'prop-types'
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 import { getAuth } from 'firebase/auth'
 import { getDatabase } from 'firebase/database'
-import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 import {
   useFirebaseApp,
   AuthProvider,
   DatabaseProvider,
-  FirestoreProvider,
   StorageProvider,
   AppCheckProvider
 } from 'reactfire'
+import UserProfileProvider from '../containers/User/UserProfileProvider'
 
 export default function FirebaseServicesProvider({ children }) {
   const app = useFirebaseApp()
   const auth = getAuth(app)
   const database = getDatabase(app)
-  const firestore = getFirestore(app)
   const storage = getStorage(app)
 
   const appCheck = initializeAppCheck(app, {
@@ -30,9 +28,9 @@ export default function FirebaseServicesProvider({ children }) {
     <AppCheckProvider sdk={appCheck}>
       <AuthProvider sdk={auth}>
         <DatabaseProvider sdk={database}>
-          <FirestoreProvider sdk={firestore}>
+          <UserProfileProvider>
             <StorageProvider sdk={storage}>{children}</StorageProvider>
-          </FirestoreProvider>
+          </UserProfileProvider>
         </DatabaseProvider>
       </AuthProvider>
     </AppCheckProvider>

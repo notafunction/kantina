@@ -28,7 +28,7 @@ const BoardSettingsDrawer = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       if (!board.members) {
-        setMembers([])
+        return setMembers([])
       }
 
       const members = await Promise.all(
