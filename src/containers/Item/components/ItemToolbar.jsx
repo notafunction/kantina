@@ -3,12 +3,12 @@ import { Button, Tooltip } from 'antd'
 import { SettingOutlined } from '@ant-design/icons'
 import { useSigninCheck } from 'reactfire'
 import Styled from './Styled'
-import ItemSettingsDrawer from './ItemSettingsDrawer'
+import ItemSettingsModal from './ItemSettingsModal'
 
 const ItemToolbar = () => {
   const auth = useSigninCheck()
 
-  const [isItemSettingsDrawerVisible, setIsItemSettingsDrawerVisible] = useState(false)
+  const [isItemSettingsModalVisible, setIsItemSettingsModalVisible] = useState(false)
 
   if (auth.status === 'loading' || !auth.data.signedIn) {
     return null
@@ -20,13 +20,13 @@ const ItemToolbar = () => {
         <Button
           size="small"
           type="text"
-          onClick={() => setIsItemSettingsDrawerVisible(true)}
+          onClick={() => setIsItemSettingsModalVisible(true)}
           icon={<SettingOutlined />}></Button>
       </Tooltip>
 
-      <ItemSettingsDrawer
-        visible={isItemSettingsDrawerVisible}
-        close={() => setIsItemSettingsDrawerVisible(false)}
+      <ItemSettingsModal
+        visible={isItemSettingsModalVisible}
+        close={() => setIsItemSettingsModalVisible(false)}
       />
     </Styled.Toolbar>
   )

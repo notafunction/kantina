@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router'
 import { get, ref, remove, update } from 'firebase/database'
 import { useDatabase, useUser } from 'reactfire'
 import { BoardContext } from './BoardContext'
-import { Button, Form, Input, Switch, message, Popconfirm, Divider, Avatar, Tag } from 'antd'
+import { Button, Form, Input, Switch, message, Popconfirm, Divider, Avatar, Tag, Modal } from 'antd'
 import {
   WarningOutlined,
   LockOutlined,
@@ -12,11 +12,10 @@ import {
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
-import SettingsDrawer from '../../../components/SettingsDrawer'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
 import BoardSettingsMember from './BoardSettingsMember'
 
-const BoardSettingsDrawer = (props) => {
+const BoardSettingsModal = (props) => {
   const db = useDatabase()
   const user = useUser()
   const navigate = useNavigate()
@@ -72,12 +71,11 @@ const BoardSettingsDrawer = (props) => {
   }
 
   return (
-    <SettingsDrawer
+    <Modal
       title={`${board.title} Settings`}
       visible={props.visible}
-      close={props.close}
-      onOk={onSave}
-      destroyOnClose>
+      onCancel={props.close}
+      onOk={onSave}>
       <Form layout="vertical" onFinish={onSave} form={form} preserve={false}>
         <Form.Item
           initialValue={board.title}
@@ -131,13 +129,13 @@ const BoardSettingsDrawer = (props) => {
           </Popconfirm>
         </FormDangerZone>
       </Form>
-    </SettingsDrawer>
+    </Modal>
   )
 }
 
-BoardSettingsDrawer.propTypes = {
+BoardSettingsModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired
 }
 
-export default BoardSettingsDrawer
+export default BoardSettingsModal

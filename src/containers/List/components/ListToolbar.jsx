@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { SettingOutlined, PlusOutlined } from '@ant-design/icons'
 import { useSigninCheck } from 'reactfire'
-import ListSettingsDrawer from './ListSettingsDrawer'
+import ListSettingsModal from './ListSettingsModal'
 import CreateItemModal from './CreateItemModal'
 
 const ListToolbar = () => {
   const auth = useSigninCheck()
-  const [isListSettingsDrawerVisible, setIsListSettingsDrawerVisible] = useState(false)
+  const [isListSettingsModalVisible, setIsListSettingsModalVisible] = useState(false)
   const [isCreateItemModalVisible, setIsCreateItemModalVisible] = useState(false)
 
   if (auth.status === 'loading') {
@@ -33,13 +33,13 @@ const ListToolbar = () => {
         <Button
           size="small"
           type="text"
-          onClick={() => setIsListSettingsDrawerVisible(true)}
+          onClick={() => setIsListSettingsModalVisible(true)}
           icon={<SettingOutlined />}></Button>
       </Tooltip>
 
-      <ListSettingsDrawer
-        visible={isListSettingsDrawerVisible}
-        close={() => setIsListSettingsDrawerVisible(false)}
+      <ListSettingsModal
+        visible={isListSettingsModalVisible}
+        close={() => setIsListSettingsModalVisible(false)}
       />
 
       <CreateItemModal

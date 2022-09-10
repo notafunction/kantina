@@ -1,26 +1,27 @@
 import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Form, Input, message, Popconfirm } from 'antd'
-import { WarningOutlined } from '@ant-design/icons'
-import { CirclePicker } from 'react-color'
-import { ref, remove, update } from 'firebase/database'
 import { useDatabase } from 'reactfire'
+import { WarningOutlined } from '@ant-design/icons'
+import { Button, Form, Input, message, Modal, Popconfirm } from 'antd'
+import { ref, update, remove } from 'firebase/database'
+import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
-import SettingsDrawer from '../../../components/SettingsDrawer'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
-import { ListContext } from './ListContext'
+import { ListContext } from '../../List/components/ListContext'
+import { ItemContext } from './ItemContext'
 import { BoardContext } from '../../Board/components/BoardContext'
 
-const ListSettingsDrawer = (props) => {
+const ItemSettingsModal = (props) => {
   const db = useDatabase()
   const [form] = Form.useForm()
-  const list = useContext(ListContext)
   const board = useContext(BoardContext)
+  const list = useContext(ListContext)
+  const item = useContext(ItemContext)
 
   const onSave = async () => {
     const values = await form.validateFields()
     try {
-      await update(ref(db, `boards/${board.id}/lists/${list.id}`), values)
+      await update(ref(db, `boards/${board.id}/lists/${list.id}/items/${item.id}`), values)
       props.close()
     } catch (error) {
       message.error(error.message)
@@ -29,35 +30,30 @@ const ListSettingsDrawer = (props) => {
 
   const onDelete = async () => {
     try {
-      await remove(ref(db, `boards/${board.id}/lists/${list.id}`))
+      await remove(ref(db, `boards/${board.id}/lists/${list.id}/items/${item.id}`))
       props.close()
     } catch (error) {
       message.error(error.message)
-      console.log(error)
     }
   }
 
   return (
-    <SettingsDrawer
-      title={`${list.title} Settings`}
-      visible={props.visible}
-      close={props.close}
-      onOk={onSave}
-      destroyOnClose>
+    <Modal title="Edit Item" visible={props.visible} onCancel={props.close} onOk={onSave}>
       <Form layout="vertical" onFinish={onSave} form={form} preserve={false}>
         <Form.Item
-          initialValue={list.title}
-          name="title"
-          label="Title"
-          rules={[{ required: true, message: 'A title is required.' }]}>
-          <Input />
+          initialValue={item.content}
+          name="content"
+          label="Content"
+          rules={[{ required: true, message: 'Content is required' }]}>
+          <Input.TextArea>{item.content}</Input.TextArea>
         </Form.Item>
+
         <Form.Item
           name="color"
           label="Color"
-          initialValue={list.color}
+          initialValue={item.color}
           getValueFromEvent={({ hex }) => hex}>
-          <CirclePicker colors={colorPickerColors} color={list.color} />
+          <CirclePicker colors={colorPickerColors} color={item.color} />
         </Form.Item>
 
         <FormDangerZone>
@@ -67,17 +63,17 @@ const ListSettingsDrawer = (props) => {
             title="Are you sure?"
             okButtonProps={{ danger: true }}
             icon={<WarningOutlined />}>
-            <Button danger>Delete List</Button>
+            <Button danger>Delete Item</Button>
           </Popconfirm>
         </FormDangerZone>
       </Form>
-    </SettingsDrawer>
+    </Modal>
   )
 }
 
-ListSettingsDrawer.propTypes = {
+ItemSettingsModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired
 }
 
-export default ListSettingsDrawer
+export default ItemSettingsModal
