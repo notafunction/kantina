@@ -37,7 +37,7 @@ const UserBoards = (props) => {
           })
         )
 
-        setBoards(boards)
+        setBoards(boards.filter((board) => !!board))
       }
 
       fetchData().catch(console.error)
