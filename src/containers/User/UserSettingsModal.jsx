@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Upload, Form, Input, message, Spin, Image } from 'antd'
-import SettingsDrawer from '../SettingsDrawer'
+import { Upload, Form, Input, message, Spin, Image, Modal } from 'antd'
+import SettingsDrawer from '../../components/SettingsDrawer'
 import styled from 'styled-components'
 import { useDatabase, useStorage, useUser } from 'reactfire'
 import { uploadBytes, ref as storageRef, getDownloadURL } from 'firebase/storage'
@@ -28,7 +28,7 @@ const getBase64 = (image, callback) => {
   reader.readAsDataURL(image)
 }
 
-const UserSettingsDrawer = (props) => {
+const UserSettingsModal = (props) => {
   const { status, data: user } = useUser()
   const db = useDatabase()
   const storage = useStorage()
@@ -94,13 +94,7 @@ const UserSettingsDrawer = (props) => {
   if (status === 'loading') return <Spin />
 
   return (
-    <SettingsDrawer
-      title="User Settings"
-      onOk={onSave}
-      visible={props.visible}
-      close={onClose}
-      destroyOnClose={true}
-      okButtonProps={{ loading }}>
+    <Modal title="User Settings" onOk={onSave} visible={props.visible} onCancel={onClose}>
       <Form layout="vertical" form={form} onFinish={onSave}>
         <Form.Item name="avatar" label="Avatar">
           <StyledUpload
@@ -130,14 +124,14 @@ const UserSettingsDrawer = (props) => {
           <Input />
         </Form.Item>
       </Form>
-    </SettingsDrawer>
+    </Modal>
   )
 }
 
-UserSettingsDrawer.propTypes = {
+UserSettingsModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired
 }
 
-export default UserSettingsDrawer
+export default UserSettingsModal

@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 import { Avatar, Dropdown, Menu } from 'antd'
 import { LogoutOutlined, SettingOutlined } from '@ant-design/icons'
 import { useAuth } from 'reactfire'
-import UserSettingsDrawer from './UserSettingsDrawer'
+import UserSettingsModal from '../../containers/User/UserSettingsModal'
 function UserMenu(props) {
   const auth = useAuth()
 
-  const [userSettingsDrawerVisible, setUserSettingsDrawerVisible] = React.useState(false)
+  const [UserSettingsModalVisible, setUserSettingsModalVisible] = React.useState(false)
 
   const handleMenuClick = (event) => {
     switch (event.key) {
@@ -16,7 +16,7 @@ function UserMenu(props) {
         break
       }
       case '$settings': {
-        setUserSettingsDrawerVisible(true)
+        setUserSettingsModalVisible(true)
         break
       }
     }
@@ -46,10 +46,10 @@ function UserMenu(props) {
         />
       </Dropdown>
 
-      <UserSettingsDrawer
+      <UserSettingsModal
         user={props.user}
-        visible={userSettingsDrawerVisible}
-        close={() => setUserSettingsDrawerVisible(false)}
+        visible={UserSettingsModalVisible}
+        close={() => setUserSettingsModalVisible(false)}
       />
     </>
   )
