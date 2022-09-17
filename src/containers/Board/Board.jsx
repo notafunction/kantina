@@ -11,6 +11,7 @@ import Styled from './components/Styled'
 import List from '../List/List'
 import { BoardContext } from './components/BoardContext'
 import BoardToolbar from './components/BoardToolbar'
+import ListCreateColumn from './components/ListCreateColumn'
 
 const Board = () => {
   const navigate = useNavigate()
@@ -247,6 +248,8 @@ const Board = () => {
                   {...droppableProvided.droppableProps}>
                   {renderLists()}
                   {droppableProvided.placeholder}
+
+                  <ListCreateColumn />
                 </Styled.ListsContainer>
               )}
             </Droppable>

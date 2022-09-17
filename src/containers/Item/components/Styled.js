@@ -15,27 +15,28 @@ const Styled = {
     `}
   `,
   Content: styled.div`
-    ${tw`transition-all p-2 overflow-hidden border`}
+    ${tw`transition-all p-2 overflow-hidden border relative`}
     ${(props) => (props.isDragging ? tw`shadow-sm` : tw`shadow-none`)}
     ${(props) => `
       background-color: ${props.itemColor}
     `}
-  
-  > span {
-      ${tw`overflow-hidden block`}
-      word-wrap: break-word;
-    }
   `
 }
 
 Styled.Toolbar = styled.div`
   ${tw`
+    absolute
+    p-1
+    top-0 right-0
     transition-all
     flex
     justify-end
     gap-2
     mb-1
     opacity-0
+    bg-white/60
+    backdrop-blur-md
+    rounded-sm
   `}
 
   ${Styled.Container}:hover & {
