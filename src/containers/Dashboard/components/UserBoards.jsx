@@ -44,10 +44,6 @@ const UserBoards = (props) => {
     }
   }, [userBoardIds.data])
 
-  if (userBoardIds.status === 'loading') {
-    return <Spin />
-  }
-
   const renderBoard = (board) => (
     <Link to={`/b/${board.id}`} key={board.id}>
       <DashboardBoardItem board={board} />
@@ -55,22 +51,26 @@ const UserBoards = (props) => {
   )
 
   return (
-    <Card title="My Boards" bordered={false}>
-      {boards.length ? (
-        <Styled.Grid>{boards.map((board) => renderBoard(board))}</Styled.Grid>
-      ) : (
-        <Empty>
-          <Button type="primary" onClick={() => setIsCreateBoardModalVisible(true)}>
-            Create Board
-          </Button>
+    <Spin spinning={userBoardIds.status === 'loading'}>
+      <Card title="My Boards" bordered={false} className="min-h-[200px]">
+        {boards.length ? (
+          <Styled.Grid>{boards.map((board) => renderBoard(board))}</Styled.Grid>
+        ) : (
+          userBoardIds.status !== 'loading' && (
+            <Empty>
+              <Button type="primary" onClick={() => setIsCreateBoardModalVisible(true)}>
+                Create Board
+              </Button>
 
-          <CreateBoardModal
-            visible={isCreateBoardModalVisible}
-            close={() => setIsCreateBoardModalVisible(false)}
-          />
-        </Empty>
-      )}
-    </Card>
+              <CreateBoardModal
+                visible={isCreateBoardModalVisible}
+                close={() => setIsCreateBoardModalVisible(false)}
+              />
+            </Empty>
+          )
+        )}
+      </Card>
+    </Spin>
   )
 }
 

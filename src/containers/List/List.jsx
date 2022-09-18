@@ -38,7 +38,10 @@ const List = (props) => {
             </Styled.Dropzone>
             {auth.status === 'success' && auth.data.signedIn ? (
               <>
-                <Button type="text" onClick={() => setCreateItemVisible(true)} className="mt-auto">
+                <Button
+                  type="text"
+                  onClick={() => setCreateItemVisible(true)}
+                  className="mt-auto mx-[5px] mb-[5px]">
                   Add Item
                 </Button>
 

@@ -15,24 +15,19 @@ const PublicBoards = () => {
     }
   )
 
-  if (publicBoards.status === 'loading') {
-    return <Spin />
-  }
-
-  if (!Array.isArray(publicBoards.data) || !publicBoards.data.length) {
-    return null
-  }
-
   return (
-    <Card title="Public Boards" bordered={false}>
-      <Styled.Grid>
-        {publicBoards.data.map((board) => (
-          <Link to={`/b/${board.id}`} key={board.id}>
-            <DashboardBoardItem board={board} />
-          </Link>
-        ))}
-      </Styled.Grid>
-    </Card>
+    <Spin spinning={publicBoards.status === 'loading'}>
+      <Card title="Public Boards" bordered={false} className="min-h-[200px]">
+        <Styled.Grid>
+          {publicBoards.data &&
+            publicBoards.data.map((board) => (
+              <Link to={`/b/${board.id}`} key={board.id}>
+                <DashboardBoardItem board={board} />
+              </Link>
+            ))}
+        </Styled.Grid>
+      </Card>
+    </Spin>
   )
 }
 
