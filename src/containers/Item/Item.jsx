@@ -16,13 +16,14 @@ const Item = (props) => {
         index={props.index}
         draggableId={props.item.id}
         isDragDisabled={auth.status !== 'success' || !auth.data.signedIn}>
-        {(draggableProvided, _draggableSnapshot) => (
+        {(draggableProvided, draggableSnapshot) => (
           <Styled.Container
             backgroundColor={props.item.color}
             ref={draggableProvided.innerRef}
             {...draggableProvided.draggableProps}
-            {...draggableProvided.dragHandleProps}>
-            <Styled.Content isDragging={draggableProvided.isDragging} itemColor={props.item.color}>
+            {...draggableProvided.dragHandleProps}
+            {...draggableSnapshot}>
+            <Styled.Content itemColor={props.item.color}>
               <ItemToolbar item={props.item} />
               <div>{props.item.content}</div>
             </Styled.Content>

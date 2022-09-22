@@ -13,6 +13,7 @@ const Container = styled.nav`
   width: 100%;
   padding: 1rem;
   align-items: center;
+  height: 72px;
 `
 const Logo = styled.div`
   font-size: 20px;

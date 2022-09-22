@@ -1,14 +1,18 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Button } from 'antd'
 import CreateListModal from './CreateListModal'
 import Styled from './Styled'
+import { AuthContext } from '../../Auth/components/AuthContext'
 
-const ListCreateColumn = () => {
+const CreateListColumn = () => {
+  const auth = useContext(AuthContext)
   const [isCreateListModalVisible, setIsCreateListModalVisible] = useState(false)
+
+  if (!auth.signedIn) return null
 
   return (
     <Styled.ListWrapper>
-      <Button type="dashed" onClick={() => setIsCreateListModalVisible(true)}>
+      <Button type="ghost" onClick={() => setIsCreateListModalVisible(true)}>
         Add List
       </Button>
 
@@ -20,4 +24,4 @@ const ListCreateColumn = () => {
   )
 }
 
-export default ListCreateColumn
+export default CreateListColumn

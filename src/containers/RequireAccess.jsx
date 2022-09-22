@@ -16,7 +16,11 @@ const RequireAccess = (props) => {
   })
 
   if (auth.status === 'loading' || board.status === 'loading') {
-    return <Spin />
+    return (
+      <div className="m-auto">
+        <Spin size="large" />
+      </div>
+    )
   }
 
   if (board.data === null) {

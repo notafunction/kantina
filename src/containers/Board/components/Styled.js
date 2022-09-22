@@ -3,7 +3,7 @@ import tw from 'twin.macro'
 
 export default {
   BoardContainer: styled.div`
-    ${tw`h-full flex flex-col`}
+    ${tw`h-full flex flex-col flex-1`}
   `,
 
   Content: styled.div`

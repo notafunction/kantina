@@ -51,7 +51,7 @@ const UserBoards = (props) => {
   )
 
   return (
-    <Spin spinning={userBoardIds.status === 'loading'}>
+    <Spin spinning={userBoardIds.status === 'loading'} wrapperClassName="flex-1">
       <Card title="My Boards" bordered={false} className="min-h-[200px]">
         {boards.length ? (
           <Styled.Grid>{boards.map((board) => renderBoard(board))}</Styled.Grid>

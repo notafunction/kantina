@@ -14,7 +14,7 @@ const App = () => {
   return (
     <div className="flex flex-col h-full">
       <NavBar />
-      <div className="px-4 flex-1 relative">
+      <div className="px-4 flex-1 flex relative">
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route

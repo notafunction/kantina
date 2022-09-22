@@ -37,11 +37,8 @@ const List = (props) => {
               {provided.placeholder}
             </Styled.Dropzone>
             {auth.status === 'success' && auth.data.signedIn ? (
-              <>
-                <Button
-                  type="text"
-                  onClick={() => setCreateItemVisible(true)}
-                  className="mt-auto mx-[5px] mb-[5px]">
+              <div className="mt-auto flex mx-[5px] mb-[5px]">
+                <Button type="ghost" onClick={() => setCreateItemVisible(true)}>
                   Add Item
                 </Button>
 
@@ -49,7 +46,7 @@ const List = (props) => {
                   visible={createItemVisible}
                   close={() => setCreateItemVisible(false)}
                 />
-              </>
+              </div>
             ) : null}
           </Styled.Content>
         )}

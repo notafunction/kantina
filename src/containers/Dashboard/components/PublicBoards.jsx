@@ -16,7 +16,7 @@ const PublicBoards = () => {
   )
 
   return (
-    <Spin spinning={publicBoards.status === 'loading'}>
+    <Spin spinning={publicBoards.status === 'loading'} wrapperClassName="flex-1">
       <Card title="Public Boards" bordered={false} className="min-h-[200px]">
         <Styled.Grid>
           {publicBoards.data &&
