@@ -1,22 +1,40 @@
-import React from 'react'
+import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { Avatar, Dropdown, Menu } from 'antd'
+import { Avatar, Dropdown, Menu, Tag } from 'antd'
 import { DeleteOutlined, SettingOutlined } from '@ant-design/icons'
+import { BoardContext } from './BoardContext'
+
 const BoardSettingsMember = (props) => {
+  const board = useContext(BoardContext)
+
+  const memberRole = useMemo(() => {
+    return props.member.boards[board.id].role
+  }, [props.member])
+
+  const renderMemberTags = () => {
+    switch (memberRole) {
+      case 'admin':
+        return <Tag color="red">Admin</Tag>
+
+      default:
+        return null
+    }
+  }
+
   const menu = (
     <Menu>
-      <Menu.Item danger icon={<DeleteOutlined />}>
+      <Menu.Item danger icon={<DeleteOutlined />} key="remove">
         Remove
       </Menu.Item>
     </Menu>
   )
 
   return (
-    <div key={props.user.uid} className="flex items-start gap-2">
+    <div key={props.member.uid} className="flex items-start gap-2">
       <div className="flex items-center gap-2">
-        <Avatar src={props.user.photoURL ?? null}>
-          {!props.user.photoURL
-            ? props.user.displayName
+        <Avatar src={props.member.photoURL ?? null}>
+          {!props.member.photoURL
+            ? props.member.displayName
                 .split(' ')
                 .map((word) => word.charAt(0))
                 .join('')
@@ -24,11 +42,11 @@ const BoardSettingsMember = (props) => {
         </Avatar>
 
         <div className="flex flex-col items-start text-sm">
-          <span>
-            {props.user.displayName}
-            {props.user.role && props.user.role === 'admin' ? <Tag color="red">admin</Tag> : null}
-          </span>
-          <span>{props.user.email}</span>
+          <div className="flex gap-2">
+            {props.member.displayName}
+            {renderMemberTags()}
+          </div>
+          <span>{props.member.email}</span>
         </div>
       </div>
 
@@ -38,7 +56,7 @@ const BoardSettingsMember = (props) => {
 }
 
 BoardSettingsMember.propTypes = {
-  user: PropTypes.object.isRequired
+  member: PropTypes.object.isRequired
 }
 
 export default BoardSettingsMember

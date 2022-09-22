@@ -9,7 +9,7 @@ const Dashboard = () => {
   const auth = useSigninCheck()
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4 flex-1">
       <PublicBoards />
 
       {auth.status === 'loading' ? (

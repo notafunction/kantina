@@ -115,7 +115,7 @@ const BoardSettingsModal = (props) => {
         </Divider>
 
         {members.map((member) => (
-          <BoardSettingsMember user={member} key={member.uid} />
+          <BoardSettingsMember member={member} key={member.uid} />
         ))}
 
         <FormDangerZone>
