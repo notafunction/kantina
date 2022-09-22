@@ -50,7 +50,7 @@ const BoardSettingsMember = (props) => {
         </div>
       </div>
 
-      <Dropdown.Button overlay={menu} className="ml-auto" type="text" icon={<SettingOutlined />} />
+      {/* <Dropdown.Button overlay={menu} className="ml-auto" type="text" icon={<SettingOutlined />} /> */}
     </div>
   )
 }
