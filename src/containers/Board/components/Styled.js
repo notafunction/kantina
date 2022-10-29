@@ -3,7 +3,9 @@ import tw from 'twin.macro'
 
 export default {
   BoardContainer: styled.div`
-    ${tw`h-full flex flex-col flex-1`}
+    ${tw`h-full flex flex-col flex-1 -mx-4`}
+
+    background-color: ${(props) => props.backgroundColor};
   `,
 
   Content: styled.div`
@@ -36,8 +38,7 @@ export default {
   ListWrapper: styled.div`
     flex-shrink: 0;
     margin: 0 5px;
-    height: 100%;
-    width: 270px;
+    width: ${(props) => props.width || '270px'};
     vertical-align: top;
   `
 }

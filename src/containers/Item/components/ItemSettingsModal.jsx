@@ -53,7 +53,7 @@ const ItemSettingsModal = (props) => {
           label="Color"
           initialValue={item.color}
           getValueFromEvent={({ hex }) => hex}>
-          <CirclePicker colors={colorPickerColors} color={item.color} />
+          <CirclePicker width={null} colors={colorPickerColors} color={item.color} />
         </Form.Item>
 
         <FormDangerZone>

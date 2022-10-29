@@ -4,6 +4,8 @@ import { LockOutlined, UnlockOutlined } from '@ant-design/icons'
 import PropTypes from 'prop-types'
 import { useDatabase, useUser } from 'reactfire'
 import { push, ref, set } from 'firebase/database'
+import { CirclePicker } from 'react-color'
+import { colorPickerColors } from '../../../constants'
 
 const CreateBoardModal = (props) => {
   const db = useDatabase()
@@ -53,6 +55,13 @@ const CreateBoardModal = (props) => {
           name="title"
           rules={[{ required: true, message: 'Please enter a title' }]}>
           <Input />
+        </Form.Item>
+        <Form.Item
+          name="color"
+          label="Color"
+          initialValue="#eeeeee"
+          getValueFromEvent={({ hex }) => hex}>
+          <CirclePicker width={null} colors={colorPickerColors} color="#eeeeee" />
         </Form.Item>
         <Form.Item name="public" label="Type" initialValue={true}>
           <Select>

@@ -11,7 +11,7 @@ const CreateListColumn = () => {
   if (!auth.signedIn) return null
 
   return (
-    <Styled.ListWrapper>
+    <Styled.ListWrapper width="auto">
       <Button type="ghost" onClick={() => setIsCreateListModalVisible(true)}>
         Add List
       </Button>

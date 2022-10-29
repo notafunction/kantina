@@ -5,11 +5,9 @@ import tw from 'twin.macro'
 
 const Styled = {
   Container: styled.div`
-    ${tw`p-2 rounded transition-all border`}
+    ${tw`p-2 rounded transition-all`}
 
-    &:hover {
-      ${tw`shadow-lg`}
-    }
+    background-color: ${(props) => props.backgroundColor};
   `,
 
   Title: styled.h2`
@@ -23,7 +21,7 @@ const Styled = {
 
 function DashboardBoardItem(props) {
   return (
-    <Styled.Container className={props.board.color && `bg-[${props.board.color}]`}>
+    <Styled.Container backgroundColor={props.board.color}>
       <Styled.Title>{props.board.title}</Styled.Title>
       <Styled.Content></Styled.Content>
     </Styled.Container>

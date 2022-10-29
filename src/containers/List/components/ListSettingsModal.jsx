@@ -55,14 +55,14 @@ const ListSettingsModal = (props) => {
           label="Color"
           initialValue={list.color}
           getValueFromEvent={({ hex }) => hex}>
-          <CirclePicker colors={colorPickerColors} color={list.color} />
+          <CirclePicker width={null} colors={colorPickerColors} color={list.color} />
         </Form.Item>
 
         <FormDangerZone>
           <Popconfirm
             onConfirm={onDelete}
             okText="Yes"
-            title="Are you sure?"
+            title="Are you sure? This cannot be undone"
             okButtonProps={{ danger: true }}
             icon={<WarningOutlined />}>
             <Button danger>Delete List</Button>

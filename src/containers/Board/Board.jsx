@@ -235,7 +235,7 @@ const Board = () => {
 
   return (
     <BoardContext.Provider value={state}>
-      <Styled.BoardContainer>
+      <Styled.BoardContainer backgroundColor={state.color}>
         <PageHeader title={state.title} extra={<BoardToolbar />} />
 
         <Styled.Content>

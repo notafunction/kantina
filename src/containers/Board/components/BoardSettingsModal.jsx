@@ -12,8 +12,10 @@ import {
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
+import { CirclePicker } from 'react-color'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
 import BoardSettingsMember from './BoardSettingsMember'
+import { colorPickerColors } from '../../../constants'
 
 const BoardSettingsModal = (props) => {
   const db = useDatabase()
@@ -83,6 +85,13 @@ const BoardSettingsModal = (props) => {
           label="Title"
           rules={[{ required: true, message: 'A title is required.' }]}>
           <Input />
+        </Form.Item>
+        <Form.Item
+          name="color"
+          label="Color"
+          initialValue={board.color}
+          getValueFromEvent={({ hex }) => hex}>
+          <CirclePicker width={null} colors={colorPickerColors} color={board.color} />
         </Form.Item>
         <Form.Item
           name="public"
