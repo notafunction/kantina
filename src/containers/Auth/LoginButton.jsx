@@ -1,5 +1,4 @@
 import React, { useReducer } from 'react'
-import styled from 'styled-components'
 import {
   GoogleAuthProvider,
   getAuth,
@@ -104,7 +103,9 @@ const Auth = () => {
       dispatch({ type: TOGGLE_MODAL })
       message.success('You are now logged in')
     } catch (error) {
-      message.error(authErrorMessageMap[error.code])
+      if (error.code !== 'auth/popup-closed-by-user') {
+        message.error(authErrorMessageMap[error.code])
+      }
     } finally {
       dispatch({ type: TOGGLE_LOADING })
     }
@@ -120,6 +121,7 @@ const Auth = () => {
       message.success('You are now logged in')
       dispatch({ type: TOGGLE_MODAL })
     } catch (error) {
+      console.dir(error)
       message.error(authErrorMessageMap[error.code])
     } finally {
       dispatch({ type: TOGGLE_LOADING })
@@ -193,7 +195,6 @@ const Auth = () => {
       </Button>
 
       <Modal
-        centered
         destroyOnClose
         visible={state.isModalVisible}
         title={getActionText()}
