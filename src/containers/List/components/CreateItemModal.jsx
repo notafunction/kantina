@@ -54,7 +54,7 @@ const CreateItemModal = (props) => {
           label="Color"
           initialValue={'#eeeeee'}
           getValueFromEvent={({ hex }) => hex}>
-          <CirclePicker colors={colorPickerColors} color={'#eeeeee'} />
+          <CirclePicker width={null} colors={colorPickerColors} color={'#eeeeee'} />
         </Form.Item>
       </Form>
     </Modal>
