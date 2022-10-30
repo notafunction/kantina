@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "jsx": "preserve",
+    "esModuleInterop": true,
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+}

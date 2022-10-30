@@ -10,7 +10,7 @@ const AuthProvider = ({ children }) => {
 }
 
 AuthProvider.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.node)
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)])
 }
 
 export default AuthProvider

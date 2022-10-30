@@ -47,6 +47,8 @@ const RequireAccess = (props) => {
       return false
     }
 
+    console.log(Object.keys(board.data.members), auth.data.user.uid)
+
     if (
       auth.data.signedIn &&
       board.data.members &&
@@ -60,7 +62,7 @@ const RequireAccess = (props) => {
 }
 
 RequireAccess.propTypes = {
-  children: PropTypes.object.isRequired
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]).isRequired
 }
 
 export default RequireAccess

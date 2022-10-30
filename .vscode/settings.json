@@ -5,5 +5,6 @@
   "eslint.validate": [
     "javascript"
   ],
-  "jest.jestCommandLine": "npm run test --"
+  "jest.jestCommandLine": "npm run test --",
+  "typescript.tsdk": "node_modules/typescript/lib"
  }
