@@ -9,6 +9,7 @@ import { colorPickerColors } from '../../../constants'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
 import { ListContext } from './ListContext'
 import { BoardContext } from '../../Board/components/BoardContext'
+import Restricted from '@/containers/Permission/Restricted'
 
 const ListSettingsModal = (props) => {
   const db = useDatabase()
@@ -58,16 +59,18 @@ const ListSettingsModal = (props) => {
           <CirclePicker width={null} colors={colorPickerColors} color={list.color} />
         </Form.Item>
 
-        <FormDangerZone>
-          <Popconfirm
-            onConfirm={onDelete}
-            okText="Yes"
-            title="Are you sure? This cannot be undone"
-            okButtonProps={{ danger: true }}
-            icon={<WarningOutlined />}>
-            <Button danger>Delete List</Button>
-          </Popconfirm>
-        </FormDangerZone>
+        <Restricted to="list:delete">
+          <FormDangerZone>
+            <Popconfirm
+              onConfirm={onDelete}
+              okText="Yes"
+              title="Are you sure? This cannot be undone"
+              okButtonProps={{ danger: true }}
+              icon={<WarningOutlined />}>
+              <Button danger>Delete List</Button>
+            </Popconfirm>
+          </FormDangerZone>
+        </Restricted>
       </Form>
     </Modal>
   )

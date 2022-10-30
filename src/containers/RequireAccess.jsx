@@ -47,8 +47,6 @@ const RequireAccess = (props) => {
       return false
     }
 
-    console.log(Object.keys(board.data.members), auth.data.user.uid)
-
     if (
       auth.data.signedIn &&
       board.data.members &&

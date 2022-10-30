@@ -2,12 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Styled from './components/Styled'
 import ItemToolbar from './components/ItemToolbar'
-import { useSigninCheck } from 'reactfire'
 import { Draggable } from 'react-beautiful-dnd'
 import { ItemContext } from './components/ItemContext'
+import { usePermission } from '@/hooks'
+import Restricted from '@/containers/Permission/Restricted'
 
 const Item = (props) => {
-  const auth = useSigninCheck()
+  const canEdit = usePermission('board:edit')
 
   return (
     <ItemContext.Provider value={props.item}>
@@ -15,7 +16,7 @@ const Item = (props) => {
         key={props.item.id}
         index={props.index}
         draggableId={props.item.id}
-        isDragDisabled={auth.status !== 'success' || !auth.data.signedIn}>
+        isDragDisabled={!canEdit}>
         {(draggableProvided, draggableSnapshot) => (
           <Styled.Container
             backgroundColor={props.item.color}
@@ -24,7 +25,9 @@ const Item = (props) => {
             {...draggableProvided.dragHandleProps}
             {...draggableSnapshot}>
             <Styled.Content itemColor={props.item.color}>
-              <ItemToolbar item={props.item} />
+              <Restricted to="board:edit">
+                <ItemToolbar item={props.item} />
+              </Restricted>
               <div>{props.item.content}</div>
             </Styled.Content>
           </Styled.Container>

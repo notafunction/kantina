@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router'
 import { get, ref, remove, update } from 'firebase/database'
 import { useDatabase, useUser } from 'reactfire'
 import { BoardContext } from './BoardContext'
-import { Button, Form, Input, Switch, message, Popconfirm, Divider, Avatar, Tag, Modal } from 'antd'
+import { Button, Form, Input, Switch, message, Popconfirm, Divider, Modal } from 'antd'
 import {
   WarningOutlined,
   LockOutlined,
@@ -16,6 +16,7 @@ import { CirclePicker } from 'react-color'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
 import BoardSettingsMember from './BoardSettingsMember'
 import { colorPickerColors } from '../../../constants'
+import Restricted from '@/containers/Permission/Restricted'
 
 const BoardSettingsModal = (props) => {
   const db = useDatabase()
@@ -127,16 +128,22 @@ const BoardSettingsModal = (props) => {
           <BoardSettingsMember member={member} key={member.uid} />
         ))}
 
-        <FormDangerZone>
-          <Popconfirm
-            onConfirm={onDelete}
-            okText="Yes"
-            title="Are you sure? This cannot be undone"
-            okButtonProps={{ danger: true }}
-            icon={<WarningOutlined />}>
-            <Button danger>Delete Board</Button>
-          </Popconfirm>
-        </FormDangerZone>
+        <Restricted to="board:edit">
+          <Button className="mt-4">Add Member</Button>
+        </Restricted>
+
+        <Restricted to="board:delete">
+          <FormDangerZone>
+            <Popconfirm
+              onConfirm={onDelete}
+              okText="Yes"
+              title="Are you sure? This cannot be undone"
+              okButtonProps={{ danger: true }}
+              icon={<WarningOutlined />}>
+              <Button danger>Delete Board</Button>
+            </Popconfirm>
+          </FormDangerZone>
+        </Restricted>
       </Form>
     </Modal>
   )

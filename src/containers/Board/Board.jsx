@@ -10,19 +10,25 @@ import { Button, Result, PageHeader, Spin, message } from 'antd'
 import Styled from './components/Styled'
 import List from '../List/List'
 import { BoardContext } from './components/BoardContext'
+import PermissionProvider from '@/containers/Permission/PermissionProvider'
 import BoardToolbar from './components/BoardToolbar'
 import CreateListColumn from './components/CreateListColumn'
+import Restricted from '@/containers/Permission/Restricted'
+import { usePermission } from '../../hooks'
 
 const Board = () => {
   const navigate = useNavigate()
   const params = useParams()
   const db = useDatabase()
   const auth = useSigninCheck()
+  const canEditLists = usePermission('list:edit')
 
   const board = useDatabaseObjectData(ref(db, `boards/${params.boardId}`), {
     idField: 'id'
   })
+
   const [state, setState] = useState({})
+  const [userRole, setUserRole] = useState(null)
 
   if (board.status === 'loading') return <Spin />
 
@@ -49,14 +55,20 @@ const Board = () => {
     }
   }, [board.data])
 
+  useEffect(() => {
+    if (auth.status === 'success') {
+      if (auth.data.signedIn) {
+        if (Object.keys(board.data.members).includes(auth.data.user.uid)) {
+          setUserRole(board.data.members[auth.data.user.uid].role)
+        }
+      }
+    }
+  }, [auth.data])
+
   const renderLists = () => {
     if (state.lists) {
       return _sortBy(state.lists, (o) => o.position).map((list, index) => (
-        <Draggable
-          key={list.id}
-          index={index}
-          draggableId={list.id}
-          isDragDisabled={auth.status !== 'success' || !auth.data.signedIn}>
+        <Draggable key={list.id} index={index} draggableId={list.id} isDragDisabled={!canEditLists}>
           {(draggableProvided, _draggableSnapshot) => (
             <Styled.ListWrapper
               ref={draggableProvided.innerRef}
@@ -234,29 +246,32 @@ const Board = () => {
   }
 
   return (
-    <BoardContext.Provider value={state}>
-      <Styled.BoardContainer backgroundColor={state.color}>
-        <PageHeader title={state.title} extra={<BoardToolbar />} />
+    <PermissionProvider role={userRole}>
+      <BoardContext.Provider value={state}>
+        <Styled.BoardContainer backgroundColor={state.color}>
+          <PageHeader title={state.title} extra={<BoardToolbar />} />
+          <Styled.Content>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId={params.boardId} type="LIST" direction="horizontal">
+                {(droppableProvided, _droppableSnapshot) => (
+                  <Styled.ListsContainer
+                    flex
+                    ref={droppableProvided.innerRef}
+                    {...droppableProvided.droppableProps}>
+                    {renderLists()}
+                    {droppableProvided.placeholder}
 
-        <Styled.Content>
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId={params.boardId} type="LIST" direction="horizontal">
-              {(droppableProvided, _droppableSnapshot) => (
-                <Styled.ListsContainer
-                  flex
-                  ref={droppableProvided.innerRef}
-                  {...droppableProvided.droppableProps}>
-                  {renderLists()}
-                  {droppableProvided.placeholder}
-
-                  <CreateListColumn />
-                </Styled.ListsContainer>
-              )}
-            </Droppable>
-          </DragDropContext>
-        </Styled.Content>
-      </Styled.BoardContainer>
-    </BoardContext.Provider>
+                    <Restricted to="board:edit">
+                      <CreateListColumn />
+                    </Restricted>
+                  </Styled.ListsContainer>
+                )}
+              </Droppable>
+            </DragDropContext>
+          </Styled.Content>
+        </Styled.BoardContainer>
+      </BoardContext.Provider>
+    </PermissionProvider>
   )
 }
 

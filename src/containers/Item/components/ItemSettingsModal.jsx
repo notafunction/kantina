@@ -10,6 +10,7 @@ import FormDangerZone from '../../../components/Form/FormDangerZone'
 import { ListContext } from '../../List/components/ListContext'
 import { ItemContext } from './ItemContext'
 import { BoardContext } from '../../Board/components/BoardContext'
+import Restricted from '@/containers/Permission/Restricted'
 
 const ItemSettingsModal = (props) => {
   const db = useDatabase()
@@ -56,16 +57,18 @@ const ItemSettingsModal = (props) => {
           <CirclePicker width={null} colors={colorPickerColors} color={item.color} />
         </Form.Item>
 
-        <FormDangerZone>
-          <Popconfirm
-            onConfirm={onDelete}
-            okText="Yes"
-            title="Are you sure?"
-            okButtonProps={{ danger: true }}
-            icon={<WarningOutlined />}>
-            <Button danger>Delete Item</Button>
-          </Popconfirm>
-        </FormDangerZone>
+        <Restricted to="item:delete">
+          <FormDangerZone>
+            <Popconfirm
+              onConfirm={onDelete}
+              okText="Yes"
+              title="Are you sure?"
+              okButtonProps={{ danger: true }}
+              icon={<WarningOutlined />}>
+              <Button danger>Delete Item</Button>
+            </Popconfirm>
+          </FormDangerZone>
+        </Restricted>
       </Form>
     </Modal>
   )

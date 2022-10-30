@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import reactPlugin from '@vitejs/plugin-react'
 import macrosPlugin from 'vite-plugin-babel-macros'
-import path from 'path'
+const path = require('path')
 
 export default defineConfig({
   plugins: [reactPlugin(), macrosPlugin()],

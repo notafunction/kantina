@@ -4,6 +4,7 @@ import { PlusOutlined, SettingOutlined } from '@ant-design/icons'
 import CreateListModal from './CreateListModal'
 import BoardSettingsModal from './BoardSettingsModal'
 import { useSigninCheck } from 'reactfire'
+import Restricted from '@/containers/Permission/Restricted'
 
 const BoardToolbar = () => {
   const auth = useSigninCheck()
@@ -20,30 +21,35 @@ const BoardToolbar = () => {
 
   return (
     <React.Fragment>
-      <Tooltip title="Add List">
-        <Button
-          onClick={() => setIsCreateListModalVisible(true)}
-          icon={<PlusOutlined />}
-          type="text"
-        />
-      </Tooltip>
+      <Restricted to="list:create">
+        <Tooltip title="Add List">
+          <Button
+            onClick={() => setIsCreateListModalVisible(true)}
+            icon={<PlusOutlined />}
+            type="text"
+          />
+        </Tooltip>
 
-      <Tooltip title="Manage Board">
-        <Button
-          onClick={() => setIsBoardSettingsModalVisible(true)}
-          icon={<SettingOutlined />}
-          type="text"
+        <CreateListModal
+          visible={isCreateListModalVisible}
+          close={() => setIsCreateListModalVisible(false)}
         />
-      </Tooltip>
+      </Restricted>
 
-      <CreateListModal
-        visible={isCreateListModalVisible}
-        close={() => setIsCreateListModalVisible(false)}
-      />
-      <BoardSettingsModal
-        visible={isBoardSettingsModalVisible}
-        close={() => setIsBoardSettingsModalVisible(false)}
-      />
+      <Restricted to="board:edit">
+        <Tooltip title="Manage Board">
+          <Button
+            onClick={() => setIsBoardSettingsModalVisible(true)}
+            icon={<SettingOutlined />}
+            type="text"
+          />
+        </Tooltip>
+
+        <BoardSettingsModal
+          visible={isBoardSettingsModalVisible}
+          close={() => setIsBoardSettingsModalVisible(false)}
+        />
+      </Restricted>
     </React.Fragment>
   )
 }

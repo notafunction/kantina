@@ -4,6 +4,7 @@ import { SettingOutlined, PlusOutlined } from '@ant-design/icons'
 import { useSigninCheck } from 'reactfire'
 import ListSettingsModal from './ListSettingsModal'
 import CreateItemModal from './CreateItemModal'
+import Restricted from '@/containers/Permission/Restricted'
 
 const ListToolbar = () => {
   const auth = useSigninCheck()
@@ -20,32 +21,36 @@ const ListToolbar = () => {
 
   return (
     <div className="flex items-center gap-1">
-      <Tooltip title="Add Item">
-        <Button
-          size="small"
-          type="text"
-          icon={<PlusOutlined />}
-          onClick={() => setIsCreateItemModalVisible(true)}
+      <Restricted to="item:create">
+        <Tooltip title="Add Item">
+          <Button
+            size="small"
+            type="text"
+            icon={<PlusOutlined />}
+            onClick={() => setIsCreateItemModalVisible(true)}
+          />
+        </Tooltip>
+
+        <CreateItemModal
+          visible={isCreateItemModalVisible}
+          close={() => setIsCreateItemModalVisible(false)}
         />
-      </Tooltip>
+      </Restricted>
 
-      <Tooltip title="Manage List">
-        <Button
-          size="small"
-          type="text"
-          onClick={() => setIsListSettingsModalVisible(true)}
-          icon={<SettingOutlined />}></Button>
-      </Tooltip>
+      <Restricted to="list:edit">
+        <Tooltip title="Manage List">
+          <Button
+            size="small"
+            type="text"
+            onClick={() => setIsListSettingsModalVisible(true)}
+            icon={<SettingOutlined />}></Button>
+        </Tooltip>
 
-      <ListSettingsModal
-        visible={isListSettingsModalVisible}
-        close={() => setIsListSettingsModalVisible(false)}
-      />
-
-      <CreateItemModal
-        visible={isCreateItemModalVisible}
-        close={() => setIsCreateItemModalVisible(false)}
-      />
+        <ListSettingsModal
+          visible={isListSettingsModalVisible}
+          close={() => setIsListSettingsModalVisible(false)}
+        />
+      </Restricted>
     </div>
   )
 }

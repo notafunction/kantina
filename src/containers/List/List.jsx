@@ -4,15 +4,13 @@ import PropTypes from 'prop-types'
 import { Droppable } from 'react-beautiful-dnd'
 import Item from '../Item/Item'
 import ListToolbar from './components/ListToolbar'
-import { useSigninCheck } from 'reactfire'
 import Styled from './components/Styled'
 import { Button } from 'antd'
 import CreateItemModal from './components/CreateItemModal'
 import { ListContext } from './components/ListContext'
+import Restricted from '@/containers/Permission/Restricted'
 
 const List = (props) => {
-  const auth = useSigninCheck()
-
   const [createItemVisible, setCreateItemVisible] = useState(false)
 
   const renderItems = () => {
@@ -30,13 +28,14 @@ const List = (props) => {
           <Styled.Content backgroundColor={props.list.color}>
             <Styled.Header>
               <h3 {...props.dragHandleProps}>{props.list.title}</h3>
+
               <ListToolbar />
             </Styled.Header>
             <Styled.Dropzone ref={provided.innerRef}>
               {renderItems()}
               {provided.placeholder}
             </Styled.Dropzone>
-            {auth.status === 'success' && auth.data.signedIn ? (
+            <Restricted to="item:create">
               <div className="mt-auto flex mx-[5px] mb-[5px]">
                 <Button type="ghost" onClick={() => setCreateItemVisible(true)}>
                   Add Item
@@ -47,7 +46,7 @@ const List = (props) => {
                   close={() => setCreateItemVisible(false)}
                 />
               </div>
-            ) : null}
+            </Restricted>
           </Styled.Content>
         )}
       </Droppable>
