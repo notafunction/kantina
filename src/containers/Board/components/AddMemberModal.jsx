@@ -1,20 +1,36 @@
 import React from 'react'
-import { Modal, Form, Input, Select, Switch, message } from 'antd'
-import { LockOutlined, UnlockOutlined } from '@ant-design/icons'
+import { Modal, Form, Input, Select, message } from 'antd'
 import PropTypes from 'prop-types'
 import { useDatabase } from 'reactfire'
-import { push, ref, set } from 'firebase/database'
-import { CirclePicker } from 'react-color'
-import { colorPickerColors } from '../../../constants'
+import { ref, set, query, orderByChild, equalTo, limitToFirst, get } from 'firebase/database'
+import { useParams } from 'react-router'
 
-const CreateBoardModal = (props) => {
+const AddMemberModal = (props) => {
+  const params = useParams()
   const db = useDatabase()
   const [form] = Form.useForm()
 
   const onOk = async () => {
-    const values = await form.validateFields()
-    form.resetFields()
-    props.close()
+    const { email, role } = await form.validateFields()
+
+    const userQuery = query(
+      ref(db, 'users'),
+      orderByChild('email'),
+      equalTo(email),
+      limitToFirst(1)
+    )
+    const userSnap = await get(userQuery)
+
+    if (userSnap.exists()) {
+      const [uid] = Object.keys(userSnap.val())
+      set(ref(db, `boards/${params.boardId}/members/${uid}`), { role })
+      set(ref(db, `users/${uid}/boards/${params.boardId}`), { role })
+
+      form.resetFields()
+      props.close()
+    } else {
+      message.error('That user does not exits')
+    }
   }
 
   const onCancel = () => {
@@ -23,44 +39,33 @@ const CreateBoardModal = (props) => {
   }
 
   return (
-    <Modal title="Add Member" visible={props.visible} onCancel={onCancel} onOk={onOk}>
+    <Modal centered title="Add Member" visible={props.visible} onCancel={onCancel} onOk={onOk}>
       <Form layout="vertical" requiredMark={false} onFinish={onOk} form={form}>
         <Form.Item
-          label="Title"
-          name="title"
-          rules={[{ required: true, message: 'Please enter a title' }]}>
+          label="Email"
+          name="email"
+          type="email"
+          rules={[
+            { required: true, message: 'Please enter an email address' },
+            { type: 'email', message: 'Please enter a valid email address' }
+          ]}>
           <Input />
         </Form.Item>
-        <Form.Item
-          name="color"
-          label="Color"
-          initialValue="#eeeeee"
-          getValueFromEvent={({ hex }) => hex}>
-          <CirclePicker width={null} colors={colorPickerColors} color="#eeeeee" />
-        </Form.Item>
-        <Form.Item name="public" label="Type" initialValue={true}>
+        <Form.Item name="role" label="Role" initialValue="viewer">
           <Select>
-            <Select.Option value={false}>Private</Select.Option>
-            <Select.Option value={true}>Public</Select.Option>
+            <Select.Option value="admin">Admin</Select.Option>
+            <Select.Option value="editor">Editor</Select.Option>
+            <Select.Option value="viewer">Viewer</Select.Option>
           </Select>
-        </Form.Item>
-
-        <Form.Item
-          name="locked"
-          label="Lock"
-          help="Allow changes only by board admins"
-          valuePropName="checked"
-          initialValue={false}>
-          <Switch checkedChildren={<LockOutlined />} unCheckedChildren={<UnlockOutlined />} />
         </Form.Item>
       </Form>
     </Modal>
   )
 }
 
-CreateBoardModal.propTypes = {
+AddMemberModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired
 }
 
-export default CreateBoardModal
+export default AddMemberModal

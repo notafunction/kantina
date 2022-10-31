@@ -17,6 +17,7 @@ import FormDangerZone from '../../../components/Form/FormDangerZone'
 import BoardSettingsMember from './BoardSettingsMember'
 import { colorPickerColors } from '../../../constants'
 import Restricted from '@/containers/Permission/Restricted'
+import AddMemberModal from './AddMemberModal'
 
 const BoardSettingsModal = (props) => {
   const db = useDatabase()
@@ -26,6 +27,7 @@ const BoardSettingsModal = (props) => {
   const board = useContext(BoardContext)
 
   const [members, setMembers] = useState([])
+  const [isAddMemberModalVisible, setIsAddMemberModalVisible] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -120,16 +122,27 @@ const BoardSettingsModal = (props) => {
           />
         </Form.Item>
 
-        <Divider orientation="left" orientationMargin={0}>
-          Board Members
-        </Divider>
+        <Restricted to="members:read">
+          <Divider orientation="left" orientationMargin={0}>
+            Board Members
+          </Divider>
 
-        {members.map((member) => (
-          <BoardSettingsMember member={member} key={member.uid} />
-        ))}
+          <div className="flex flex-col gap-4">
+            {members.map((member) => (
+              <BoardSettingsMember member={member} key={member.uid} />
+            ))}
 
-        <Restricted to="board:edit">
-          <Button className="mt-4">Add Member</Button>
+            <Restricted to="members:create">
+              <Button className="mt-4 self-start" onClick={() => setIsAddMemberModalVisible(true)}>
+                Add Member
+              </Button>
+
+              <AddMemberModal
+                visible={isAddMemberModalVisible}
+                close={() => setIsAddMemberModalVisible(false)}
+              />
+            </Restricted>
+          </div>
         </Restricted>
 
         <Restricted to="board:delete">

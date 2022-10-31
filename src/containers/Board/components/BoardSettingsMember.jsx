@@ -3,9 +3,18 @@ import PropTypes from 'prop-types'
 import { Avatar, Dropdown, Menu, Tag } from 'antd'
 import { DeleteOutlined, SettingOutlined } from '@ant-design/icons'
 import { BoardContext } from './BoardContext'
+import Restricted from '@/containers/Permission/Restricted'
+import { ref, set } from 'firebase/database'
+import { useDatabase } from 'reactfire'
 
 const BoardSettingsMember = (props) => {
+  const db = useDatabase()
   const board = useContext(BoardContext)
+
+  const setMemberRole = (role) => {
+    set(ref(db, `boards/${board.id}/members/${props.member.uid}/role`), role)
+    set(ref(db, `users/${props.member.uid}/boards/${board.id}/role`), role)
+  }
 
   const memberRole = useMemo(() => {
     return props.member.boards[board.id].role
@@ -16,6 +25,12 @@ const BoardSettingsMember = (props) => {
       case 'admin':
         return <Tag color="red">Admin</Tag>
 
+      case 'editor':
+        return <Tag color="yellow">Editor</Tag>
+
+      case 'viewer':
+        return <Tag color="blue">Viewer</Tag>
+
       default:
         return null
     }
@@ -23,9 +38,21 @@ const BoardSettingsMember = (props) => {
 
   const menu = (
     <Menu>
-      <Menu.Item danger icon={<DeleteOutlined />} key="remove">
-        Remove
-      </Menu.Item>
+      <Menu.SubMenu title="Set Role" key="role">
+        {['Viewer', 'Editor', 'Admin']
+          .filter((role) => role.toLowerCase() !== memberRole)
+          .map((role) => (
+            <Menu.Item key={`role:${role}`} onClick={() => setMemberRole(role.toLowerCase())}>
+              {role}
+            </Menu.Item>
+          ))}
+      </Menu.SubMenu>
+
+      <Restricted to="members:delete">
+        <Menu.Item danger icon={<DeleteOutlined />} key="remove">
+          Remove
+        </Menu.Item>
+      </Restricted>
     </Menu>
   )
 
@@ -50,7 +77,14 @@ const BoardSettingsMember = (props) => {
         </div>
       </div>
 
-      {/* <Dropdown.Button overlay={menu} className="ml-auto" type="text" icon={<SettingOutlined />} /> */}
+      <Restricted to="members:edit">
+        <Dropdown.Button
+          overlay={menu}
+          className="ml-auto"
+          type="text"
+          icon={<SettingOutlined />}
+        />
+      </Restricted>
     </div>
   )
 }
