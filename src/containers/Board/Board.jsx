@@ -59,10 +59,12 @@ const Board = () => {
     if (auth.status === 'success') {
       if (auth.data.signedIn) {
         if (Object.keys(board.data.members).includes(auth.data.user.uid)) {
-          setUserRole(board.data.members[auth.data.user.uid].role)
+          return setUserRole(board.data.members[auth.data.user.uid].role)
         }
       }
     }
+
+    return setUserRole(null)
   }, [auth.data])
 
   const renderLists = () => {

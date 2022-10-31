@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDatabase, useDatabaseObjectData } from 'reactfire'
+import { useDatabase, useDatabaseObjectData, useUser } from 'reactfire'
 import { get, ref } from 'firebase/database'
 import { Permission } from '@/types'
 import PermissionContext from './PermissionContext'
@@ -17,6 +17,7 @@ type Props = {
 
 const PermissionProvider: React.FunctionComponent<Props> = ({ role, children }) => {
   const db = useDatabase()
+
   const rolePermissions = useDatabaseObjectData(ref(db, `roles/${role}`), {
     idField: null
   })
@@ -28,6 +29,8 @@ const PermissionProvider: React.FunctionComponent<Props> = ({ role, children }) 
         return setPermissions(Object.keys(rolePermissions.data))
       }
     }
+
+    return setPermissions([])
   }, [rolePermissions.data])
 
   const isAllowedTo = (permission: Permission) => permissions.includes(permission)
