@@ -17,21 +17,25 @@ type Props = {
 
 const PermissionProvider: React.FunctionComponent<Props> = ({ role, children }) => {
   const db = useDatabase()
-
-  const rolePermissions = useDatabaseObjectData(ref(db, `roles/${role}`), {
-    idField: null
-  })
   const [permissions, setPermissions] = useState([])
 
   useEffect(() => {
-    if (rolePermissions.status === 'success') {
-      if (rolePermissions.data) {
-        return setPermissions(Object.keys(rolePermissions.data))
+    const fetchRolePermissions = async () => {
+      if (!role) {
+        return setPermissions([])
       }
+
+      const roleSnap = await get(ref(db, `roles/${role}`))
+
+      if (!roleSnap.exists()) return setPermissions([])
+
+      const permissionKeys = Object.keys(roleSnap.val())
+
+      setPermissions(permissionKeys)
     }
 
-    return setPermissions([])
-  }, [rolePermissions.data])
+    fetchRolePermissions().catch(console.error)
+  }, [role])
 
   const isAllowedTo = (permission: Permission) => permissions.includes(permission)
 
