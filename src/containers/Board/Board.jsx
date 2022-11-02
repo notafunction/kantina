@@ -21,7 +21,6 @@ const Board = () => {
   const params = useParams()
   const db = useDatabase()
   const auth = useSigninCheck()
-  const canEditLists = usePermission('list:edit')
 
   const board = useDatabaseObjectData(ref(db, `boards/${params.boardId}`), {
     idField: 'id'
@@ -68,6 +67,8 @@ const Board = () => {
   }, [auth.data])
 
   const renderLists = () => {
+    const canEditLists = usePermission('list:edit')
+
     if (state.lists) {
       return _sortBy(state.lists, (o) => o.position).map((list, index) => (
         <Draggable key={list.id} index={index} draggableId={list.id} isDragDisabled={!canEditLists}>
