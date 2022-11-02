@@ -8,7 +8,7 @@ import { usePermission } from '@/hooks'
 import Restricted from '@/containers/Permission/Restricted'
 
 const Item = (props) => {
-  const canEdit = usePermission('board:edit')
+  const canEdit = usePermission('item:edit')
 
   return (
     <ItemContext.Provider value={props.item}>
