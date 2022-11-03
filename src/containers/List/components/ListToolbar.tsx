@@ -6,7 +6,7 @@ import ListSettingsModal from './ListSettingsModal'
 import CreateItemModal from './CreateItemModal'
 import Restricted from '@/containers/Permission/Restricted'
 
-const ListToolbar = () => {
+const ListToolbar: React.FunctionComponent = () => {
   const auth = useSigninCheck()
   const [isListSettingsModalVisible, setIsListSettingsModalVisible] = useState(false)
   const [isCreateItemModalVisible, setIsCreateItemModalVisible] = useState(false)
@@ -54,7 +54,5 @@ const ListToolbar = () => {
     </div>
   )
 }
-
-ListToolbar.propTypes = {}
 
 export default ListToolbar

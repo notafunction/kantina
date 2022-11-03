@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
 import { Button, Form, Input, message, Modal, Popconfirm } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 import { CirclePicker } from 'react-color'
@@ -10,12 +9,18 @@ import FormDangerZone from '../../../components/Form/FormDangerZone'
 import { ListContext } from './ListContext'
 import { BoardContext } from '../../Board/components/BoardContext'
 import Restricted from '@/containers/Permission/Restricted'
+import { Board, List } from '@/types'
 
-const ListSettingsModal = (props) => {
+type Props = {
+  visible: boolean,
+  close: () => void
+}
+
+const ListSettingsModal: React.FunctionComponent<Props> = (props) => {
   const db = useDatabase()
   const [form] = Form.useForm()
-  const list = useContext(ListContext)
-  const board = useContext(BoardContext)
+  const list: List = useContext(ListContext)
+  const board: Board = useContext(BoardContext)
 
   const onSave = async () => {
     const values = await form.validateFields()
@@ -74,11 +79,6 @@ const ListSettingsModal = (props) => {
       </Form>
     </Modal>
   )
-}
-
-ListSettingsModal.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired
 }
 
 export default ListSettingsModal

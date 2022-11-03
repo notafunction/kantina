@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
 import { Form, Modal, Input } from 'antd'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
@@ -8,7 +7,12 @@ import { ref, push, update } from 'firebase/database'
 import { ListContext } from './ListContext'
 import { BoardContext } from '../../Board/components/BoardContext'
 
-const CreateItemModal = (props) => {
+type Props = {
+  visible: boolean,
+  close: () => void
+}
+
+const CreateItemModal: React.FunctionComponent<Props> = (props) => {
   const db = useDatabase()
   const user = useUser()
   const [form] = Form.useForm()
@@ -59,11 +63,6 @@ const CreateItemModal = (props) => {
       </Form>
     </Modal>
   )
-}
-
-CreateItemModal.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired
 }
 
 export default CreateItemModal

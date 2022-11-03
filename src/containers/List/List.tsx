@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import _sortBy from 'lodash.sortby'
-import PropTypes from 'prop-types'
 import { Droppable } from 'react-beautiful-dnd'
+import { DragHandleProps } from 'react-beautiful-dnd/src/view/draggable'
 import Item from '../Item/Item'
 import ListToolbar from './components/ListToolbar'
 import Styled from './components/Styled'
@@ -9,8 +9,14 @@ import { Button } from 'antd'
 import CreateItemModal from './components/CreateItemModal'
 import { ListContext } from './components/ListContext'
 import Restricted from '@/containers/Permission/Restricted'
+import { List } from '@/types'
 
-const List = (props) => {
+type Props = {
+  list: List,
+  dragHandleProps: DragHandleProps
+}
+
+const ListComponent: React.FunctionComponent<Props> = (props) => {
   const [createItemVisible, setCreateItemVisible] = useState(false)
 
   const renderItems = () => {
@@ -54,9 +60,4 @@ const List = (props) => {
   )
 }
 
-List.propTypes = {
-  list: PropTypes.object.isRequired,
-  dragHandleProps: PropTypes.object
-}
-
-export default List
+export default ListComponent
