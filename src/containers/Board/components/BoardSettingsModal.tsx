@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router'
 import { get, ref, remove, update } from 'firebase/database'
 import { useDatabase, useUser } from 'reactfire'
@@ -18,15 +17,21 @@ import BoardSettingsMember from './BoardSettingsMember'
 import { colorPickerColors } from '../../../constants'
 import Restricted from '@/containers/Permission/Restricted'
 import AddMemberModal from './AddMemberModal'
+import { UserProfile } from '@/types'
 
-const BoardSettingsModal = (props) => {
+type Props = {
+  visible: boolean
+  close: () => void
+}
+
+const BoardSettingsModal: React.FunctionComponent<Props> = (props) => {
   const db = useDatabase()
   const user = useUser()
   const navigate = useNavigate()
   const [form] = Form.useForm()
   const board = useContext(BoardContext)
 
-  const [members, setMembers] = useState([])
+  const [members, setMembers] = useState<UserProfile[]>([])
   const [isAddMemberModalVisible, setIsAddMemberModalVisible] = useState(false)
 
   useEffect(() => {
@@ -160,11 +165,6 @@ const BoardSettingsModal = (props) => {
       </Form>
     </Modal>
   )
-}
-
-BoardSettingsModal.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired
 }
 
 export default BoardSettingsModal

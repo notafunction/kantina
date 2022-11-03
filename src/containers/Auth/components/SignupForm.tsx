@@ -1,7 +1,10 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
-import { Form, Input } from 'antd'
-import PropTypes from 'prop-types'
+import { Form, FormProps, Input } from 'antd'
+
+type Props = {
+  formProps: FormProps
+}
 
 const SignupForm = (props) => {
   return (
@@ -40,10 +43,6 @@ const SignupForm = (props) => {
       </Form.Item>
     </Form>
   )
-}
-
-SignupForm.propTypes = {
-  formProps: PropTypes.object
 }
 
 export default SignupForm

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import PropTypes from 'prop-types'
 import tw from 'twin.macro'
+import { Board } from '@/types'
 
 const Styled = {
   Container: styled.div`
@@ -19,17 +19,17 @@ const Styled = {
   `
 }
 
-function DashboardBoardItem(props) {
+type Props = {
+  board: Board
+}
+
+const DashboardBoardItem: React.FunctionComponent<Props> = (props) => {
   return (
     <Styled.Container backgroundColor={props.board.color}>
       <Styled.Title>{props.board.title}</Styled.Title>
       <Styled.Content></Styled.Content>
     </Styled.Container>
   )
-}
-
-DashboardBoardItem.propTypes = {
-  board: PropTypes.object.isRequired
 }
 
 export default DashboardBoardItem

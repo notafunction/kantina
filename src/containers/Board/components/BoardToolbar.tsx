@@ -54,6 +54,4 @@ const BoardToolbar = () => {
   )
 }
 
-BoardToolbar.propTypes = {}
-
 export default BoardToolbar

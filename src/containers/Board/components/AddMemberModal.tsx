@@ -1,11 +1,15 @@
 import React from 'react'
 import { Modal, Form, Input, Select, message } from 'antd'
-import PropTypes from 'prop-types'
 import { useDatabase } from 'reactfire'
 import { ref, set, query, orderByChild, equalTo, limitToFirst, get } from 'firebase/database'
 import { useParams } from 'react-router'
 
-const AddMemberModal = (props) => {
+type Props = {
+  visible: boolean,
+  close: () => void
+}
+
+const AddMemberModal: React.FunctionComponent<Props> = (props) => {
   const params = useParams()
   const db = useDatabase()
   const [form] = Form.useForm()
@@ -44,7 +48,6 @@ const AddMemberModal = (props) => {
         <Form.Item
           label="Email"
           name="email"
-          type="email"
           rules={[
             { required: true, message: 'Please enter an email address' },
             { type: 'email', message: 'Please enter a valid email address' }
@@ -61,11 +64,6 @@ const AddMemberModal = (props) => {
       </Form>
     </Modal>
   )
-}
-
-AddMemberModal.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired
 }
 
 export default AddMemberModal

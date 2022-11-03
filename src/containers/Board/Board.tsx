@@ -4,29 +4,30 @@ import { arrayMoveImmutable } from 'array-move'
 import ihUpdate from 'immutability-helper'
 import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd'
 import { useParams, useNavigate } from 'react-router'
-import { useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
+import { ObservableStatus, SigninCheckResult, useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
 import { ref, runTransaction, set } from 'firebase/database'
 import { Button, Result, PageHeader, Spin, message } from 'antd'
 import Styled from './components/Styled'
-import List from '../List/List'
+import ListComponent from '../List/List'
 import { BoardContext } from './components/BoardContext'
 import PermissionProvider from '@/containers/Permission/PermissionProvider'
 import BoardToolbar from './components/BoardToolbar'
 import CreateListColumn from './components/CreateListColumn'
 import Restricted from '@/containers/Permission/Restricted'
 import { usePermission } from '../../hooks'
+import { Board, Item, List } from '@/types'
 
-const Board = () => {
+const BoardComponent = () => {
   const navigate = useNavigate()
   const params = useParams()
   const db = useDatabase()
   const auth = useSigninCheck()
 
-  const board = useDatabaseObjectData(ref(db, `boards/${params.boardId}`), {
+  const board: ObservableStatus<Board> = useDatabaseObjectData(ref(db, `boards/${params.boardId}`), {
     idField: 'id'
   })
 
-  const [state, setState] = useState({})
+  const [state, setState] = useState<Board>(board.data)
   const [userRole, setUserRole] = useState(null)
 
   if (board.status === 'loading') return <Spin />
@@ -76,7 +77,7 @@ const Board = () => {
             <Styled.ListWrapper
               ref={draggableProvided.innerRef}
               {...draggableProvided.draggableProps}>
-              <List list={list} dragHandleProps={draggableProvided.dragHandleProps} />
+              <ListComponent list={list} dragHandleProps={draggableProvided.dragHandleProps} />
             </Styled.ListWrapper>
           )}
         </Draggable>
@@ -100,7 +101,7 @@ const Board = () => {
           )
 
           const updatedItemsPayload = updatedItems.reduce(
-            (payload, item, index) => ({
+            (payload: Record<string, Item>, item: Item, index) => ({
               ...payload,
               [item.id]: {
                 ...item,
@@ -217,7 +218,7 @@ const Board = () => {
         )
 
         const updatedListsPayload = updatedLists.reduce(
-          (payload, list, index) => ({
+          (payload: Record<string, List>, list: List, index) => ({
             ...payload,
             [list.id]: {
               ...list,
@@ -278,4 +279,4 @@ const Board = () => {
   )
 }
 
-export default Board
+export default BoardComponent

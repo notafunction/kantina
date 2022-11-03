@@ -4,7 +4,6 @@ export type BoardPermissions =
   | 'board:create'
   | 'board.delete'
   
-
 export type ListPermissions =
     'list:read'
   | 'list:edit'
@@ -17,16 +16,21 @@ export type ItemPermissions =
   | 'item:create'
   | 'item:delete'
 
-export type Permission = BoardPermissions | ListPermissions | ItemPermissions
+export type MemberPermissions =
+    'member:read'
+  | 'member:edit'
+  | 'member:create'
+  | 'member:delete'
 
-declare enum MembershipRole {
-  VIEWER = 'viewer',
-  EDITOR = 'editor',
-  ADMIN = 'admin'
-}
+export type Permission = BoardPermissions | ListPermissions | ItemPermissions | MemberPermissions
+
+export type UserPermissionRole = 
+    'viewer'
+  | 'editor'
+  | 'admin'
 
 export type Membership = {
-  role: MembershipRole
+  role: UserPermissionRole
 }
 
 export type Item = {
@@ -50,6 +54,7 @@ export type List = {
 export type Board = {
   id: string
   color?: string
+  public: boolean
   lists: List[]
   locked: boolean
   title: string
@@ -57,6 +62,7 @@ export type Board = {
 }
 
 export type UserProfile = {
+  uid: string
   boards: Membership[]
   displayName: string
   email: string,

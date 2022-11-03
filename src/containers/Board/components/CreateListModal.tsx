@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
 import { Modal, Form, Input, message } from 'antd'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
@@ -7,7 +6,12 @@ import { useDatabase, useUser } from 'reactfire'
 import { push, ref, update } from 'firebase/database'
 import { BoardContext } from './BoardContext'
 
-const CreateListModal = (props) => {
+type Props = {
+  visible: boolean
+  close: () => void
+}
+
+const CreateListModal: React.FunctionComponent<Props> = (props) => {
   const user = useUser()
   const db = useDatabase()
   const [form] = Form.useForm()
@@ -62,11 +66,6 @@ const CreateListModal = (props) => {
       </Form>
     </Modal>
   )
-}
-
-CreateListModal.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired
 }
 
 export default CreateListModal

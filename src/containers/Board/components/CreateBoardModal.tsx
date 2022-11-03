@@ -1,13 +1,17 @@
 import React from 'react'
 import { Modal, Form, Input, Select, Switch, message } from 'antd'
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons'
-import PropTypes from 'prop-types'
 import { useDatabase, useUser } from 'reactfire'
 import { push, ref, set } from 'firebase/database'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
 
-const CreateBoardModal = (props) => {
+type Props = {
+  visible: boolean
+  close: () => void
+}
+
+const CreateBoardModal: React.FunctionComponent<Props> = (props) => {
   const db = useDatabase()
   const user = useUser()
   const [form] = Form.useForm()
@@ -81,11 +85,6 @@ const CreateBoardModal = (props) => {
       </Form>
     </Modal>
   )
-}
-
-CreateBoardModal.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired
 }
 
 export default CreateBoardModal

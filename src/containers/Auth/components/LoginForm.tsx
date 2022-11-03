@@ -1,13 +1,16 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react'
-import styled from 'styled-components'
-import { Form, Input, Divider, Button } from 'antd'
-import PropTypes from 'prop-types'
+import { Form, Input, Divider, Button, FormProps } from 'antd'
 import GoogleButton from 'react-google-button'
 import Styled from './Styled'
 import PasswordResetModal from './PasswordResetModal'
 
-const LoginForm = (props) => {
+type Props = {
+  formProps: FormProps
+  loginWithGoogleProvider: () => void
+}
+
+const LoginForm: React.FunctionComponent<Props> = (props) => {
   const [isPasswordResetModalVisible, setIsPasswordResetModalVisible] = useState(false)
 
   return (
@@ -15,7 +18,6 @@ const LoginForm = (props) => {
       <Form.Item
         name="email"
         label="Email"
-        type="email"
         rules={[
           { required: true, message: "You'll need to enter your email" },
           {
@@ -49,11 +51,6 @@ const LoginForm = (props) => {
       </div>
     </Form>
   )
-}
-
-LoginForm.propTypes = {
-  formProps: PropTypes.object,
-  loginWithGoogleProvider: PropTypes.func.isRequired
 }
 
 export default LoginForm

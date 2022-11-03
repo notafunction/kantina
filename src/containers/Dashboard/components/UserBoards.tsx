@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
-import { useDatabase, useDatabaseObjectData } from 'reactfire'
+import { ObservableStatus, useDatabase, useDatabaseListData, useDatabaseObjectData } from 'reactfire'
 import { Spin, Card, Empty, Button } from 'antd'
 import { Link } from 'react-router-dom'
 import { get, ref } from 'firebase/database'
 import DashboardBoardItem from './DashboardBoardItem'
 import Styled from './Styled'
 import CreateBoardModal from '../../Board/components/CreateBoardModal'
+import { Board, UserPermissionRole, UserProfile } from '@/types'
 
-const UserBoards = (props) => {
+type Props = {
+  user: UserProfile
+}
+
+const UserBoards: React.FunctionComponent<Props> = (props) => {
   const db = useDatabase()
-  const userBoardIds = useDatabaseObjectData(ref(db, `users/${props.user.uid}/boards`), {
-    idField: false
+  const userBoardIds: ObservableStatus<{ id: string, role: UserPermissionRole }[]> = useDatabaseListData(ref(db, `users/${props.user.uid}/boards`), {
+    idField: 'id'
   })
 
-  const [boards, setBoards] = useState([])
+  const [boards, setBoards] = useState<Board[]>([])
   const [isCreateBoardModalVisible, setIsCreateBoardModalVisible] = useState(false)
 
   useEffect(() => {
@@ -25,7 +29,7 @@ const UserBoards = (props) => {
 
       const fetchData = async () => {
         const boards = await Promise.all(
-          Object.keys(userBoardIds.data).map(async (id) => {
+          userBoardIds.data.map(async ({ id }) => {
             const snap = await get(ref(db, `boards/${id}`))
 
             if (snap.exists()) {
@@ -44,7 +48,7 @@ const UserBoards = (props) => {
     }
   }, [userBoardIds.data])
 
-  const renderBoard = (board) => (
+  const renderBoard = (board: Board) => (
     <Link to={`/b/${board.id}`} key={board.id}>
       <DashboardBoardItem board={board} />
     </Link>
@@ -72,10 +76,6 @@ const UserBoards = (props) => {
       </Card>
     </Spin>
   )
-}
-
-UserBoards.propTypes = {
-  user: PropTypes.object.isRequired
 }
 
 export default UserBoards

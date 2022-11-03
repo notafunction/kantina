@@ -2,13 +2,13 @@ import React, { useContext, useState } from 'react'
 import { Button } from 'antd'
 import CreateListModal from './CreateListModal'
 import Styled from './Styled'
-import { AuthContext } from '../../Auth/components/AuthContext'
+import { useSigninCheck } from 'reactfire'
 
-const CreateListColumn = () => {
-  const auth = useContext(AuthContext)
+const CreateListColumn: React.FunctionComponent = () => {
+  const auth = useSigninCheck()
   const [isCreateListModalVisible, setIsCreateListModalVisible] = useState(false)
 
-  if (!auth.signedIn) return null
+  if (auth.status === 'loading' || !auth.data.signedIn) return null
 
   return (
     <Styled.ListWrapper width="auto">
