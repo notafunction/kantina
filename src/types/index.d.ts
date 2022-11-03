@@ -1,13 +1,23 @@
-export enum Permission {
-  'board:read',
-  'board:edit',
-  'board:delete',
-  'board:create',
-  'list:read',
-  'list:edit',
-  'list:delete',
-  'list:create'
-}
+export type BoardPermissions =
+    'board:read'
+  | 'board:edit'
+  | 'board:create'
+  | 'board.delete'
+  
+
+export type ListPermissions =
+    'list:read'
+  | 'list:edit'
+  | 'list:create'
+  | 'list:delete'
+
+export type ItemPermissions =
+    'item:read'
+  | 'item:edit'
+  | 'item:create'
+  | 'item:delete'
+
+export type Permission = BoardPermissions | ListPermissions | ItemPermissions
 
 declare enum MembershipRole {
   VIEWER = 'viewer',

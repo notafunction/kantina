@@ -20,7 +20,7 @@ const PasswordResetModal = (props) => {
     <Modal
       centered
       destroyOnClose
-      visible={props.visible}
+      open={props.visible}
       title="Reset Password"
       onCancel={props.close}
       onOk={handleReset}

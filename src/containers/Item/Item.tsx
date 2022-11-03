@@ -1,13 +1,17 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Styled from './components/Styled'
 import ItemToolbar from './components/ItemToolbar'
 import { Draggable } from 'react-beautiful-dnd'
 import { ItemContext } from './components/ItemContext'
 import { usePermission } from '@/hooks'
-import Restricted from '@/containers/Permission/Restricted'
+import { Item } from '@/types'
 
-const Item = (props) => {
+type Props = {
+  item: Item
+  index: number
+}
+
+const ItemComponent: React.FunctionComponent<Props> = (props) => {
   const canEdit = usePermission('item:edit')
 
   return (
@@ -25,9 +29,9 @@ const Item = (props) => {
             {...draggableProvided.dragHandleProps}
             {...draggableSnapshot}>
             <Styled.Content itemColor={props.item.color}>
-              <Restricted to="board:edit">
-                <ItemToolbar item={props.item} />
-              </Restricted>
+              {
+                canEdit && <ItemToolbar item={props.item} />
+              }
               <div>{props.item.content}</div>
             </Styled.Content>
           </Styled.Container>
@@ -37,9 +41,4 @@ const Item = (props) => {
   )
 }
 
-Item.propTypes = {
-  item: PropTypes.object.isRequired,
-  index: PropTypes.number.isRequired
-}
-
-export default Item
+export default ItemComponent

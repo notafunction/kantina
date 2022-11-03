@@ -196,7 +196,7 @@ const Auth = () => {
 
       <Modal
         destroyOnClose
-        visible={state.isModalVisible}
+        open={state.isModalVisible}
         title={getActionText()}
         footer={renderModalFooter()}
         onCancel={() => dispatch({ type: TOGGLE_MODAL })}

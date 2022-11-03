@@ -78,7 +78,7 @@ const BoardSettingsModal = (props) => {
   return (
     <Modal
       title={`${board.title} Settings`}
-      visible={props.visible}
+      open={props.visible}
       onCancel={props.close}
       onOk={onSave}>
       <Form layout="vertical" onFinish={onSave} form={form} preserve={false}>

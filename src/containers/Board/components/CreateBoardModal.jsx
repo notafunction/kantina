@@ -48,7 +48,7 @@ const CreateBoardModal = (props) => {
   }
 
   return (
-    <Modal key="2" title="Create Board" visible={props.visible} onCancel={onCancel} onOk={onOk}>
+    <Modal key="2" title="Create Board" open={props.visible} onCancel={onCancel} onOk={onOk}>
       <Form layout="vertical" requiredMark={false} onFinish={onOk} form={form}>
         <Form.Item
           label="Title"

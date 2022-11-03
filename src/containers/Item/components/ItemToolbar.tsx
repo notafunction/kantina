@@ -4,8 +4,13 @@ import { SettingOutlined } from '@ant-design/icons'
 import { useSigninCheck } from 'reactfire'
 import Styled from './Styled'
 import ItemSettingsModal from './ItemSettingsModal'
+import { Item } from '@/types'
 
-const ItemToolbar = () => {
+type Props = {
+  item: Item
+}
+
+const ItemToolbar: React.FunctionComponent<Props> = () => {
   const auth = useSigninCheck()
 
   const [isItemSettingsModalVisible, setIsItemSettingsModalVisible] = useState(false)

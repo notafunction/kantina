@@ -44,7 +44,7 @@ const CreateListModal = (props) => {
   }
 
   return (
-    <Modal title="Add New List" visible={props.visible} onOk={onOk} onCancel={onCancel}>
+    <Modal title="Add New List" open={props.visible} onOk={onOk} onCancel={onCancel}>
       <Form layout="vertical" onFinish={onOk} form={form}>
         <Form.Item
           name="title"

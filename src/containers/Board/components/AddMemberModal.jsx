@@ -39,7 +39,7 @@ const AddMemberModal = (props) => {
   }
 
   return (
-    <Modal centered title="Add Member" visible={props.visible} onCancel={onCancel} onOk={onOk}>
+    <Modal centered title="Add Member" open={props.visible} onCancel={onCancel} onOk={onOk}>
       <Form layout="vertical" requiredMark={false} onFinish={onOk} form={form}>
         <Form.Item
           label="Email"

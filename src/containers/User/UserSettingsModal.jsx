@@ -94,7 +94,7 @@ const UserSettingsModal = (props) => {
   if (status === 'loading') return <Spin />
 
   return (
-    <Modal title="User Settings" onOk={onSave} visible={props.visible} onCancel={onClose}>
+    <Modal title="User Settings" onOk={onSave} open={props.visible} onCancel={onClose}>
       <Form layout="vertical" form={form} onFinish={onSave}>
         <Form.Item name="avatar" label="Avatar">
           <StyledUpload
