@@ -1,10 +1,15 @@
-import React from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Styled from './components/Styled'
 import ItemToolbar from './components/ItemToolbar'
 import { Draggable } from 'react-beautiful-dnd'
 import { ItemContext } from './components/ItemContext'
 import { usePermission } from '@/hooks'
-import { Item } from '@/types'
+import { Board, Item, List } from '@/types'
+import { Input } from 'antd'
+import { set, ref } from 'firebase/database'
+import useOnClickOutside from '@/hooks/useOnClickOutside'
+import { BoardContext } from '../Board/components/BoardContext'
+import { ListContext } from '../List/components/ListContext'
 
 type Props = {
   item: Item
@@ -12,7 +17,32 @@ type Props = {
 }
 
 const ItemComponent: React.FunctionComponent<Props> = (props) => {
+  const [isEditing, setIsEditing] = useState(false)
+  const [content, setContent] = useState(props.item.content)
   const canEdit = usePermission('item:edit')
+  const ref = useRef()
+  const board: Board = useContext(BoardContext)
+  const list: List = useContext(ListContext)
+
+  const startEditing = () => {
+    if (!canEdit) return
+
+    setIsEditing(true)
+  }
+  
+  const stopEditing = () => {
+    setIsEditing(false)
+    
+    if (content !== props.item.content) {
+      set()
+    }
+  }
+
+  useOnClickOutside(ref, () => {
+    if (isEditing) {
+      stopEditing()
+    }
+  })
 
   return (
     <ItemContext.Provider value={props.item}>
@@ -28,11 +58,30 @@ const ItemComponent: React.FunctionComponent<Props> = (props) => {
             {...draggableProvided.draggableProps}
             {...draggableProvided.dragHandleProps}
             {...draggableSnapshot}>
-            <Styled.Content itemColor={props.item.color}>
+            <Styled.Content ref={ref} itemColor={props.item.color} onDoubleClick={startEditing}>
               {
-                canEdit && <ItemToolbar item={props.item} />
+                canEdit && !isEditing ? <ItemToolbar item={props.item} /> : null
               }
-              <div>{props.item.content}</div>
+
+              {
+                canEdit && isEditing ?
+                  <Input.TextArea style={{ padding: 0 }}
+                    autoSize={true}
+                    autoFocus={true}
+                    onInput={(event) => setContent(event.target.value)}
+                    onPressEnter={() => setIsEditing(false)}
+                    onFocus={(event) => {
+                      // Forces focus to end of content
+                      const value = event.target.value
+                      event.target.value = ''
+                      event.target.value = value
+                    }}
+                    bordered={false}
+                    value={content}
+                  />
+                : <div>{content}</div>
+              }
+
             </Styled.Content>
           </Styled.Container>
         )}

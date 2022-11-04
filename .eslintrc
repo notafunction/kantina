@@ -24,7 +24,8 @@
     "plugins": [
         "react",
         "@typescript-eslint",
-        "jest"
+        "jest",
+        "prettier"
     ],
     "rules": {
         "no-unused-vars": ["error", {
