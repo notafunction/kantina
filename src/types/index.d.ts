@@ -32,45 +32,38 @@ export type UserPermissionRole =
 export type Membership = {
   role: UserPermissionRole
 }
+export type MembershipRecord = Record<string, Membership>
 
+export type ItemRecord = Record<string, Item>
 export type Item = {
   color?: string
   content?: string
-  id: string
   createdBy: string
+  id: string
   list: string
   position: number
 }
 
-export type ItemRecord = {
-  [key: string]: Item
-}
-
+export type ListRecord = Record<string, List>
 export type List = {
-  id: string
+  board: string
   color?: string
   createdBy: string
+  id: string
+  items: ItemRecord
   position: number
   title: string
-  items: Item[]
 }
 
-export type ListRecord = {
-  [key: string]: List
-}
-
+export type BoardRecord = Record<string, Board>
 export type Board = {
   id: string
   color?: string
   public: boolean
-  lists: List[]
+  lists: ListRecord
   locked: boolean
   title: string
-  members: Membership[]
-}
-
-export type BoardRecord = {
-  [key: string]: Board
+  members: MembershipRecord
 }
 
 export type UserProfile = {
