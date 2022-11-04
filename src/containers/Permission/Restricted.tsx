@@ -5,6 +5,7 @@ import { Permission } from '@/types'
 type Props = {
   to: Permission
   fallback?: JSX.Element | string
+  children: React.ReactNode
 }
 
 const Restricted: React.FunctionComponent<Props> = ({to, fallback, children}) => {

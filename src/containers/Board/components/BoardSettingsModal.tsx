@@ -127,7 +127,7 @@ const BoardSettingsModal: React.FunctionComponent<Props> = (props) => {
           />
         </Form.Item>
 
-        <Restricted to="members:read">
+        <Restricted to="member:read">
           <Divider orientation="left" orientationMargin={0}>
             Board Members
           </Divider>
@@ -137,7 +137,7 @@ const BoardSettingsModal: React.FunctionComponent<Props> = (props) => {
               <BoardSettingsMember member={member} key={member.uid} />
             ))}
 
-            <Restricted to="members:create">
+            <Restricted to="member:create">
               <Button className="mt-4 self-start" onClick={() => setIsAddMemberModalVisible(true)}>
                 Add Member
               </Button>
