@@ -17,14 +17,14 @@ import Restricted from '@/containers/Permission/Restricted'
 import { usePermission } from '../../hooks'
 import { Board, Item, List } from '@/types'
 
-const BoardComponent = () => {
+const BoardComponent: React.FunctionComponent = () => {
   const navigate = useNavigate()
   const params = useParams()
   const db = useDatabase()
   const auth = useSigninCheck()
 
   const board: ObservableStatus<Board> = useDatabaseObjectData(ref(db, `boards/${params.boardId}`), {
-    idField: 'id'
+    idField: 'id',
   })
 
   const [state, setState] = useState<Board>(board.data)

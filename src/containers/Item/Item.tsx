@@ -10,6 +10,7 @@ import { set, ref } from 'firebase/database'
 import useOnClickOutside from '@/hooks/useOnClickOutside'
 import { BoardContext } from '../Board/components/BoardContext'
 import { ListContext } from '../List/components/ListContext'
+import { useDatabase } from 'reactfire'
 
 type Props = {
   item: Item
@@ -20,7 +21,8 @@ const ItemComponent: React.FunctionComponent<Props> = (props) => {
   const [isEditing, setIsEditing] = useState(false)
   const [content, setContent] = useState(props.item.content)
   const canEdit = usePermission('item:edit')
-  const ref = useRef()
+  const clickOutsideRef = useRef()
+  const db = useDatabase()
   const board: Board = useContext(BoardContext)
   const list: List = useContext(ListContext)
 
@@ -34,11 +36,11 @@ const ItemComponent: React.FunctionComponent<Props> = (props) => {
     setIsEditing(false)
     
     if (content !== props.item.content) {
-      set()
+      set(ref(db, `boards/${board.id}/lists/${list.id}/items/${props.item.id}/content`), content)
     }
   }
 
-  useOnClickOutside(ref, () => {
+  useOnClickOutside(clickOutsideRef, () => {
     if (isEditing) {
       stopEditing()
     }
@@ -58,7 +60,7 @@ const ItemComponent: React.FunctionComponent<Props> = (props) => {
             {...draggableProvided.draggableProps}
             {...draggableProvided.dragHandleProps}
             {...draggableSnapshot}>
-            <Styled.Content ref={ref} itemColor={props.item.color} onDoubleClick={startEditing}>
+            <Styled.Content ref={clickOutsideRef} itemColor={props.item.color} onDoubleClick={startEditing}>
               {
                 canEdit && !isEditing ? <ItemToolbar item={props.item} /> : null
               }
@@ -69,7 +71,7 @@ const ItemComponent: React.FunctionComponent<Props> = (props) => {
                     autoSize={true}
                     autoFocus={true}
                     onInput={(event) => setContent(event.target.value)}
-                    onPressEnter={() => setIsEditing(false)}
+                    onPressEnter={stopEditing}
                     onFocus={(event) => {
                       // Forces focus to end of content
                       const value = event.target.value

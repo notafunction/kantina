@@ -42,6 +42,10 @@ export type Item = {
   position: number
 }
 
+export type ItemRecord = {
+  [key: string]: Item
+}
+
 export type List = {
   id: string
   color?: string
@@ -49,6 +53,10 @@ export type List = {
   position: number
   title: string
   items: Item[]
+}
+
+export type ListRecord = {
+  [key: string]: List
 }
 
 export type Board = {
@@ -59,6 +67,10 @@ export type Board = {
   locked: boolean
   title: string
   members: Membership[]
+}
+
+export type BoardRecord = {
+  [key: string]: Board
 }
 
 export type UserProfile = {
