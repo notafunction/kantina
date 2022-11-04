@@ -59,7 +59,7 @@ function stateReducer(state, action) {
   }
 }
 
-const Auth = () => {
+const Auth: React.FunctionComponent = () => {
   const [state, dispatch] = useReducer(stateReducer, defaultState)
 
   const [loginForm] = Form.useForm()
