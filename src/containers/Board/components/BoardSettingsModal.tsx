@@ -114,19 +114,6 @@ const BoardSettingsModal: React.FunctionComponent<Props> = (props) => {
           />
         </Form.Item>
 
-        <Form.Item
-          name="locked"
-          label="Lock"
-          help="Allow changes only by board admins"
-          valuePropName="checked"
-          initialValue={board.locked}>
-          <Switch
-            checkedChildren={<LockOutlined />}
-            unCheckedChildren={<UnlockOutlined />}
-            checked={board.locked}
-          />
-        </Form.Item>
-
         <Restricted to="member:read">
           <Divider orientation="left" orientationMargin={0}>
             Board Members
