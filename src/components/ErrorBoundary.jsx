@@ -44,7 +44,7 @@ class ErrorBoundary extends React.Component {
   }
 
   renderResultTitle() {
-    return `I'm sorry, Dave`
+    return `I'm sorry`
   }
 
   handleGoHome = () => {

@@ -11,7 +11,6 @@ import PermissionProvider from '@/containers/Permission/PermissionProvider'
 import BoardToolbar from './components/BoardToolbar'
 import CreateListColumn from './components/CreateListColumn'
 import Restricted from '@/containers/Permission/Restricted'
-import { usePermission } from '../../hooks'
 import { Board } from '@/types'
 import { handleDragEvent, sortByPosition } from './utils'
 
@@ -26,7 +25,7 @@ const BoardComponent: React.FunctionComponent = () => {
   })
 
   const [state, setState] = useState<Board>(board.data)
-  const [userRole, setUserRole] = useState(null)
+  const [userRole, setUserRole] = useState<string>(null)
 
   if (board.status === 'loading') return <Spin />
 
@@ -66,19 +65,9 @@ const BoardComponent: React.FunctionComponent = () => {
   }, [auth.data])
 
   const renderLists = () => {
-    const canEditLists = usePermission('list:edit')
-
     if (state.lists) {
-      return sortByPosition(state.lists).map((list, index) => (
-        <Draggable key={list.id} index={index} draggableId={list.id} isDragDisabled={!canEditLists}>
-          {(draggableProvided, _draggableSnapshot) => (
-            <Styled.ListWrapper
-              ref={draggableProvided.innerRef}
-              {...draggableProvided.draggableProps}>
-              <ListComponent list={list} dragHandleProps={draggableProvided.dragHandleProps} />
-            </Styled.ListWrapper>
-          )}
-        </Draggable>
+      return sortByPosition(state.lists).map((list) => (
+        <ListComponent key={list.id} list={list} />
       ))
     }
   }
