@@ -1,4 +1,4 @@
-import { db } from '../lib/firebase'
+import { db } from '../../lib/firebase'
 
 export default function handler(req, res) {
   console.log(db)
