@@ -1,22 +1,17 @@
-import { initializeApp, getApps, App, AppOptions } from 'firebase-admin/app'
-import { getDatabase, Database } from 'firebase-admin/database'
+import { initializeApp } from 'firebase/app'
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
+import { getAuth } from 'firebase/auth'
+import { getDatabase } from 'firebase/database'
+import { getStorage } from 'firebase/storage'
+import firebaseConfig from './firebase.config.json'
 
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON)
+const app = initializeApp(firebaseConfig)
+const appCheck = initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider('6Lc9LFseAAAAAPlnOmHB8kaCnM3hLagkbr9v1YN3'),
+  isTokenAutoRefreshEnabled: true
+})
+const db = getDatabase(app)
+const auth = getAuth(app)
+const storage = getStorage(app)
 
-const appOptions: AppOptions = {
-  ...serviceAccount,
-  databaseURL: process.env.FIREBASE_ADMIN_DATABASE_URL
-}
-
-let app: App
-const apps = getApps()
-
-if (apps.length) {
-  app = apps[0]
-} else {
-  app = initializeApp(appOptions)
-}
-
-const db: Database = getDatabase(app)
-
-export { db, app }
+export { app, appCheck, db, auth, storage }
