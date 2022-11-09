@@ -1,11 +1,12 @@
 import { initializeApp, AppOptions } from 'firebase-admin/app'
 import { getDatabase } from 'firebase-admin/database'
+import firebaseConfig from './firebase.config.json'
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON)
 
 const appOptions: AppOptions = {
   ...serviceAccount,
-  databaseURL: process.env.FIREBASE_ADMIN_DATABASE_URL
+  ...firebaseConfig
 }
 
 const app = initializeApp(appOptions)
