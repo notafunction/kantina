@@ -7,6 +7,7 @@ export default defineConfig({
   plugins: [reactPlugin(), macrosPlugin()],
   resolve: {
     alias: {
+      '~': path.resolve(__dirname, '.'),
       '@': path.resolve(__dirname, './src')
     }
   }
