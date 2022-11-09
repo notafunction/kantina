@@ -50,6 +50,7 @@ const Styled = {
     margin: 0 5px;
     width: ${(props) => props.width || '270px'};
     vertical-align: top;
+    height: 100%;
   `
 }
 

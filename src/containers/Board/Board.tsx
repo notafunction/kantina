@@ -11,7 +11,7 @@ import PermissionProvider from '@/containers/Permission/PermissionProvider'
 import BoardToolbar from './components/BoardToolbar'
 import CreateListColumn from './components/CreateListColumn'
 import Restricted from '@/containers/Permission/Restricted'
-import { Board } from '@/types'
+import { Board, UserPermissionRole } from '@/types'
 import { handleDragEvent, sortByPosition } from './utils'
 
 const BoardComponent: React.FunctionComponent = () => {
@@ -25,7 +25,7 @@ const BoardComponent: React.FunctionComponent = () => {
   })
 
   const [state, setState] = useState<Board>(board.data)
-  const [userRole, setUserRole] = useState<string>(null)
+  const [userRole, setUserRole] = useState<UserPermissionRole>(null)
 
   if (board.status === 'loading') return <Spin />
 

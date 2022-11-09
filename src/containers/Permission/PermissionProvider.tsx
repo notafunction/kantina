@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDatabase, useDatabaseObjectData, useUser } from 'reactfire'
 import { get, ref } from 'firebase/database'
-import { Permission } from '@/types'
+import { Permission, UserPermissionRole } from '@/types'
 import PermissionContext from './PermissionContext'
 
 enum Role {
@@ -11,7 +11,7 @@ enum Role {
 }
 
 type Props = {
-  role: Role
+  role: UserPermissionRole
   children?: JSX.Element
 }
 
