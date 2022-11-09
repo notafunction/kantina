@@ -5,8 +5,8 @@ import firebaseConfig from './firebase.config.json'
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON)
 
 const appOptions: AppOptions = {
-  ...serviceAccount,
-  ...firebaseConfig
+  ...firebaseConfig,
+  ...serviceAccount
 }
 
 const app = initializeApp(appOptions)
