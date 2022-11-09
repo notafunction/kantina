@@ -5,6 +5,7 @@ import Item from '../Item/Item'
 import Styled from './components/Styled'
 import { Button } from 'antd'
 import ListHeader from './components/ListHeader'
+import ListFooter from './components/ListFooter'
 import CreateItemModal from './components/CreateItemModal'
 import { ListContext } from './components/ListContext'
 import Restricted from '@/containers/Permission/Restricted'
@@ -43,16 +44,7 @@ const ListComponent: React.FunctionComponent<Props> = (props) => {
                       {provided.placeholder}
                     </Styled.Dropzone>
                     <Restricted to="item:create">
-                      <Styled.Footer>
-                        <Button type="ghost" onClick={() => setCreateItemVisible(true)}>
-                          Add Item
-                        </Button>
-
-                        <CreateItemModal
-                          visible={createItemVisible}
-                          close={() => setCreateItemVisible(false)}
-                        />
-                      </Styled.Footer>
+                      <ListFooter />
                     </Restricted>
                   </Styled.Content>
                 )}

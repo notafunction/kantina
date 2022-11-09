@@ -6,7 +6,11 @@ import ListSettingsModal from './ListSettingsModal'
 import CreateItemModal from './CreateItemModal'
 import Restricted from '@/containers/Permission/Restricted'
 
-const ListToolbar: React.FunctionComponent = () => {
+type Props = {
+  showItemCreate: boolean
+}
+
+const ListToolbar: React.FunctionComponent<Props> = (props) => {
   const auth = useSigninCheck()
   const [isListSettingsModalVisible, setIsListSettingsModalVisible] = useState(false)
   const [isCreateItemModalVisible, setIsCreateItemModalVisible] = useState(false)
@@ -21,21 +25,24 @@ const ListToolbar: React.FunctionComponent = () => {
 
   return (
     <div className="flex items-center gap-1">
-      <Restricted to="item:create">
-        <Tooltip title="Add Item">
-          <Button
-            size="small"
-            type="text"
-            icon={<PlusOutlined />}
-            onClick={() => setIsCreateItemModalVisible(true)}
-          />
-        </Tooltip>
+      {
+        props.showItemCreate && 
+        <Restricted to="item:create">
+          <Tooltip title="Add Item">
+            <Button
+              size="small"
+              type="text"
+              icon={<PlusOutlined />}
+              onClick={() => setIsCreateItemModalVisible(true)}
+            />
+          </Tooltip>
 
-        <CreateItemModal
-          visible={isCreateItemModalVisible}
-          close={() => setIsCreateItemModalVisible(false)}
-        />
-      </Restricted>
+          <CreateItemModal
+            visible={isCreateItemModalVisible}
+            close={() => setIsCreateItemModalVisible(false)}
+          />
+        </Restricted>
+      }
 
       <Restricted to="list:edit">
         <Tooltip title="Manage List">

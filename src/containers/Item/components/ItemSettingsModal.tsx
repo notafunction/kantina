@@ -63,7 +63,7 @@ const ItemSettingsModal: React.FunctionComponent<Props> = (props) => {
           <CirclePicker width={null} colors={colorPickerColors} color={item.color} />
         </Form.Item>
 
-        <Restricted to="board.delete">
+        <Restricted to="item:delete">
           <FormDangerZone>
             <Popconfirm
               onConfirm={onDelete}

@@ -68,6 +68,10 @@ const ItemComponent: React.FunctionComponent<Props> = (props) => {
               {
                 canEdit && isEditing ?
                   <Input.TextArea
+                    style={{
+                      padding: 0,
+                      minHeight: 'min-content'
+                    }}
                     autoSize={true}
                     autoFocus={true}
                     onInput={(event) => setContent(event.target.value)}

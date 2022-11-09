@@ -23,7 +23,7 @@ const Styled = {
   `,
 
   Dropzone: styled.div`
-    min-height: 250px;
+    flex: 1;
     overflow: auto;
   `,
 
@@ -61,6 +61,7 @@ const Styled = {
 
 Styled.Content = styled.div`
   background-color: ${(props) => props.backgroundColor};
+  min-height: 300px;
 
   ${tw`
     max-h-full
