@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import _sortBy from 'lodash.sortby'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
-import { DragHandleProps } from 'react-beautiful-dnd/src/view/draggable'
 import Item from '../Item/Item'
-import ListToolbar from './components/ListToolbar'
 import Styled from './components/Styled'
 import { Button } from 'antd'
+import ListHeader from './components/ListHeader'
 import CreateItemModal from './components/CreateItemModal'
 import { ListContext } from './components/ListContext'
 import Restricted from '@/containers/Permission/Restricted'
@@ -38,17 +37,13 @@ const ListComponent: React.FunctionComponent<Props> = (props) => {
               <Droppable droppableId={props.list.id} type="ITEM">
                 {(provided, _snapshot) => (
                   <Styled.Content backgroundColor={props.list.color}>
-                    <Styled.Header>
-                      <h3 {...draggableProvided.dragHandleProps}>{props.list.title}</h3>
-
-                      <ListToolbar />
-                    </Styled.Header>
+                    <ListHeader />
                     <Styled.Dropzone ref={provided.innerRef}>
                       {renderItems()}
                       {provided.placeholder}
                     </Styled.Dropzone>
                     <Restricted to="item:create">
-                      <div className="mt-auto flex mx-[5px] mb-[5px]">
+                      <Styled.Footer>
                         <Button type="ghost" onClick={() => setCreateItemVisible(true)}>
                           Add Item
                         </Button>
@@ -57,7 +52,7 @@ const ListComponent: React.FunctionComponent<Props> = (props) => {
                           visible={createItemVisible}
                           close={() => setCreateItemVisible(false)}
                         />
-                      </div>
+                      </Styled.Footer>
                     </Restricted>
                   </Styled.Content>
                 )}

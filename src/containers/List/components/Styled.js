@@ -17,6 +17,10 @@ const Styled = {
     }
   `,
 
+  Footer: styled.div`
+    ${tw`mt-auto flex p-[5px]`}
+  `,
+
   Dropzone: styled.div`
     min-height: 250px;
     overflow: auto;
