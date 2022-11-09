@@ -7,6 +7,7 @@ const Styled = {
 
     h3 {
       ${tw`
+        text-lg
         flex-1
         mb-0
         whitespace-nowrap

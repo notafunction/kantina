@@ -37,7 +37,7 @@ const ListComponent: React.FunctionComponent<Props> = (props) => {
               <Droppable droppableId={props.list.id} type="ITEM">
                 {(provided, _snapshot) => (
                   <Styled.Content backgroundColor={props.list.color}>
-                    <ListHeader />
+                    <ListHeader dragHandleProps={draggableProvided.dragHandleProps} />
                     <Styled.Dropzone ref={provided.innerRef}>
                       {renderItems()}
                       {provided.placeholder}

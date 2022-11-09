@@ -24,7 +24,7 @@ const ItemComponent: React.FunctionComponent<Props> = (props) => {
   const clickOutsideRef = useRef()
   const db = useDatabase()
   const board: Board = useContext(BoardContext)
-  const list: List = useContext(ListContext)
+  const list = useContext(ListContext)
 
   const startEditing = () => {
     if (!canEdit) return
@@ -67,7 +67,7 @@ const ItemComponent: React.FunctionComponent<Props> = (props) => {
 
               {
                 canEdit && isEditing ?
-                  <Input.TextArea style={{ padding: 0 }}
+                  <Input.TextArea
                     autoSize={true}
                     autoFocus={true}
                     onInput={(event) => setContent(event.target.value)}
