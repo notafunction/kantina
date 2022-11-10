@@ -2,10 +2,10 @@ import React, { useContext } from 'react'
 import { Form, Modal, Input } from 'antd'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
-import { useDatabase, useUser } from 'reactfire'
-import { ref, push, update } from 'firebase/database'
+import { useUser } from 'reactfire'
 import { ListContext } from './ListContext'
 import { BoardContext } from '../../Board/components/BoardContext'
+import { createItem } from '~/lib/api/items'
 
 type Props = {
   visible: boolean,
@@ -13,22 +13,15 @@ type Props = {
 }
 
 const CreateItemModal: React.FunctionComponent<Props> = (props) => {
-  const db = useDatabase()
   const user = useUser()
   const [form] = Form.useForm()
   const list = useContext(ListContext)
   const board = useContext(BoardContext)
 
   const onCreateItem = async (values) => {
-    const result = await push(ref(db, `boards/${board.id}/lists/${list.id}/items`), {
+    await createItem({ board, list }, {
       ...values,
-      list: list.id,
-      createdBy: user.data.uid,
-      position: list.items ? Object.keys(list.items).length : 0
-    })
-
-    await update(result, {
-      id: result.key
+      createdBy: user.data.uid
     })
   }
 

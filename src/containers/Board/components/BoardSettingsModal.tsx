@@ -1,13 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import { get, ref, remove, update } from 'firebase/database'
+import { get, ref, remove } from 'firebase/database'
 import { useDatabase, useUser } from 'reactfire'
 import { BoardContext } from './BoardContext'
 import { Button, Form, Input, Switch, message, Popconfirm, Divider, Modal } from 'antd'
 import {
   WarningOutlined,
-  LockOutlined,
-  UnlockOutlined,
   CheckOutlined,
   CloseOutlined
 } from '@ant-design/icons'
@@ -18,6 +16,7 @@ import { colorPickerColors } from '../../../constants'
 import Restricted from '@/containers/Permission/Restricted'
 import AddMemberModal from './AddMemberModal'
 import { UserProfile } from '@/types'
+import { updateBoard, deleteBoard } from '~/lib/api/boards'
 
 type Props = {
   visible: boolean
@@ -62,7 +61,7 @@ const BoardSettingsModal: React.FunctionComponent<Props> = (props) => {
   const onSave = async () => {
     const values = await form.validateFields()
     try {
-      await update(ref(db, `boards/${board.id}`), values)
+      await updateBoard({ board }, values)
       props.close()
     } catch (error) {
       message.error(error.message)
@@ -72,7 +71,7 @@ const BoardSettingsModal: React.FunctionComponent<Props> = (props) => {
   const onDelete = async () => {
     try {
       navigate('/')
-      remove(ref(db, `boards/${board.id}`))
+      deleteBoard({ board })
       remove(ref(db, `users/${user.data.uid}/boards/${board.id}`))
       props.close()
     } catch (error) {

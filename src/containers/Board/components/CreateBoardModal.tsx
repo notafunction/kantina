@@ -2,9 +2,10 @@ import React from 'react'
 import { Modal, Form, Input, Select, Switch, message } from 'antd'
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons'
 import { useDatabase, useUser } from 'reactfire'
-import { push, ref, set } from 'firebase/database'
+import { ref, set } from 'firebase/database'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
+import { createBoard } from '~/lib/api/boards'
 
 type Props = {
   visible: boolean
@@ -18,11 +19,8 @@ const CreateBoardModal: React.FunctionComponent<Props> = (props) => {
 
   const onCreateBoard = async (values) => {
     try {
-      const boardRef = await push(ref(db, 'boards'))
-
-      set(boardRef, {
+      const boardRef = await createBoard({
         ...values,
-        id: boardRef.key,
         createdBy: user.data.uid,
         members: {
           [user.data.uid]: {

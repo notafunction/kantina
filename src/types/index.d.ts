@@ -35,6 +35,7 @@ export type Membership = {
 export type MembershipRecord = Record<string, Membership>
 
 export type ItemRecord = Record<string, Item>
+export type ItemType = 'checkbox' | 'text'
 export type Item = {
   color?: string
   content?: string
@@ -42,6 +43,7 @@ export type Item = {
   id: string
   list: string
   position: number
+  type: ItemType
 }
 
 export type ListRecord = Record<string, List>

@@ -6,11 +6,10 @@ import { ItemContext } from './components/ItemContext'
 import { usePermission } from '@/hooks'
 import { Board, Item, List } from '@/types'
 import { Input } from 'antd'
-import { set, ref } from 'firebase/database'
 import useOnClickOutside from '@/hooks/useOnClickOutside'
 import { BoardContext } from '../Board/components/BoardContext'
 import { ListContext } from '../List/components/ListContext'
-import { useDatabase } from 'reactfire'
+import { updateItem } from '~/lib/api/items'
 
 type Props = {
   item: Item
@@ -22,7 +21,6 @@ const ItemComponent: React.FunctionComponent<Props> = (props) => {
   const [content, setContent] = useState(props.item.content)
   const canEdit = usePermission('item:edit')
   const clickOutsideRef = useRef()
-  const db = useDatabase()
   const board: Board = useContext(BoardContext)
   const list = useContext(ListContext)
 
@@ -36,7 +34,7 @@ const ItemComponent: React.FunctionComponent<Props> = (props) => {
     setIsEditing(false)
     
     if (content !== props.item.content) {
-      set(ref(db, `boards/${board.id}/lists/${list.id}/items/${props.item.id}/content`), content)
+      updateItem({ board, list, item: props.item }, { content })
     }
   }
 

@@ -1,12 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import _sortBy from 'lodash.sortby'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import Item from '../Item/Item'
 import Styled from './components/Styled'
-import { Button } from 'antd'
 import ListHeader from './components/ListHeader'
 import ListFooter from './components/ListFooter'
-import CreateItemModal from './components/CreateItemModal'
 import { ListContext } from './components/ListContext'
 import Restricted from '@/containers/Permission/Restricted'
 import { List } from '@/types'
@@ -17,7 +15,6 @@ type Props = {
 }
 
 const ListComponent: React.FunctionComponent<Props> = (props) => {
-  const [createItemVisible, setCreateItemVisible] = useState(false)
   const canEditLists = usePermission('list:edit')
 
   const renderItems = () => {

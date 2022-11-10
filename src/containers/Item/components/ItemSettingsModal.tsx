@@ -1,9 +1,7 @@
 import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
-import { useDatabase } from 'reactfire'
 import { WarningOutlined } from '@ant-design/icons'
 import { Button, Form, Input, message, Modal, Popconfirm } from 'antd'
-import { ref, update, remove } from 'firebase/database'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
@@ -12,6 +10,7 @@ import { ItemContext } from './ItemContext'
 import { BoardContext } from '../../Board/components/BoardContext'
 import Restricted from '@/containers/Permission/Restricted'
 import { Board, Item, List } from '@/types'
+import { deleteItem, updateItem } from '~/lib/api/items'
 
 type Props = {
   visible: boolean
@@ -19,7 +18,6 @@ type Props = {
 }
 
 const ItemSettingsModal: React.FunctionComponent<Props> = (props) => {
-  const db = useDatabase()
   const [form] = Form.useForm()
   const board: Board = useContext(BoardContext)
   const list: List = useContext(ListContext)
@@ -28,7 +26,7 @@ const ItemSettingsModal: React.FunctionComponent<Props> = (props) => {
   const onSave = async () => {
     const values = await form.validateFields()
     try {
-      await update(ref(db, `boards/${board.id}/lists/${list.id}/items/${item.id}`), values)
+      await updateItem({ board, list, item }, values)
       props.close()
     } catch (error) {
       message.error(error.message)
@@ -37,7 +35,7 @@ const ItemSettingsModal: React.FunctionComponent<Props> = (props) => {
 
   const onDelete = async () => {
     try {
-      await remove(ref(db, `boards/${board.id}/lists/${list.id}/items/${item.id}`))
+      await deleteItem({ board, list, item })
       props.close()
     } catch (error) {
       message.error(error.message)

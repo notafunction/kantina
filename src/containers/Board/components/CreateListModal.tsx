@@ -2,9 +2,9 @@ import React, { useContext } from 'react'
 import { Modal, Form, Input, message } from 'antd'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
-import { useDatabase, useUser } from 'reactfire'
-import { push, ref, update } from 'firebase/database'
+import { useUser } from 'reactfire'
 import { BoardContext } from './BoardContext'
+import { createList } from '~/lib/api/lists'
 
 type Props = {
   visible: boolean
@@ -13,21 +13,14 @@ type Props = {
 
 const CreateListModal: React.FunctionComponent<Props> = (props) => {
   const user = useUser()
-  const db = useDatabase()
   const [form] = Form.useForm()
   const board = useContext(BoardContext)
 
   const onCreateList = async (values) => {
     try {
-      const result = await push(ref(db, `boards/${board.id}/lists`), {
+      await createList({ board }, {
         ...values,
-        board: board.id,
         createdBy: user.data.uid,
-        position: board.lists ? Object.keys(board.lists).length : 0
-      })
-
-      await update(result, {
-        id: result.key
       })
     } catch (error) {
       message.error(error.code)

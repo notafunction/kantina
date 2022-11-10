@@ -2,14 +2,13 @@ import React, { useContext } from 'react'
 import { Button, Form, Input, message, Modal, Popconfirm } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 import { CirclePicker } from 'react-color'
-import { ref, remove, update } from 'firebase/database'
-import { useDatabase } from 'reactfire'
 import { colorPickerColors } from '../../../constants'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
 import { ListContext } from './ListContext'
 import { BoardContext } from '../../Board/components/BoardContext'
 import Restricted from '@/containers/Permission/Restricted'
 import { Board, List } from '@/types'
+import { deleteList, updateList } from '~/lib/api/lists'
 
 type Props = {
   visible: boolean,
@@ -17,7 +16,6 @@ type Props = {
 }
 
 const ListSettingsModal: React.FunctionComponent<Props> = (props) => {
-  const db = useDatabase()
   const [form] = Form.useForm()
   const list: List = useContext(ListContext)
   const board: Board = useContext(BoardContext)
@@ -25,7 +23,7 @@ const ListSettingsModal: React.FunctionComponent<Props> = (props) => {
   const onSave = async () => {
     const values = await form.validateFields()
     try {
-      await update(ref(db, `boards/${board.id}/lists/${list.id}`), values)
+      updateList({ board, list }, values)
       props.close()
     } catch (error) {
       message.error(error.message)
@@ -34,7 +32,7 @@ const ListSettingsModal: React.FunctionComponent<Props> = (props) => {
 
   const onDelete = async () => {
     try {
-      await remove(ref(db, `boards/${board.id}/lists/${list.id}`))
+      deleteList({ board, list })
       props.close()
     } catch (error) {
       message.error(error.message)
