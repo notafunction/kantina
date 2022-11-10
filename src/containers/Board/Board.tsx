@@ -13,6 +13,7 @@ import CreateListColumn from './components/CreateListColumn'
 import Restricted from '@/containers/Permission/Restricted'
 import { Board, UserPermissionRole } from '@/types'
 import { handleDragEvent, sortByPosition } from './utils'
+import { updateBoard } from '~/lib/api/boards'
 
 const BoardComponent: React.FunctionComponent = () => {
   const navigate = useNavigate()
@@ -76,7 +77,7 @@ const BoardComponent: React.FunctionComponent = () => {
     const updatedBoard = handleDragEvent(event, state)
 
     setState(updatedBoard)
-    set(ref(db, `boards/${board.data.id}`), updatedBoard)
+    updateBoard({ board: board.data }, updatedBoard)
   }
 
   return (
