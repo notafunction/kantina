@@ -1,5 +1,12 @@
 import React, { useContext } from 'react'
-import { Button, Form, Input, message, Modal, Popconfirm } from 'antd'
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  Modal,
+  Popconfirm
+} from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
@@ -11,11 +18,13 @@ import { Board, List } from '@/types'
 import { deleteList, updateList } from '~/lib/api/lists'
 
 type Props = {
-  visible: boolean,
+  visible: boolean
   close: () => void
 }
 
-const ListSettingsModal: React.FunctionComponent<Props> = (props) => {
+const ListSettingsModal: React.FunctionComponent<Props> = (
+  props
+) => {
   const [form] = Form.useForm()
   const list: List = useContext(ListContext)
   const board: Board = useContext(BoardContext)
@@ -45,21 +54,38 @@ const ListSettingsModal: React.FunctionComponent<Props> = (props) => {
       title={`${list.title} Settings`}
       open={props.visible}
       onCancel={props.close}
-      onOk={onSave}>
-      <Form layout="vertical" onFinish={onSave} form={form} preserve={false}>
+      onOk={onSave}
+    >
+      <Form
+        layout="vertical"
+        onFinish={onSave}
+        form={form}
+        preserve={false}
+      >
         <Form.Item
           initialValue={list.title}
           name="title"
           label="Title"
-          rules={[{ required: true, message: 'A title is required.' }]}>
+          rules={[
+            {
+              required: true,
+              message: 'A title is required.'
+            }
+          ]}
+        >
           <Input />
         </Form.Item>
         <Form.Item
           name="color"
           label="Color"
           initialValue={list.color}
-          getValueFromEvent={({ hex }) => hex}>
-          <CirclePicker width={null} colors={colorPickerColors} color={list.color} />
+          getValueFromEvent={({ hex }) => hex}
+        >
+          <CirclePicker
+            width={null}
+            colors={colorPickerColors}
+            color={list.color}
+          />
         </Form.Item>
 
         <Restricted to="list:delete">
@@ -69,7 +95,8 @@ const ListSettingsModal: React.FunctionComponent<Props> = (props) => {
               okText="Yes"
               title="Are you sure? This cannot be undone"
               okButtonProps={{ danger: true }}
-              icon={<WarningOutlined />}>
+              icon={<WarningOutlined />}
+            >
               <Button danger>Delete List</Button>
             </Popconfirm>
           </FormDangerZone>

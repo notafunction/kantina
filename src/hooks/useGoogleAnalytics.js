@@ -7,7 +7,9 @@ export default function useGoogleAnalytics() {
 
   useEffect(() => {
     ReactGA.initialize('UA-101192380-5', {
-      debug: !process.env.NODE_ENV || process.env.NODE_ENV !== 'production'
+      debug:
+        !process.env.NODE_ENV ||
+        process.env.NODE_ENV !== 'production'
     })
   }, [])
 

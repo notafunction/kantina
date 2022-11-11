@@ -9,7 +9,10 @@ import {
 import { ref, update } from 'firebase/database'
 import { useDatabase } from 'reactfire'
 import { Button, Space, Modal, Form, message } from 'antd'
-import { LoginOutlined, UserAddOutlined } from '@ant-design/icons'
+import {
+  LoginOutlined,
+  UserAddOutlined
+} from '@ant-design/icons'
 import LoginForm from './components/LoginForm'
 import SignupForm from './components/SignupForm'
 import Styled from './components/Styled'
@@ -60,7 +63,10 @@ function stateReducer(state, action) {
 }
 
 const Auth: React.FunctionComponent = () => {
-  const [state, dispatch] = useReducer(stateReducer, defaultState)
+  const [state, dispatch] = useReducer(
+    stateReducer,
+    defaultState
+  )
 
   const [loginForm] = Form.useForm()
   const [signupForm] = Form.useForm()
@@ -77,11 +83,18 @@ const Auth: React.FunctionComponent = () => {
     })
   }
 
-  const onLoginWithEmailAndPassword = async ({ email, password }) => {
+  const onLoginWithEmailAndPassword = async ({
+    email,
+    password
+  }) => {
     try {
       dispatch({ type: TOGGLE_LOADING })
 
-      const { user } = await signInWithEmailAndPassword(auth, email, password)
+      const { user } = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      )
       await populateProfile(user)
 
       dispatch({ type: TOGGLE_MODAL })
@@ -97,7 +110,10 @@ const Auth: React.FunctionComponent = () => {
     try {
       dispatch({ type: TOGGLE_LOADING })
 
-      const { user } = await signInWithPopup(auth, new GoogleAuthProvider())
+      const { user } = await signInWithPopup(
+        auth,
+        new GoogleAuthProvider()
+      )
       await populateProfile(user)
 
       dispatch({ type: TOGGLE_MODAL })
@@ -115,7 +131,11 @@ const Auth: React.FunctionComponent = () => {
     dispatch({ type: TOGGLE_LOADING })
 
     try {
-      const { user } = await createUserWithEmailAndPassword(auth, email, password)
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      )
       await populateProfile(user)
 
       message.success('You are now logged in')
@@ -132,11 +152,15 @@ const Auth: React.FunctionComponent = () => {
     if (state.isRegistering) {
       signupForm.validateFields().then(onSignup)
     } else {
-      loginForm.validateFields().then(onLoginWithEmailAndPassword)
+      loginForm
+        .validateFields()
+        .then(onLoginWithEmailAndPassword)
     }
   }
 
-  const getActionText = (isRegistering = state.isRegistering) => {
+  const getActionText = (
+    isRegistering = state.isRegistering
+  ) => {
     return isRegistering ? 'Sign Up' : 'Log In'
   }
 
@@ -150,7 +174,12 @@ const Auth: React.FunctionComponent = () => {
   function renderForm() {
     return state.isRegistering ? (
       <SignupForm
-        formProps={{ ...formProps, onFinish: onSignup, form: signupForm, id: 'signup' }}
+        formProps={{
+          ...formProps,
+          onFinish: onSignup,
+          form: signupForm,
+          id: 'signup'
+        }}
       />
     ) : (
       <LoginForm
@@ -170,17 +199,29 @@ const Auth: React.FunctionComponent = () => {
       <Styled.ModalActions>
         <Button
           type="text"
-          onClick={() => dispatch({ type: TOGGLE_REGISTER })}
-          icon={state.isRegistering ? <LoginOutlined /> : <UserAddOutlined />}>
+          onClick={() =>
+            dispatch({ type: TOGGLE_REGISTER })
+          }
+          icon={
+            state.isRegistering ? (
+              <LoginOutlined />
+            ) : (
+              <UserAddOutlined />
+            )
+          }
+        >
           {getActionText(!state.isRegistering)}
         </Button>
         <div>
-          <Button onClick={() => dispatch({ type: RESET })}>Cancel</Button>
+          <Button onClick={() => dispatch({ type: RESET })}>
+            Cancel
+          </Button>
           <Button
             loading={state.isLoading}
             type="primary"
             htmlType="submit"
-            form={state.isRegistering ? 'signup' : 'login'}>
+            form={state.isRegistering ? 'signup' : 'login'}
+          >
             {getActionText()}
           </Button>
         </div>
@@ -190,7 +231,10 @@ const Auth: React.FunctionComponent = () => {
 
   return (
     <Space>
-      <Button type="primary" onClick={() => dispatch({ type: TOGGLE_MODAL })}>
+      <Button
+        type="primary"
+        onClick={() => dispatch({ type: TOGGLE_MODAL })}
+      >
         Login or Sign Up
       </Button>
 
@@ -201,7 +245,8 @@ const Auth: React.FunctionComponent = () => {
         footer={renderModalFooter()}
         onCancel={() => dispatch({ type: TOGGLE_MODAL })}
         onOk={handleModalOk}
-        okText={getActionText()}>
+        okText={getActionText()}
+      >
         {renderForm()}
       </Modal>
     </Space>

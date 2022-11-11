@@ -4,5 +4,9 @@ module.exports = {
     es2021: true,
     node: true
   },
-  extends: ['eslint:recommended', 'google', 'plugin:prettier/recommended']
+  extends: [
+    'eslint:recommended',
+    'google',
+    'plugin:prettier/recommended'
+  ]
 }

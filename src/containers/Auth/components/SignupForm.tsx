@@ -12,7 +12,13 @@ const SignupForm = (props) => {
       <Form.Item
         name="email"
         label="Email"
-        rules={[{ required: true, message: 'Please enter your email' }]}>
+        rules={[
+          {
+            required: true,
+            message: 'Please enter your email'
+          }
+        ]}
+      >
         <Input type="email" name="email" />
       </Form.Item>
 
@@ -20,9 +26,17 @@ const SignupForm = (props) => {
         name="password"
         label="Password"
         rules={[
-          { required: true, message: 'Please enter a password' },
-          { min: 6, message: 'Password must be at least 6 characters' }
-        ]}>
+          {
+            required: true,
+            message: 'Please enter a password'
+          },
+          {
+            min: 6,
+            message:
+              'Password must be at least 6 characters'
+          }
+        ]}
+      >
         <Input.Password />
       </Form.Item>
 
@@ -31,14 +45,24 @@ const SignupForm = (props) => {
         name="passwordConfirm"
         dependencies={['password']}
         rules={[
-          { required: true, message: 'Please confirm your password' },
+          {
+            required: true,
+            message: 'Please confirm your password'
+          },
           ({ getFieldValue }) => ({
             validator(_, value) {
-              if (!value || getFieldValue('password') === value) return Promise.resolve()
-              return Promise.reject(new Error('Passwords do not match'))
+              if (
+                !value ||
+                getFieldValue('password') === value
+              )
+                return Promise.resolve()
+              return Promise.reject(
+                new Error('Passwords do not match')
+              )
             }
           })
-        ]}>
+        ]}
+      >
         <Input.Password />
       </Form.Item>
     </Form>

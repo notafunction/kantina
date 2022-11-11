@@ -1,31 +1,35 @@
 export type BoardPermissions =
-    'board:read'
+  | 'board:read'
   | 'board:edit'
   | 'board:create'
   | 'board.delete'
-  
+
 export type ListPermissions =
-    'list:read'
+  | 'list:read'
   | 'list:edit'
   | 'list:create'
   | 'list:delete'
 
 export type ItemPermissions =
-    'item:read'
+  | 'item:read'
   | 'item:edit'
   | 'item:create'
   | 'item:delete'
 
 export type MemberPermissions =
-    'member:read'
+  | 'member:read'
   | 'member:edit'
   | 'member:create'
   | 'member:delete'
 
-export type Permission = BoardPermissions | ListPermissions | ItemPermissions | MemberPermissions
+export type Permission =
+  | BoardPermissions
+  | ListPermissions
+  | ItemPermissions
+  | MemberPermissions
 
-export type UserPermissionRole = 
-    'viewer'
+export type UserPermissionRole =
+  | 'viewer'
   | 'editor'
   | 'admin'
 
@@ -72,6 +76,6 @@ export type UserProfile = {
   uid: string
   boards?: Membership[]
   displayName: string
-  email: string,
+  email: string
   photoURL: string
 }

@@ -1,4 +1,9 @@
-import { push, ref, update, remove } from 'firebase/database'
+import {
+  push,
+  ref,
+  update,
+  remove
+} from 'firebase/database'
 import { db } from '~/lib/firebase'
 import type { Board } from '@/types'
 
@@ -14,7 +19,9 @@ type BoardPayload = {
   color?: string
 }
 
-export const createBoard = async (payload: BoardPayload) => {
+export const createBoard = async (
+  payload: BoardPayload
+) => {
   const path = `boards`
   const _ref = await push(ref(db, path), payload)
 
@@ -25,7 +32,10 @@ export const createBoard = async (payload: BoardPayload) => {
   return _ref
 }
 
-export const updateBoard = async ({ board }: ReadUpdateDeleteParams, payload) => {
+export const updateBoard = async (
+  { board }: ReadUpdateDeleteParams,
+  payload
+) => {
   const path = `boards/${board.id}`
   const _ref = ref(db, path)
   await update(_ref, payload)
@@ -33,7 +43,9 @@ export const updateBoard = async ({ board }: ReadUpdateDeleteParams, payload) =>
   return _ref
 }
 
-export const deleteBoard = async ({ board }: ReadUpdateDeleteParams) => {
+export const deleteBoard = async ({
+  board
+}: ReadUpdateDeleteParams) => {
   const path = `boards/${board.id}`
   const _ref = ref(db, path)
   return await remove(_ref)
@@ -42,5 +54,5 @@ export const deleteBoard = async ({ board }: ReadUpdateDeleteParams) => {
 export default {
   createBoard,
   updateBoard,
-  deleteBoard,
+  deleteBoard
 }

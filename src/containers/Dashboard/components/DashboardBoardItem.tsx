@@ -23,7 +23,9 @@ type Props = {
   board: Board
 }
 
-const DashboardBoardItem: React.FunctionComponent<Props> = (props) => {
+const DashboardBoardItem: React.FunctionComponent<Props> = (
+  props
+) => {
   return (
     <Styled.Container backgroundColor={props.board.color}>
       <Styled.Title>{props.board.title}</Styled.Title>

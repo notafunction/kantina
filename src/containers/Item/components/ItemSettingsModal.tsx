@@ -1,7 +1,14 @@
 import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { WarningOutlined } from '@ant-design/icons'
-import { Button, Form, Input, message, Modal, Popconfirm } from 'antd'
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  Modal,
+  Popconfirm
+} from 'antd'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
@@ -17,7 +24,9 @@ type Props = {
   close: () => void
 }
 
-const ItemSettingsModal: React.FunctionComponent<Props> = (props) => {
+const ItemSettingsModal: React.FunctionComponent<Props> = (
+  props
+) => {
   const [form] = Form.useForm()
   const board: Board = useContext(BoardContext)
   const list: List = useContext(ListContext)
@@ -43,13 +52,29 @@ const ItemSettingsModal: React.FunctionComponent<Props> = (props) => {
   }
 
   return (
-    <Modal title="Edit Item" open={props.visible} onCancel={props.close} onOk={onSave}>
-      <Form layout="vertical" onFinish={onSave} form={form} preserve={false}>
+    <Modal
+      title="Edit Item"
+      open={props.visible}
+      onCancel={props.close}
+      onOk={onSave}
+    >
+      <Form
+        layout="vertical"
+        onFinish={onSave}
+        form={form}
+        preserve={false}
+      >
         <Form.Item
           initialValue={item.content}
           name="content"
           label="Content"
-          rules={[{ required: true, message: 'Content is required' }]}>
+          rules={[
+            {
+              required: true,
+              message: 'Content is required'
+            }
+          ]}
+        >
           <Input.TextArea>{item.content}</Input.TextArea>
         </Form.Item>
 
@@ -57,8 +82,13 @@ const ItemSettingsModal: React.FunctionComponent<Props> = (props) => {
           name="color"
           label="Color"
           initialValue={item.color}
-          getValueFromEvent={({ hex }) => hex}>
-          <CirclePicker width={null} colors={colorPickerColors} color={item.color} />
+          getValueFromEvent={({ hex }) => hex}
+        >
+          <CirclePicker
+            width={null}
+            colors={colorPickerColors}
+            color={item.color}
+          />
         </Form.Item>
 
         <Restricted to="item:delete">
@@ -68,7 +98,8 @@ const ItemSettingsModal: React.FunctionComponent<Props> = (props) => {
               okText="Yes"
               title="Are you sure?"
               okButtonProps={{ danger: true }}
-              icon={<WarningOutlined />}>
+              icon={<WarningOutlined />}
+            >
               <Button danger>Delete Item</Button>
             </Popconfirm>
           </FormDangerZone>

@@ -11,7 +11,9 @@ const SettingsDrawer = ({
   cancelButtonProps,
   ...props
 }) => {
-  const [viewportWidth, setViewportWidth] = React.useState(window.innerWidth)
+  const [viewportWidth, setViewportWidth] = React.useState(
+    window.innerWidth
+  )
 
   React.useEffect(() => {
     function handleResize() {
@@ -34,12 +36,17 @@ const SettingsDrawer = ({
           <Button onClick={close} {...cancelButtonProps}>
             {cancelButtonText || 'Cancel'}
           </Button>
-          <Button type="primary" onClick={onOk} {...okButtonProps}>
+          <Button
+            type="primary"
+            onClick={onOk}
+            {...okButtonProps}
+          >
             {okButtonText || 'Save'}
           </Button>
         </Space>
       }
-      {...props}>
+      {...props}
+    >
       {props.children}
     </Drawer>
   )
@@ -49,7 +56,10 @@ SettingsDrawer.propTypes = {
   title: PropTypes.string,
   visible: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
-  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  children: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.object
+  ]),
   onOk: PropTypes.func.isRequired,
   okButtonText: PropTypes.string,
   okButtonProps: PropTypes.object,

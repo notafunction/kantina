@@ -1,6 +1,16 @@
 import React from 'react'
-import { Modal, Form, Input, Select, Switch, message } from 'antd'
-import { LockOutlined, UnlockOutlined } from '@ant-design/icons'
+import {
+  Modal,
+  Form,
+  Input,
+  Select,
+  Switch,
+  message
+} from 'antd'
+import {
+  LockOutlined,
+  UnlockOutlined
+} from '@ant-design/icons'
 import { useDatabase, useUser } from 'reactfire'
 import { ref, set } from 'firebase/database'
 import { CirclePicker } from 'react-color'
@@ -12,7 +22,9 @@ type Props = {
   close: () => void
 }
 
-const CreateBoardModal: React.FunctionComponent<Props> = (props) => {
+const CreateBoardModal: React.FunctionComponent<Props> = (
+  props
+) => {
   const db = useDatabase()
   const user = useUser()
   const [form] = Form.useForm()
@@ -29,9 +41,15 @@ const CreateBoardModal: React.FunctionComponent<Props> = (props) => {
         }
       })
 
-      set(ref(db, `users/${user.data.uid}/boards/${boardRef.key}`), {
-        role: 'admin'
-      })
+      set(
+        ref(
+          db,
+          `users/${user.data.uid}/boards/${boardRef.key}`
+        ),
+        {
+          role: 'admin'
+        }
+      )
     } catch (error) {
       message.error(error)
     }
@@ -50,25 +68,55 @@ const CreateBoardModal: React.FunctionComponent<Props> = (props) => {
   }
 
   return (
-    <Modal key="2" title="Create Board" open={props.visible} onCancel={onCancel} onOk={onOk}>
-      <Form layout="vertical" requiredMark={false} onFinish={onOk} form={form}>
+    <Modal
+      key="2"
+      title="Create Board"
+      open={props.visible}
+      onCancel={onCancel}
+      onOk={onOk}
+    >
+      <Form
+        layout="vertical"
+        requiredMark={false}
+        onFinish={onOk}
+        form={form}
+      >
         <Form.Item
           label="Title"
           name="title"
-          rules={[{ required: true, message: 'Please enter a title' }]}>
+          rules={[
+            {
+              required: true,
+              message: 'Please enter a title'
+            }
+          ]}
+        >
           <Input />
         </Form.Item>
         <Form.Item
           name="color"
           label="Color"
           initialValue="#eeeeee"
-          getValueFromEvent={({ hex }) => hex}>
-          <CirclePicker width={null} colors={colorPickerColors} color="#eeeeee" />
+          getValueFromEvent={({ hex }) => hex}
+        >
+          <CirclePicker
+            width={null}
+            colors={colorPickerColors}
+            color="#eeeeee"
+          />
         </Form.Item>
-        <Form.Item name="public" label="Type" initialValue={true}>
+        <Form.Item
+          name="public"
+          label="Type"
+          initialValue={true}
+        >
           <Select>
-            <Select.Option value={false}>Private</Select.Option>
-            <Select.Option value={true}>Public</Select.Option>
+            <Select.Option value={false}>
+              Private
+            </Select.Option>
+            <Select.Option value={true}>
+              Public
+            </Select.Option>
           </Select>
         </Form.Item>
 
@@ -77,8 +125,12 @@ const CreateBoardModal: React.FunctionComponent<Props> = (props) => {
           label="Lock"
           help="Allow changes only by board admins"
           valuePropName="checked"
-          initialValue={false}>
-          <Switch checkedChildren={<LockOutlined />} unCheckedChildren={<UnlockOutlined />} />
+          initialValue={false}
+        >
+          <Switch
+            checkedChildren={<LockOutlined />}
+            unCheckedChildren={<UnlockOutlined />}
+          />
         </Form.Item>
       </Form>
     </Modal>

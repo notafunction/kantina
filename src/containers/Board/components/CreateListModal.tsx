@@ -11,17 +11,22 @@ type Props = {
   close: () => void
 }
 
-const CreateListModal: React.FunctionComponent<Props> = (props) => {
+const CreateListModal: React.FunctionComponent<Props> = (
+  props
+) => {
   const user = useUser()
   const [form] = Form.useForm()
   const board = useContext(BoardContext)
 
   const onCreateList = async (values) => {
     try {
-      await createList({ board }, {
-        ...values,
-        createdBy: user.data.uid,
-      })
+      await createList(
+        { board },
+        {
+          ...values,
+          createdBy: user.data.uid
+        }
+      )
     } catch (error) {
       message.error(error.code)
       console.log(error)
@@ -41,20 +46,36 @@ const CreateListModal: React.FunctionComponent<Props> = (props) => {
   }
 
   return (
-    <Modal title="Add New List" open={props.visible} onOk={onOk} onCancel={onCancel}>
+    <Modal
+      title="Add New List"
+      open={props.visible}
+      onOk={onOk}
+      onCancel={onCancel}
+    >
       <Form layout="vertical" onFinish={onOk} form={form}>
         <Form.Item
           name="title"
           label="Title"
-          rules={[{ required: true, message: 'Please enter a title' }]}>
+          rules={[
+            {
+              required: true,
+              message: 'Please enter a title'
+            }
+          ]}
+        >
           <Input />
         </Form.Item>
         <Form.Item
           name="color"
           label="Color"
           initialValue={'#eeeeee'}
-          getValueFromEvent={({ hex }) => hex}>
-          <CirclePicker width={null} colors={colorPickerColors} color="#eeeeee" />
+          getValueFromEvent={({ hex }) => hex}
+        >
+          <CirclePicker
+            width={null}
+            colors={colorPickerColors}
+            color="#eeeeee"
+          />
         </Form.Item>
       </Form>
     </Modal>

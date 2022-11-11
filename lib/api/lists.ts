@@ -1,9 +1,14 @@
-import { push, ref, update, remove } from 'firebase/database'
+import {
+  push,
+  ref,
+  update,
+  remove
+} from 'firebase/database'
 import { db } from '~/lib/firebase'
 import type { Board, List } from '@/types'
 
 type CreateParams = {
-  board: Board,
+  board: Board
 }
 
 type ReadUpdateDeleteParams = {
@@ -17,12 +22,17 @@ type ListPayload = {
   color?: string
 }
 
-export const createList = async ({ board }: CreateParams, payload: ListPayload) => {
+export const createList = async (
+  { board }: CreateParams,
+  payload: ListPayload
+) => {
   const path = `boards/${board.id}/lists`
   const _ref = await push(ref(db, path), {
     ...payload,
     board: board.id,
-    position: board.lists ? Object.keys(board.lists).length : 0
+    position: board.lists
+      ? Object.keys(board.lists).length
+      : 0
   })
 
   await update(_ref, {
@@ -32,7 +42,10 @@ export const createList = async ({ board }: CreateParams, payload: ListPayload) 
   return _ref
 }
 
-export const updateList = async ({ board, list }: ReadUpdateDeleteParams, payload) => {
+export const updateList = async (
+  { board, list }: ReadUpdateDeleteParams,
+  payload
+) => {
   const path = `boards/${board.id}/lists/${list.id}`
   const _ref = ref(db, path)
   await update(_ref, payload)
@@ -40,7 +53,10 @@ export const updateList = async ({ board, list }: ReadUpdateDeleteParams, payloa
   return _ref
 }
 
-export const deleteList = async ({ board, list }: ReadUpdateDeleteParams) => {
+export const deleteList = async ({
+  board,
+  list
+}: ReadUpdateDeleteParams) => {
   const path = `boards/${board.id}/lists/${list.id}`
   const _ref = ref(db, path)
   return await remove(_ref)
@@ -49,5 +65,5 @@ export const deleteList = async ({ board, list }: ReadUpdateDeleteParams) => {
 export default {
   createList,
   updateList,
-  deleteList,
+  deleteList
 }

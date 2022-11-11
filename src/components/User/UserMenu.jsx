@@ -1,15 +1,25 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Avatar, Button, Dropdown, Menu, Space } from 'antd'
-import { LogoutOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons'
+import {
+  LogoutOutlined,
+  PlusOutlined,
+  SettingOutlined
+} from '@ant-design/icons'
 import { useAuth } from 'reactfire'
 import UserSettingsModal from '../../containers/User/UserSettingsModal'
 import CreateBoardModal from '../../containers/Board/components/CreateBoardModal'
 function UserMenu(props) {
   const auth = useAuth()
 
-  const [userSettingsModalVisible, setUserSettingsModalVisible] = useState(false)
-  const [boardCreateModalVisible, setBoardCreateModalVisible] = useState(false)
+  const [
+    userSettingsModalVisible,
+    setUserSettingsModalVisible
+  ] = useState(false)
+  const [
+    boardCreateModalVisible,
+    setBoardCreateModalVisible
+  ] = useState(false)
 
   const handleMenuClick = (event) => {
     switch (event.key) {
@@ -41,7 +51,8 @@ function UserMenu(props) {
       <Button
         icon={<PlusOutlined />}
         onClick={() => setBoardCreateModalVisible(true)}
-        type="primary">
+        type="primary"
+      >
         Create Board
       </Button>
 

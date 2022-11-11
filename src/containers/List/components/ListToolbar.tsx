@@ -1,19 +1,30 @@
 import React, { useState } from 'react'
 import { Button, Tooltip } from 'antd'
-import { SettingOutlined, PlusOutlined } from '@ant-design/icons'
+import {
+  SettingOutlined,
+  PlusOutlined
+} from '@ant-design/icons'
 import { useSigninCheck } from 'reactfire'
 import ListSettingsModal from './ListSettingsModal'
 import CreateItemModal from './CreateItemModal'
 import Restricted from '@/containers/Permission/Restricted'
 
 type Props = {
-  showItemCreate: boolean
+  showItemCreate?: boolean
 }
 
-const ListToolbar: React.FunctionComponent<Props> = (props) => {
+const ListToolbar: React.FunctionComponent<Props> = (
+  props
+) => {
   const auth = useSigninCheck()
-  const [isListSettingsModalVisible, setIsListSettingsModalVisible] = useState(false)
-  const [isCreateItemModalVisible, setIsCreateItemModalVisible] = useState(false)
+  const [
+    isListSettingsModalVisible,
+    setIsListSettingsModalVisible
+  ] = useState(false)
+  const [
+    isCreateItemModalVisible,
+    setIsCreateItemModalVisible
+  ] = useState(false)
 
   if (auth.status === 'loading') {
     return null
@@ -25,15 +36,16 @@ const ListToolbar: React.FunctionComponent<Props> = (props) => {
 
   return (
     <div className="flex items-center gap-1">
-      {
-        props.showItemCreate && 
+      {props.showItemCreate && (
         <Restricted to="item:create">
           <Tooltip title="Add Item">
             <Button
               size="small"
               type="text"
               icon={<PlusOutlined />}
-              onClick={() => setIsCreateItemModalVisible(true)}
+              onClick={() =>
+                setIsCreateItemModalVisible(true)
+              }
             />
           </Tooltip>
 
@@ -42,15 +54,18 @@ const ListToolbar: React.FunctionComponent<Props> = (props) => {
             close={() => setIsCreateItemModalVisible(false)}
           />
         </Restricted>
-      }
+      )}
 
       <Restricted to="list:edit">
         <Tooltip title="Manage List">
           <Button
             size="small"
             type="text"
-            onClick={() => setIsListSettingsModalVisible(true)}
-            icon={<SettingOutlined />}></Button>
+            onClick={() =>
+              setIsListSettingsModalVisible(true)
+            }
+            icon={<SettingOutlined />}
+          ></Button>
         </Tooltip>
 
         <ListSettingsModal

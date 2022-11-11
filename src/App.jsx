@@ -5,8 +5,12 @@ import RequireAccess from './containers/RequireAccess'
 import { useGoogleAnalytics } from './hooks'
 import './App.css'
 
-const Dashboard = React.lazy(() => import('./containers/Dashboard/Dashboard'))
-const Board = React.lazy(() => import('./containers/Board/Board'))
+const Dashboard = React.lazy(() =>
+  import('./containers/Dashboard/Dashboard')
+)
+const Board = React.lazy(() =>
+  import('./containers/Board/Board')
+)
 
 const App = () => {
   useGoogleAnalytics()

@@ -6,13 +6,20 @@ import { useSigninCheck } from 'reactfire'
 
 const CreateListColumn: React.FunctionComponent = () => {
   const auth = useSigninCheck()
-  const [isCreateListModalVisible, setIsCreateListModalVisible] = useState(false)
+  const [
+    isCreateListModalVisible,
+    setIsCreateListModalVisible
+  ] = useState(false)
 
-  if (auth.status === 'loading' || !auth.data.signedIn) return null
+  if (auth.status === 'loading' || !auth.data.signedIn)
+    return null
 
   return (
     <Styled.ListWrapper width="auto">
-      <Button type="ghost" onClick={() => setIsCreateListModalVisible(true)}>
+      <Button
+        type="ghost"
+        onClick={() => setIsCreateListModalVisible(true)}
+      >
         Add List
       </Button>
 

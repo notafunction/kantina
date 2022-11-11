@@ -1,9 +1,22 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, {
+  useContext,
+  useState,
+  useEffect
+} from 'react'
 import { useNavigate } from 'react-router'
 import { get, ref, remove } from 'firebase/database'
 import { useDatabase, useUser } from 'reactfire'
 import { BoardContext } from './BoardContext'
-import { Button, Form, Input, Switch, message, Popconfirm, Divider, Modal } from 'antd'
+import {
+  Button,
+  Form,
+  Input,
+  Switch,
+  message,
+  Popconfirm,
+  Divider,
+  Modal
+} from 'antd'
 import {
   WarningOutlined,
   CheckOutlined,
@@ -23,7 +36,9 @@ type Props = {
   close: () => void
 }
 
-const BoardSettingsModal: React.FunctionComponent<Props> = (props) => {
+const BoardSettingsModal: React.FunctionComponent<Props> = (
+  props
+) => {
   const db = useDatabase()
   const user = useUser()
   const navigate = useNavigate()
@@ -31,7 +46,10 @@ const BoardSettingsModal: React.FunctionComponent<Props> = (props) => {
   const board = useContext(BoardContext)
 
   const [members, setMembers] = useState<UserProfile[]>([])
-  const [isAddMemberModalVisible, setIsAddMemberModalVisible] = useState(false)
+  const [
+    isAddMemberModalVisible,
+    setIsAddMemberModalVisible
+  ] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,7 +90,9 @@ const BoardSettingsModal: React.FunctionComponent<Props> = (props) => {
     try {
       navigate('/')
       deleteBoard({ board })
-      remove(ref(db, `users/${user.data.uid}/boards/${board.id}`))
+      remove(
+        ref(db, `users/${user.data.uid}/boards/${board.id}`)
+      )
       props.close()
     } catch (error) {
       message.error(error.message)
@@ -84,28 +104,46 @@ const BoardSettingsModal: React.FunctionComponent<Props> = (props) => {
       title={`${board.title} Settings`}
       open={props.visible}
       onCancel={props.close}
-      onOk={onSave}>
-      <Form layout="vertical" onFinish={onSave} form={form} preserve={false}>
+      onOk={onSave}
+    >
+      <Form
+        layout="vertical"
+        onFinish={onSave}
+        form={form}
+        preserve={false}
+      >
         <Form.Item
           initialValue={board.title}
           name="title"
           label="Title"
-          rules={[{ required: true, message: 'A title is required.' }]}>
+          rules={[
+            {
+              required: true,
+              message: 'A title is required.'
+            }
+          ]}
+        >
           <Input />
         </Form.Item>
         <Form.Item
           name="color"
           label="Color"
           initialValue={board.color}
-          getValueFromEvent={({ hex }) => hex}>
-          <CirclePicker width={null} colors={colorPickerColors} color={board.color} />
+          getValueFromEvent={({ hex }) => hex}
+        >
+          <CirclePicker
+            width={null}
+            colors={colorPickerColors}
+            color={board.color}
+          />
         </Form.Item>
         <Form.Item
           name="public"
           label="Public Board"
           help="Anyone with URL can view and edit"
           valuePropName="checked"
-          initialValue={board.public}>
+          initialValue={board.public}
+        >
           <Switch
             checkedChildren={<CheckOutlined />}
             unCheckedChildren={<CloseOutlined />}
@@ -120,17 +158,27 @@ const BoardSettingsModal: React.FunctionComponent<Props> = (props) => {
 
           <div className="flex flex-col gap-4">
             {members.map((member) => (
-              <BoardSettingsMember member={member} key={member.uid} />
+              <BoardSettingsMember
+                member={member}
+                key={member.uid}
+              />
             ))}
 
             <Restricted to="member:create">
-              <Button className="mt-4 self-start" onClick={() => setIsAddMemberModalVisible(true)}>
+              <Button
+                className="mt-4 self-start"
+                onClick={() =>
+                  setIsAddMemberModalVisible(true)
+                }
+              >
                 Add Member
               </Button>
 
               <AddMemberModal
                 visible={isAddMemberModalVisible}
-                close={() => setIsAddMemberModalVisible(false)}
+                close={() =>
+                  setIsAddMemberModalVisible(false)
+                }
               />
             </Restricted>
           </div>
@@ -143,7 +191,8 @@ const BoardSettingsModal: React.FunctionComponent<Props> = (props) => {
               okText="Yes"
               title="Are you sure? This cannot be undone"
               okButtonProps={{ danger: true }}
-              icon={<WarningOutlined />}>
+              icon={<WarningOutlined />}
+            >
               <Button danger>Delete Board</Button>
             </Popconfirm>
           </FormDangerZone>

@@ -11,15 +11,20 @@ import { List } from '@/types'
 import usePermission from '@/hooks/usePermission'
 
 type Props = {
-  list: List,
+  list: List
 }
 
-const ListComponent: React.FunctionComponent<Props> = (props) => {
+const ListComponent: React.FunctionComponent<Props> = (
+  props
+) => {
   const canEditLists = usePermission('list:edit')
 
   const renderItems = () => {
     if (props.list.items) {
-      return _sortBy(props.list.items, (o) => o.position).map((item, index) => (
+      return _sortBy(
+        props.list.items,
+        (o) => o.position
+      ).map((item, index) => (
         <Item item={item} key={item.id} index={index} />
       ))
     }
@@ -27,29 +32,43 @@ const ListComponent: React.FunctionComponent<Props> = (props) => {
 
   return (
     <ListContext.Provider value={props.list}>
-      <Draggable key={props.list.id} index={props.list.position} draggableId={props.list.id} isDragDisabled={!canEditLists}>
-          {(draggableProvided, _draggableSnapshot) => (
-            <Styled.ListWrapper
-              ref={draggableProvided.innerRef}
-              {...draggableProvided.draggableProps}>
-              <Droppable droppableId={props.list.id} type="ITEM">
-                {(provided, _snapshot) => (
-                  <Styled.Content backgroundColor={props.list.color}>
-                    <ListHeader dragHandleProps={draggableProvided.dragHandleProps} />
-                    <Styled.Dropzone ref={provided.innerRef}>
-                      {renderItems()}
-                      {provided.placeholder}
-                    </Styled.Dropzone>
-                    <Restricted to="item:create">
-                      <ListFooter />
-                    </Restricted>
-                  </Styled.Content>
-                )}
-              </Droppable>
-            </Styled.ListWrapper>
-          )}
-        </Draggable>
-      
+      <Draggable
+        key={props.list.id}
+        index={props.list.position}
+        draggableId={props.list.id}
+        isDragDisabled={!canEditLists}
+      >
+        {(draggableProvided, _draggableSnapshot) => (
+          <Styled.ListWrapper
+            ref={draggableProvided.innerRef}
+            {...draggableProvided.draggableProps}
+          >
+            <Droppable
+              droppableId={props.list.id}
+              type="ITEM"
+            >
+              {(provided, _snapshot) => (
+                <Styled.Content
+                  backgroundColor={props.list.color}
+                >
+                  <ListHeader
+                    dragHandleProps={
+                      draggableProvided.dragHandleProps
+                    }
+                  />
+                  <Styled.Dropzone ref={provided.innerRef}>
+                    {renderItems()}
+                    {provided.placeholder}
+                  </Styled.Dropzone>
+                  <Restricted to="item:create">
+                    <ListFooter />
+                  </Restricted>
+                </Styled.Content>
+              )}
+            </Droppable>
+          </Styled.ListWrapper>
+        )}
+      </Draggable>
     </ListContext.Provider>
   )
 }

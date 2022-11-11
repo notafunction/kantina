@@ -1,6 +1,9 @@
 import React, { useContext, useMemo } from 'react'
 import { Avatar, Dropdown, Menu, Tag } from 'antd'
-import { DeleteOutlined, SettingOutlined } from '@ant-design/icons'
+import {
+  DeleteOutlined,
+  SettingOutlined
+} from '@ant-design/icons'
 import { BoardContext } from './BoardContext'
 import Restricted from '@/containers/Permission/Restricted'
 import { ref, set } from 'firebase/database'
@@ -11,13 +14,27 @@ type Props = {
   member: UserProfile
 }
 
-const BoardSettingsMember: React.FunctionComponent<Props> = (props) => {
+const BoardSettingsMember: React.FunctionComponent<
+  Props
+> = (props) => {
   const db = useDatabase()
   const board = useContext(BoardContext)
 
   const setMemberRole = (role: UserPermissionRole) => {
-    set(ref(db, `boards/${board.id}/members/${props.member.uid}/role`), role)
-    set(ref(db, `users/${props.member.uid}/boards/${board.id}/role`), role)
+    set(
+      ref(
+        db,
+        `boards/${board.id}/members/${props.member.uid}/role`
+      ),
+      role
+    )
+    set(
+      ref(
+        db,
+        `users/${props.member.uid}/boards/${board.id}/role`
+      ),
+      role
+    )
   }
 
   const memberRole: UserPermissionRole = useMemo(() => {
@@ -25,7 +42,9 @@ const BoardSettingsMember: React.FunctionComponent<Props> = (props) => {
   }, [props.member])
 
   const userPermissionRoles: Array<UserPermissionRole> = [
-    'viewer', 'editor', 'admin'
+    'viewer',
+    'editor',
+    'admin'
   ]
 
   const renderMemberTags = () => {
@@ -48,16 +67,25 @@ const BoardSettingsMember: React.FunctionComponent<Props> = (props) => {
     <Menu>
       <Menu.SubMenu title="Set Role" key="role">
         {userPermissionRoles
-          .filter((role) => role.toLowerCase() !== memberRole)
+          .filter(
+            (role) => role.toLowerCase() !== memberRole
+          )
           .map((role) => (
-            <Menu.Item key={`role:${role}`} onClick={() => setMemberRole(role)}>
+            <Menu.Item
+              key={`role:${role}`}
+              onClick={() => setMemberRole(role)}
+            >
               {role}
             </Menu.Item>
           ))}
       </Menu.SubMenu>
 
       <Restricted to="member:delete">
-        <Menu.Item danger icon={<DeleteOutlined />} key="remove">
+        <Menu.Item
+          danger
+          icon={<DeleteOutlined />}
+          key="remove"
+        >
           Remove
         </Menu.Item>
       </Restricted>
@@ -65,7 +93,10 @@ const BoardSettingsMember: React.FunctionComponent<Props> = (props) => {
   )
 
   return (
-    <div key={props.member.uid} className="flex items-start gap-2">
+    <div
+      key={props.member.uid}
+      className="flex items-start gap-2"
+    >
       <div className="flex items-center gap-2">
         <Avatar src={props.member.photoURL ?? null}>
           {!props.member.photoURL

@@ -1,4 +1,9 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import Styled from './Styled'
 import { Button, Input, Tooltip } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
@@ -16,7 +21,9 @@ const ListFooter = (props) => {
   const [isAdding, setIsAdding] = useState(false)
   const [newItemContent, setNewItemContent] = useState('')
 
-  useOnClickOutside(clickOutsideRef, () => setIsAdding(false))
+  useOnClickOutside(clickOutsideRef, () =>
+    setIsAdding(false)
+  )
 
   useEffect(() => {
     const handleEsc = (event) => {
@@ -27,34 +34,45 @@ const ListFooter = (props) => {
 
     window.addEventListener('keydown', handleEsc)
 
-    return () => window.removeEventListener('keydown', handleEsc)
+    return () =>
+      window.removeEventListener('keydown', handleEsc)
   })
 
   const addItem = async () => {
-    await createItem({ board, list }, {
-      content: newItemContent,
-      createdBy: user.uid,
-    })
+    await createItem(
+      { board, list },
+      {
+        content: newItemContent,
+        createdBy: user.uid
+      }
+    )
 
     setNewItemContent('')
   }
 
   return (
-    <Styled.Footer className="justify-end flex-wrap" ref={clickOutsideRef}>
-      {
-        isAdding && 
+    <Styled.Footer
+      className="justify-end flex-wrap"
+      ref={clickOutsideRef}
+    >
+      {isAdding && (
         <Input
           autoFocus
           className="basis-full"
           value={newItemContent}
-          onInput={(event) => setNewItemContent(event.target.value)}
+          onInput={(event) =>
+            setNewItemContent(event.target.value)
+          }
           onPressEnter={addItem}
-          
         />
-      }
+      )}
 
       <Tooltip title="Add Item">
-        <Button type="text" icon={<PlusOutlined />} onClick={() => setIsAdding(true)} />
+        <Button
+          type="text"
+          icon={<PlusOutlined />}
+          onClick={() => setIsAdding(true)}
+        />
       </Tooltip>
     </Styled.Footer>
   )

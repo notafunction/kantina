@@ -16,7 +16,9 @@ const UserProfileProvider = (props) => {
       }
 
       const fetchData = async () => {
-        const snap = await get(ref(db, `users/${user.data.uid}`))
+        const snap = await get(
+          ref(db, `users/${user.data.uid}`)
+        )
 
         if (snap.exists()) {
           setProfile(snap.val())
@@ -27,11 +29,18 @@ const UserProfileProvider = (props) => {
     }
   }, [user.data])
 
-  return <UserProfileContext.Provider value={profile}>{props.children}</UserProfileContext.Provider>
+  return (
+    <UserProfileContext.Provider value={profile}>
+      {props.children}
+    </UserProfileContext.Provider>
+  )
 }
 
 UserProfileProvider.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  children: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array
+  ])
 }
 
 export default UserProfileProvider

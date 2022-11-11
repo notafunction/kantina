@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext } from 'react'
 import { Permission } from '@/types'
 
 type PermissionContextType = {
@@ -9,6 +9,7 @@ const defaultBehavior: PermissionContextType = {
   isAllowedTo: () => false
 }
 
-const PermissionContext = createContext<PermissionContextType>(defaultBehavior)
+const PermissionContext =
+  createContext<PermissionContextType>(defaultBehavior)
 
 export default PermissionContext

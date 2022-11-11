@@ -1,13 +1,18 @@
 import React from 'react'
 import { Modal, Form, Input, message } from 'antd'
-import { sendPasswordResetEmail, getAuth } from 'firebase/auth'
+import {
+  sendPasswordResetEmail,
+  getAuth
+} from 'firebase/auth'
 
 type Props = {
   visible: boolean
   close: () => void
 }
 
-const PasswordResetModal: React.FunctionComponent<Props> = (props) => {
+const PasswordResetModal: React.FunctionComponent<Props> = (
+  props
+) => {
   const [form] = Form.useForm()
   const auth = getAuth()
 
@@ -16,7 +21,9 @@ const PasswordResetModal: React.FunctionComponent<Props> = (props) => {
 
     sendPasswordResetEmail(auth, email)
 
-    message.success('If the account exists, a password reset email has been sent')
+    message.success(
+      'If the account exists, a password reset email has been sent'
+    )
     props.close()
   }
 
@@ -28,24 +35,30 @@ const PasswordResetModal: React.FunctionComponent<Props> = (props) => {
       title="Reset Password"
       onCancel={props.close}
       onOk={handleReset}
-      okText="Send Reset">
+      okText="Send Reset"
+    >
       <Form
         onFinish={handleReset}
         form={form}
         colon={false}
         layout="vertical"
         requiredMark={false}
-        preserve={false}>
+        preserve={false}
+      >
         <Form.Item
           name="email"
           label="Email Address"
           rules={[
-            { required: true, message: "You'll need to enter your email" },
+            {
+              required: true,
+              message: "You'll need to enter your email"
+            },
             {
               type: 'email',
               message: 'Please enter a valid email address'
             }
-          ]}>
+          ]}
+        >
           <Input />
         </Form.Item>
       </Form>

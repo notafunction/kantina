@@ -8,16 +8,18 @@ type Props = {
   children: React.ReactNode
 }
 
-const Restricted: React.FunctionComponent<Props> = ({to, fallback, children}) => {
+const Restricted: React.FunctionComponent<Props> = ({
+  to,
+  fallback,
+  children
+}) => {
   const allowed = usePermission(to)
 
   if (allowed) {
-    return <>
-      { children }
-    </>
+    return <>{children}</>
   }
 
-  return <>{ fallback }</>
+  return <>{fallback}</>
 }
 
 export default Restricted

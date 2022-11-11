@@ -1,11 +1,26 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Upload, Form, Input, message, Spin, Image, Modal } from 'antd'
+import {
+  Upload,
+  Form,
+  Input,
+  message,
+  Spin,
+  Image,
+  Modal
+} from 'antd'
 import SettingsDrawer from '../../components/SettingsDrawer'
 import styled from 'styled-components'
 import { useDatabase, useStorage, useUser } from 'reactfire'
-import { uploadBytes, ref as storageRef, getDownloadURL } from 'firebase/storage'
-import { update, ref as databaseRef } from 'firebase/database'
+import {
+  uploadBytes,
+  ref as storageRef,
+  getDownloadURL
+} from 'firebase/storage'
+import {
+  update,
+  ref as databaseRef
+} from 'firebase/database'
 import { updateProfile } from 'firebase/auth'
 
 const StyledUpload = styled(Upload)`
@@ -24,7 +39,9 @@ const StyledUpload = styled(Upload)`
 
 const getBase64 = (image, callback) => {
   const reader = new FileReader()
-  reader.addEventListener('load', () => callback(reader.result))
+  reader.addEventListener('load', () =>
+    callback(reader.result)
+  )
   reader.readAsDataURL(image)
 }
 
@@ -34,7 +51,8 @@ const UserSettingsModal = (props) => {
   const storage = useStorage()
 
   const [avatarFileList, setAvatarFileList] = useState([])
-  const [avatarPreviewUrl, setAvatarPreviewUrl] = useState(null)
+  const [avatarPreviewUrl, setAvatarPreviewUrl] =
+    useState(null)
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
 
@@ -54,7 +72,10 @@ const UserSettingsModal = (props) => {
   const uploadAndGetAvatarUrl = async () => {
     try {
       const result = await uploadBytes(
-        storageRef(storage, `userAvatars/${props.user.uid}`),
+        storageRef(
+          storage,
+          `userAvatars/${props.user.uid}`
+        ),
         avatarFileList[0]
       )
       return await getDownloadURL(result.ref)
@@ -64,7 +85,8 @@ const UserSettingsModal = (props) => {
   }
 
   const onSave = async () => {
-    const { avatar: _avatar, ...values } = await form.validateFields()
+    const { avatar: _avatar, ...values } =
+      await form.validateFields()
     try {
       const payload = values
 
@@ -73,7 +95,10 @@ const UserSettingsModal = (props) => {
       }
 
       await Promise.all([
-        update(databaseRef(db, `users/${props.user.uid}`), payload),
+        update(
+          databaseRef(db, `users/${props.user.uid}`),
+          payload
+        ),
         updateProfile(props.user, payload)
       ])
 
@@ -94,7 +119,12 @@ const UserSettingsModal = (props) => {
   if (status === 'loading') return <Spin />
 
   return (
-    <Modal title="User Settings" onOk={onSave} open={props.visible} onCancel={onClose}>
+    <Modal
+      title="User Settings"
+      onOk={onSave}
+      open={props.visible}
+      onCancel={onClose}
+    >
       <Form layout="vertical" form={form} onFinish={onSave}>
         <Form.Item name="avatar" label="Avatar">
           <StyledUpload
@@ -103,7 +133,8 @@ const UserSettingsModal = (props) => {
             showUploadList={false}
             beforeUpload={beforeAvatarUpload}
             fileList={avatarFileList}
-            maxCount={1}>
+            maxCount={1}
+          >
             {avatarPreviewUrl ? (
               <img src={avatarPreviewUrl} />
             ) : (
@@ -120,7 +151,13 @@ const UserSettingsModal = (props) => {
           name="displayName"
           label="Name"
           initialValue={user.displayName}
-          rules={[{ required: true, message: 'Your name is required' }]}>
+          rules={[
+            {
+              required: true,
+              message: 'Your name is required'
+            }
+          ]}
+        >
           <Input />
         </Form.Item>
       </Form>

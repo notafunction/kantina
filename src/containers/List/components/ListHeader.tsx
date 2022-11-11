@@ -14,7 +14,9 @@ type Props = {
   dragHandleProps: DraggableProvidedDragHandleProps
 }
 
-const ListHeader: React.FunctionComponent<Props> = (props) => {
+const ListHeader: React.FunctionComponent<Props> = (
+  props
+) => {
   const [isEditing, setIsEditing] = useState(false)
   const board = useContext(BoardContext)
   const list = useContext(ListContext)
@@ -31,7 +33,13 @@ const ListHeader: React.FunctionComponent<Props> = (props) => {
     setIsEditing(false)
 
     if (title !== list.title) {
-      set(ref(db, `boards/${board.id}/lists/${list.id}/title`), title)
+      set(
+        ref(
+          db,
+          `boards/${board.id}/lists/${list.id}/title`
+        ),
+        title
+      )
     }
   }
 
@@ -41,12 +49,14 @@ const ListHeader: React.FunctionComponent<Props> = (props) => {
     }
   })
 
-
   return (
-    <Styled.Header ref={clickOutsideRef} onDoubleClick={startEditing}>
-      {
-        canEdit && isEditing ?
-        <Input autoFocus={true}
+    <Styled.Header
+      ref={clickOutsideRef}
+      onDoubleClick={startEditing}
+    >
+      {canEdit && isEditing ? (
+        <Input
+          autoFocus={true}
           className="p-0 font-semibold text-lg"
           onInput={(event) => setTitle(event.target.value)}
           onPressEnter={stopEditing}
@@ -59,8 +69,9 @@ const ListHeader: React.FunctionComponent<Props> = (props) => {
             event.target.value = value
           }}
         />
-        : <h3 {...props.dragHandleProps}>{title}</h3>
-      }
+      ) : (
+        <h3 {...props.dragHandleProps}>{title}</h3>
+      )}
       <ListToolbar />
     </Styled.Header>
   )

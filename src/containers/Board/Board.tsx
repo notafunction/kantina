@@ -1,9 +1,24 @@
 import React, { useEffect, useState } from 'react'
-import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd'
+import {
+  Droppable,
+  Draggable,
+  DragDropContext
+} from 'react-beautiful-dnd'
 import { useParams, useNavigate } from 'react-router'
-import { ObservableStatus, useDatabase, useDatabaseObjectData, useSigninCheck } from 'reactfire'
+import {
+  ObservableStatus,
+  useDatabase,
+  useDatabaseObjectData,
+  useSigninCheck
+} from 'reactfire'
 import { ref, set } from 'firebase/database'
-import { Button, Result, PageHeader, Spin, message } from 'antd'
+import {
+  Button,
+  Result,
+  PageHeader,
+  Spin,
+  message
+} from 'antd'
 import Styled from './components/Styled'
 import ListComponent from '../List/List'
 import { BoardContext } from './components/BoardContext'
@@ -14,6 +29,7 @@ import Restricted from '@/containers/Permission/Restricted'
 import { Board, UserPermissionRole } from '@/types'
 import { handleDragEvent, sortByPosition } from './utils'
 import { updateBoard } from '~/lib/api/boards'
+import BoardHeader from './components/BoardHeader'
 
 const BoardComponent: React.FunctionComponent = () => {
   const navigate = useNavigate()
@@ -21,12 +37,17 @@ const BoardComponent: React.FunctionComponent = () => {
   const db = useDatabase()
   const auth = useSigninCheck()
 
-  const board: ObservableStatus<Board> = useDatabaseObjectData(ref(db, `boards/${params.boardId}`), {
-    idField: 'id',
-  })
+  const board: ObservableStatus<Board> =
+    useDatabaseObjectData(
+      ref(db, `boards/${params.boardId}`),
+      {
+        idField: 'id'
+      }
+    )
 
   const [state, setState] = useState<Board>(board.data)
-  const [userRole, setUserRole] = useState<UserPermissionRole>(null)
+  const [userRole, setUserRole] =
+    useState<UserPermissionRole>(null)
 
   if (board.status === 'loading') return <Spin />
 
@@ -37,7 +58,10 @@ const BoardComponent: React.FunctionComponent = () => {
         title="404"
         subTitle="This isn't the board you're looking for"
         extra={
-          <Button type="primary" onClick={() => navigate('/')}>
+          <Button
+            type="primary"
+            onClick={() => navigate('/')}
+          >
             Back Home
           </Button>
         }
@@ -56,8 +80,14 @@ const BoardComponent: React.FunctionComponent = () => {
   useEffect(() => {
     if (auth.status === 'success') {
       if (auth.data.signedIn) {
-        if (Object.keys(board.data.members).includes(auth.data.user.uid)) {
-          return setUserRole(board.data.members[auth.data.user.uid].role)
+        if (
+          Object.keys(board.data.members).includes(
+            auth.data.user.uid
+          )
+        ) {
+          return setUserRole(
+            board.data.members[auth.data.user.uid].role
+          )
         }
       }
     }
@@ -83,16 +113,23 @@ const BoardComponent: React.FunctionComponent = () => {
   return (
     <PermissionProvider role={userRole}>
       <BoardContext.Provider value={state}>
-        <Styled.BoardContainer backgroundColor={state.color}>
-          <PageHeader title={state.title} extra={<BoardToolbar />} />
+        <Styled.BoardContainer
+          backgroundColor={state.color}
+        >
+          <BoardHeader />
           <Styled.Content>
             <DragDropContext onDragEnd={onDragEnd}>
-              <Droppable droppableId={params.boardId} type="LIST" direction="horizontal">
-                {(droppableProvided, _droppableSnapshot) => (
+              <Droppable
+                droppableId={params.boardId}
+                type="LIST"
+                direction="horizontal"
+              >
+                {(droppableProvided) => (
                   <Styled.ListsContainer
                     flex
                     ref={droppableProvided.innerRef}
-                    {...droppableProvided.droppableProps}>
+                    {...droppableProvided.droppableProps}
+                  >
                     {renderLists()}
                     {droppableProvided.placeholder}
 

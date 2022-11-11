@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { Spin, Tooltip, Button } from 'antd'
-import { PlusOutlined, SettingOutlined } from '@ant-design/icons'
+import {
+  PlusOutlined,
+  SettingOutlined
+} from '@ant-design/icons'
 import CreateListModal from './CreateListModal'
 import BoardSettingsModal from './BoardSettingsModal'
 import { useSigninCheck } from 'reactfire'
@@ -8,8 +11,14 @@ import Restricted from '@/containers/Permission/Restricted'
 
 const BoardToolbar = () => {
   const auth = useSigninCheck()
-  const [isCreateListModalVisible, setIsCreateListModalVisible] = useState(false)
-  const [isBoardSettingsModalVisible, setIsBoardSettingsModalVisible] = useState(false)
+  const [
+    isCreateListModalVisible,
+    setIsCreateListModalVisible
+  ] = useState(false)
+  const [
+    isBoardSettingsModalVisible,
+    setIsBoardSettingsModalVisible
+  ] = useState(false)
 
   if (auth.status === 'loading') {
     return <Spin />
@@ -24,7 +33,9 @@ const BoardToolbar = () => {
       <Restricted to="list:create">
         <Tooltip title="Add List">
           <Button
-            onClick={() => setIsCreateListModalVisible(true)}
+            onClick={() =>
+              setIsCreateListModalVisible(true)
+            }
             icon={<PlusOutlined />}
             type="text"
           />
@@ -39,7 +50,9 @@ const BoardToolbar = () => {
       <Restricted to="board:edit">
         <Tooltip title="Manage Board">
           <Button
-            onClick={() => setIsBoardSettingsModalVisible(true)}
+            onClick={() =>
+              setIsBoardSettingsModalVisible(true)
+            }
             icon={<SettingOutlined />}
             type="text"
           />
@@ -47,7 +60,9 @@ const BoardToolbar = () => {
 
         <BoardSettingsModal
           visible={isBoardSettingsModalVisible}
-          close={() => setIsBoardSettingsModalVisible(false)}
+          close={() =>
+            setIsBoardSettingsModalVisible(false)
+          }
         />
       </Restricted>
     </React.Fragment>

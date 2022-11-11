@@ -8,7 +8,9 @@ import { useNavigate } from 'react-router'
 
 function withNavigation(Component) {
   // eslint-disable-next-line react/display-name
-  return (props) => <Component {...props} navigate={useNavigate()} />
+  return (props) => (
+    <Component {...props} navigate={useNavigate()} />
+  )
 }
 
 class ErrorBoundary extends React.Component {
@@ -65,13 +67,17 @@ class ErrorBoundary extends React.Component {
               icon={<ArrowLeftOutlined />}
               key="back-home"
               type="primary"
-              onClick={this.handleGoHome}>
+              onClick={this.handleGoHome}
+            >
               Back Home
             </Button>,
             <Button
               key="report-feedback"
               type="primary"
-              onClick={this.state.sentryHub.showReportDialog}>
+              onClick={
+                this.state.sentryHub.showReportDialog
+              }
+            >
               Send Feedback
             </Button>
           ]}

@@ -13,7 +13,10 @@ type Props = {
 const ItemToolbar: React.FunctionComponent<Props> = () => {
   const auth = useSigninCheck()
 
-  const [isItemSettingsModalVisible, setIsItemSettingsModalVisible] = useState(false)
+  const [
+    isItemSettingsModalVisible,
+    setIsItemSettingsModalVisible
+  ] = useState(false)
 
   if (auth.status === 'loading' || !auth.data.signedIn) {
     return null
@@ -25,8 +28,11 @@ const ItemToolbar: React.FunctionComponent<Props> = () => {
         <Button
           size="small"
           type="text"
-          onClick={() => setIsItemSettingsModalVisible(true)}
-          icon={<SettingOutlined />}></Button>
+          onClick={() =>
+            setIsItemSettingsModalVisible(true)
+          }
+          icon={<SettingOutlined />}
+        ></Button>
       </Tooltip>
 
       <ItemSettingsModal

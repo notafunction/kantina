@@ -29,7 +29,9 @@ export default {
       props.flex &&
       css`
         display: flex;
-        align-items: ${typeof props.flex === 'string' ? props.flex : 'flex-start'};
+        align-items: ${typeof props.flex === 'string'
+          ? props.flex
+          : 'flex-start'};
       `}
   `,
 

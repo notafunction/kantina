@@ -16,7 +16,8 @@ const Styled = {
   `,
   Content: styled.div`
     ${tw`transition-all p-2 overflow-hidden border relative`}
-    ${(props) => (props.isDragging ? tw`shadow-sm` : tw`shadow-none`)}
+    ${(props) =>
+      props.isDragging ? tw`shadow-sm` : tw`shadow-none`}
     ${(props) => `
       background-color: ${props.itemColor}
     `}

@@ -43,7 +43,8 @@ const StyledVersion = styled.sup`
 `
 
 function NavBar() {
-  const { status, data: signInCheckResult } = useSigninCheck()
+  const { status, data: signInCheckResult } =
+    useSigninCheck()
 
   return (
     <Container>

@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { useDatabase, useDatabaseObjectData, useUser } from 'reactfire'
+import {
+  useDatabase,
+  useDatabaseObjectData,
+  useUser
+} from 'reactfire'
 import { get, ref } from 'firebase/database'
 import { Permission, UserPermissionRole } from '@/types'
 import PermissionContext from './PermissionContext'
 
 enum Role {
-  "admin",
-  "editor",
-  "viewer"
+  'admin',
+  'editor',
+  'viewer'
 }
 
 type Props = {
@@ -15,7 +19,9 @@ type Props = {
   children?: JSX.Element
 }
 
-const PermissionProvider: React.FunctionComponent<Props> = ({ role, children }) => {
+const PermissionProvider: React.FunctionComponent<
+  Props
+> = ({ role, children }) => {
   const db = useDatabase()
   const [permissions, setPermissions] = useState([])
 
@@ -37,11 +43,14 @@ const PermissionProvider: React.FunctionComponent<Props> = ({ role, children }) 
     fetchRolePermissions().catch(console.error)
   }, [role])
 
-  const isAllowedTo = (permission: Permission) => permissions.includes(permission)
+  const isAllowedTo = (permission: Permission) =>
+    permissions.includes(permission)
 
-  return <PermissionContext.Provider value={{ isAllowedTo }}>
-    {children}
-  </PermissionContext.Provider>
+  return (
+    <PermissionContext.Provider value={{ isAllowedTo }}>
+      {children}
+    </PermissionContext.Provider>
+  )
 }
 
 export default PermissionProvider
