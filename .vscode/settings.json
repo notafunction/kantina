@@ -1,15 +1,8 @@
 {
-  "[javascriptreact]": {
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
-    }
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
   },
-  "[typescriptreact]": {
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
-    }
-  },
-  "eslint.validate": ["javascript"],
+  "eslint.validate": ["javascript", "typescriptreact"],
   "jest.jestCommandLine": "npm run test --",
   "typescript.tsdk": "node_modules/typescript/lib"
 }

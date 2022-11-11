@@ -7,11 +7,7 @@ import { ref, set } from 'firebase/database'
 import { useDatabase } from 'reactfire'
 import useOnClickOutside from '~/src/hooks/useOnClickOutside'
 
-type Props = {}
-
-const BoardHeader: React.FunctionComponent<Props> = (
-  props
-) => {
+const BoardHeader: React.FunctionComponent = () => {
   const db = useDatabase()
   const board = useContext(BoardContext)
   const canEdit = usePermission('board:edit')
