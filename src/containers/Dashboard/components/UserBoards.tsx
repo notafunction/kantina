@@ -19,6 +19,7 @@ const UserBoards: React.FunctionComponent<Props> = (props) => {
   })
 
   const [boards, setBoards] = useState<Board[]>([])
+  const [loadedBoards, setloadedBoards] = useState(false)
   const [isCreateBoardModalVisible, setIsCreateBoardModalVisible] = useState(false)
 
   useEffect(() => {
@@ -31,7 +32,7 @@ const UserBoards: React.FunctionComponent<Props> = (props) => {
         const boards = await Promise.all(
           userBoardIds.data.map(async ({ id }) => {
             const snap = await get(ref(db, `boards/${id}`))
-
+            
             if (snap.exists()) {
               return {
                 id,
@@ -40,8 +41,9 @@ const UserBoards: React.FunctionComponent<Props> = (props) => {
             }
           })
         )
-
+          
         setBoards(boards.filter((board) => !!board))
+        setloadedBoards(true)
       }
 
       fetchData().catch(console.error)
@@ -55,24 +57,23 @@ const UserBoards: React.FunctionComponent<Props> = (props) => {
   )
 
   return (
-    <Spin spinning={userBoardIds.status === 'loading'} wrapperClassName="flex-1">
+    <Spin spinning={userBoardIds.status === 'loading' || !loadedBoards} wrapperClassName="flex-1">
       <Card title="My Boards" bordered={false} className="min-h-[200px]">
         {boards.length ? (
           <Styled.Grid>{boards.map((board) => renderBoard(board))}</Styled.Grid>
-        ) : (
-          userBoardIds.status !== 'loading' && (
-            <Empty>
-              <Button type="primary" onClick={() => setIsCreateBoardModalVisible(true)}>
-                Create Board
-              </Button>
+        ) : loadedBoards ? (
+          <Empty>
+            <Button type="primary" onClick={() => setIsCreateBoardModalVisible(true)}>
+              Create Board
+            </Button>
 
-              <CreateBoardModal
-                visible={isCreateBoardModalVisible}
-                close={() => setIsCreateBoardModalVisible(false)}
-              />
-            </Empty>
-          )
-        )}
+            <CreateBoardModal
+              visible={isCreateBoardModalVisible}
+              close={() => setIsCreateBoardModalVisible(false)}
+            />
+          </Empty>
+        ) : null
+        }
       </Card>
     </Spin>
   )

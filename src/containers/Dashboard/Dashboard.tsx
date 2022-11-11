@@ -12,9 +12,7 @@ const Dashboard = () => {
     <div className="w-full">
       <PublicBoards />
 
-      {auth.status === 'loading' ? (
-        <Spin />
-      ) : auth.data.signedIn ? (
+      {auth.data && auth.data.signedIn ? (
         <UserBoards user={auth.data.user} />
       ) : null}
     </div>

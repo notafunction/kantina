@@ -70,7 +70,7 @@ export type Board = {
 
 export type UserProfile = {
   uid: string
-  boards: Membership[]
+  boards?: Membership[]
   displayName: string
   email: string,
   photoURL: string
