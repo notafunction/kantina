@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
 import {
   Upload,
   Form,
@@ -7,9 +6,10 @@ import {
   message,
   Spin,
   Image,
-  Modal
+  Modal,
+  Alert,
+  Button
 } from 'antd'
-import SettingsDrawer from '../../components/SettingsDrawer'
 import styled from 'styled-components'
 import { useDatabase, useStorage, useUser } from 'reactfire'
 import {
@@ -21,7 +21,13 @@ import {
   update,
   ref as databaseRef
 } from 'firebase/database'
-import { updateProfile } from 'firebase/auth'
+import { updateProfile, User, sendEmailVerification } from 'firebase/auth'
+
+type Props = {
+  user: User
+  close: () => void
+  visible: boolean
+}
 
 const StyledUpload = styled(Upload)`
   .ant-upload {
@@ -45,7 +51,7 @@ const getBase64 = (image, callback) => {
   reader.readAsDataURL(image)
 }
 
-const UserSettingsModal = (props) => {
+const UserSettingsModal: React.FunctionComponent<Props> = (props) => {
   const { status, data: user } = useUser()
   const db = useDatabase()
   const storage = useStorage()
@@ -53,7 +59,6 @@ const UserSettingsModal = (props) => {
   const [avatarFileList, setAvatarFileList] = useState([])
   const [avatarPreviewUrl, setAvatarPreviewUrl] =
     useState(null)
-  const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
 
   const beforeAvatarUpload = (file) => {
@@ -112,8 +117,11 @@ const UserSettingsModal = (props) => {
   const onClose = () => {
     setAvatarFileList([])
     setAvatarPreviewUrl(null)
-    setLoading(false)
     props.close()
+  }
+
+  const resendVerificationEmail = async () => {
+    const result = await sendEmailVerification(props.user)
   }
 
   if (status === 'loading') return <Spin />
@@ -125,6 +133,12 @@ const UserSettingsModal = (props) => {
       open={props.visible}
       onCancel={onClose}
     >
+
+      {
+        !user.emailVerified && 
+        <Alert type='warning' message="Your email address has not be verified." action={<Button onClick={resendVerificationEmail}>Resend</Button>} />
+      }
+
       <Form layout="vertical" form={form} onFinish={onSave}>
         <Form.Item name="avatar" label="Avatar">
           <StyledUpload
@@ -163,12 +177,6 @@ const UserSettingsModal = (props) => {
       </Form>
     </Modal>
   )
-}
-
-UserSettingsModal.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
 }
 
 export default UserSettingsModal
