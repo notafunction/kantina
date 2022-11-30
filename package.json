@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
-    "@sentry/react": "^6.16.1",
+    "@sentry/react": "^7.22.0",
     "@sentry/tracing": "^6.16.1",
     "@sentry/webpack-plugin": "^1.18.3",
     "antd": "^4.18.2",
