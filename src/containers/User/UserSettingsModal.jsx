@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Upload, Form, Input, message, Spin, Image, Modal } from 'antd'
-import SettingsDrawer from '../../components/SettingsDrawer'
+import { Upload, Form, Input, message, Spin, Image, Modal, Alert, Button } from 'antd'
 import styled from 'styled-components'
-import { useDatabase, useStorage, useUser } from 'reactfire'
+import { useAuth, useDatabase, useStorage, useUser } from 'reactfire'
 import { uploadBytes, ref as storageRef, getDownloadURL } from 'firebase/storage'
 import { update, ref as databaseRef } from 'firebase/database'
-import { updateProfile } from 'firebase/auth'
+import { updateProfile, sendEmailVerification, updateEmail, updatePassword } from 'firebase/auth'
 
 const StyledUpload = styled(Upload)`
   .ant-upload {
@@ -32,6 +31,7 @@ const UserSettingsModal = (props) => {
   const { status, data: user } = useUser()
   const db = useDatabase()
   const storage = useStorage()
+  const auth = useAuth()
 
   const [avatarFileList, setAvatarFileList] = useState([])
   const [avatarPreviewUrl, setAvatarPreviewUrl] = useState(null)
@@ -95,6 +95,21 @@ const UserSettingsModal = (props) => {
 
   return (
     <Modal title="User Settings" onOk={onSave} open={props.visible} onCancel={onClose}>
+      {!user.emailVerified ? (
+        <Alert
+          message="Email Needs Verification"
+          description="To gain access to all of Kantina's features, you'll need to verify your email address."
+          type="warning"
+          showIcon
+          closable
+          className="mb-4"
+          action={
+            <Button size="small" type="ghost" onClick={() => sendEmailVerification(user)}>
+              Resend
+            </Button>
+          }
+        />
+      ) : null}
       <Form layout="vertical" form={form} onFinish={onSave}>
         <Form.Item name="avatar" label="Avatar">
           <StyledUpload
