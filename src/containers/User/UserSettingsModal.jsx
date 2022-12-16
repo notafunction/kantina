@@ -9,8 +9,8 @@ import { updateProfile, sendEmailVerification, updateEmail, updatePassword } fro
 
 const StyledUpload = styled(Upload)`
   .ant-upload {
-    width: 128px;
-    height: 128px;
+    width: 64px;
+    height: 64px;
     overflow: hidden;
 
     img {
@@ -137,6 +137,14 @@ const UserSettingsModal = (props) => {
           initialValue={user.displayName}
           rules={[{ required: true, message: 'Your name is required' }]}>
           <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="emailAddress"
+          label="Email Address"
+          initialValue={user.email}
+          rules={[{ required: true, message: 'Your email address is required' }]}>
+          <Input readOnly />
         </Form.Item>
       </Form>
     </Modal>
