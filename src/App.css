@@ -1,19 +1,22 @@
 @import 'antd/dist/antd.css';
+@import '@blueprintjs/core/lib/css/blueprint.css';
+@import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
-html, body, #root {
-    height: 100%;
+html,
+body,
+#root {
+  height: 100%;
 }
 
 body {
-    background: white;
-    position: relative;
+  background: white;
+  position: relative;
 }
 
 iframe {
-    display: none;
+  display: none;
 }

@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
+    "resolveJsonModule": true,
     "jsx": "preserve",
     "esModuleInterop": true,
     "paths": {
       "~/*": ["./*"],
       "@/*": ["./src/*"]
     }
-  },
+  }
 }

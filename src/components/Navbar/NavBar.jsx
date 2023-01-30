@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { Spin } from 'antd'
-import LoginButton from '../../containers/Auth/LoginButton'
+import AuthButton from '@/components/Auth/AuthButton'
 import UserMenu from '../User/UserMenu'
 import config from '../../../package.json'
 import { useSigninCheck } from 'reactfire'
@@ -57,7 +57,7 @@ function NavBar() {
         ) : signInCheckResult.signedIn ? (
           <UserMenu user={signInCheckResult.user} />
         ) : (
-          <LoginButton />
+          <AuthButton />
         )}
       </StyledRight>
     </Container>
