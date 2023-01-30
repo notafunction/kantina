@@ -13,15 +13,20 @@ const AuthButton = () => {
     <ButtonWithDialog
       buttonText="Login or Signup"
       title={type === 'login' ? 'Login' : 'Signup'}>
-      {type === 'login' ? (
-        <AuthLoginDialogContent
-          handleDialogTypeChange={(type) => setType(type)}
-        />
-      ) : (
-        <AuthSignupDialogContent
-          handleDialogTypeChange={(type) => setType(type)}
-        />
-      )}
+      {/* @ts-ignore */}
+      {({ handleClose }) =>
+        type === 'login' ? (
+          <AuthLoginDialogContent
+            handleClose={handleClose}
+            handleDialogTypeChange={(type) => setType(type)}
+          />
+        ) : (
+          <AuthSignupDialogContent
+            handleClose={handleClose}
+            handleDialogTypeChange={(type) => setType(type)}
+          />
+        )
+      }
     </ButtonWithDialog>
   )
 }

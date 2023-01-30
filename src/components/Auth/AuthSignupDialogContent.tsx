@@ -2,19 +2,23 @@ import type { AuthDialogType } from './AuthButton'
 
 import React from 'react'
 import {
-  Divider,
   InputGroup,
   Button,
   FormGroup,
   DialogFooter,
-  DialogBody
+  DialogBody,
+  Intent
 } from '@blueprintjs/core'
-import { IoLogoGoogle } from 'react-icons/io5'
 import * as Yup from 'yup'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
+import { getDatabase } from 'firebase/database'
+import { AppToaster } from '@/toaster'
+import { AuthErrorMessage } from '~/utils'
 
 type Props = {
   handleDialogTypeChange: (string: AuthDialogType) => void
+  handleClose: () => void
 }
 
 type State = {
@@ -31,7 +35,38 @@ const SignupSchema = Yup.object({
     .oneOf([Yup.ref('password'), null], 'Passwords must match')
 })
 
-export default function ({ handleDialogTypeChange }: Props) {
+export default function ({ handleDialogTypeChange, handleClose }: Props) {
+  const auth = getAuth()
+  const db = getDatabase()
+  const [loading, setLoading] = React.useState(false)
+
+  async function handleSignupWithEmailAndPassword(email, password) {
+    setLoading(true)
+    try {
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      )
+      performPostSignInActions(user)
+    } catch (error) {
+      AppToaster.show({
+        message: AuthErrorMessage[error.code],
+        intent: Intent.DANGER
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  function performPostSignInActions(user) {
+    populateProfile(db, user)
+    AppToaster.show({
+      message: 'You are now logged in',
+      intent: Intent.SUCCESS
+    })
+  }
+
   return (
     <Formik
       initialValues={{
@@ -40,7 +75,9 @@ export default function ({ handleDialogTypeChange }: Props) {
         passwordConfirm: ''
       }}
       validationSchema={SignupSchema}
-      onSubmit={console.log}>
+      onSubmit={({ email, password }) =>
+        handleSignupWithEmailAndPassword(email, password)
+      }>
       <Form>
         <DialogBody>
           <Field name="email">
@@ -93,15 +130,11 @@ export default function ({ handleDialogTypeChange }: Props) {
               </FormGroup>
             )}
           </Field>
-
-          <Divider />
-
-          <Button icon={<IoLogoGoogle />}>Signup with Google</Button>
         </DialogBody>
 
         <DialogFooter
           actions={
-            <Button intent="primary" type="submit">
+            <Button intent="primary" type="submit" loading={loading}>
               Signup
             </Button>
           }>
@@ -112,4 +145,14 @@ export default function ({ handleDialogTypeChange }: Props) {
       </Form>
     </Formik>
   )
+}
+
+async function populateProfile(db, user) {
+  const userRef = ref(db, `users/${user.uid}`)
+
+  return await update(userRef, {
+    displayName: user.displayName,
+    email: user.email,
+    photoURL: user.photoURL
+  })
 }
