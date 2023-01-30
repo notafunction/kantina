@@ -13,6 +13,8 @@ import {
 import { IoLogoGoogle } from 'react-icons/io5'
 import * as Yup from 'yup'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
+import ButtonWithDialog from '../ButtonWithDialog'
+import AuthResetPasswordDialogContent from './AuthResetPasswordDialogContent'
 
 type Props = {
   handleDialogTypeChange: (type: AuthDialogType) => void
@@ -58,6 +60,7 @@ export default function ({ handleDialogTypeChange }: Props) {
                 label="Password"
                 labelFor="password"
                 subLabel={<ErrorMessage name="password" />}
+                helperText={<ForgotPasswordButton />}
                 intent={meta.error ? 'danger' : null}>
                 <InputGroup
                   id="password"
@@ -86,5 +89,16 @@ export default function ({ handleDialogTypeChange }: Props) {
         </DialogFooter>
       </Form>
     </Formik>
+  )
+}
+
+function ForgotPasswordButton() {
+  return (
+    <ButtonWithDialog
+      buttonProps={{ minimal: true, small: true }}
+      buttonText="Forgot password?"
+      title="Reset Password">
+      {(props) => <AuthResetPasswordDialogContent {...props} />}
+    </ButtonWithDialog>
   )
 }

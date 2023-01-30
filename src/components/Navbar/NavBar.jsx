@@ -7,6 +7,8 @@ import UserMenu from '../User/UserMenu'
 import config from '../../../package.json'
 import { useSigninCheck } from 'reactfire'
 
+import { Navbar, Alignment, Spinner, SpinnerSize } from '@blueprintjs/core'
+
 const Container = styled.nav`
   display: flex;
   flex-direction: row;
@@ -42,26 +44,41 @@ const StyledVersion = styled.sup`
   font-size: 70%;
 `
 
-function NavBar() {
+export default function () {
   const { status, data: signInCheckResult } = useSigninCheck()
 
   return (
-    <Container>
-      <Logo>
-        <StyledLink to="/">Kantina</StyledLink>
-      </Logo>
-      <StyledVersion>v{config.version}</StyledVersion>
-      <StyledRight>
+    <Navbar>
+      <Navbar.Group align={Alignment.LEFT}>
+        <Navbar.Heading>
+          <StyledLink to="/">Kantina</StyledLink>
+        </Navbar.Heading>
+      </Navbar.Group>
+
+      <Navbar.Group align={Alignment.RIGHT}>
         {status === 'loading' ? (
-          <Spin />
+          <Spinner size={SpinnerSize.SMALL} />
         ) : signInCheckResult.signedIn ? (
           <UserMenu user={signInCheckResult.user} />
         ) : (
           <AuthButton />
         )}
-      </StyledRight>
-    </Container>
+      </Navbar.Group>
+    </Navbar>
+
+    // <Container>
+    //   <Logo>
+    //   </Logo>
+    //   <StyledVersion>v{config.version}</StyledVersion>
+    //   <StyledRight>
+    //     {status === 'loading' ? (
+    //       <Spin />
+    //     ) : signInCheckResult.signedIn ? (
+    //       <UserMenu user={signInCheckResult.user} />
+    //     ) : (
+    //       <AuthButton />
+    //     )}
+    //   </StyledRight>
+    // </Container>
   )
 }
-
-export default NavBar
