@@ -1,14 +1,20 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Avatar, Button, Dropdown, Menu, Space } from 'antd'
-import { LogoutOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons'
+import { Avatar, Button as AntButton, Dropdown, Menu, Space } from 'antd'
+import {
+  LogoutOutlined,
+  PlusOutlined,
+  SettingOutlined
+} from '@ant-design/icons'
+import { Button, Intent } from '@blueprintjs/core'
 import { useAuth } from 'reactfire'
 import UserSettingsModal from '../../containers/User/UserSettingsModal'
 import CreateBoardModal from '../../containers/Board/components/CreateBoardModal'
 function UserMenu(props) {
   const auth = useAuth()
 
-  const [userSettingsModalVisible, setUserSettingsModalVisible] = useState(false)
+  const [userSettingsModalVisible, setUserSettingsModalVisible] =
+    useState(false)
   const [boardCreateModalVisible, setBoardCreateModalVisible] = useState(false)
 
   const handleMenuClick = (event) => {
@@ -39,9 +45,9 @@ function UserMenu(props) {
   return (
     <Space>
       <Button
-        icon={<PlusOutlined />}
         onClick={() => setBoardCreateModalVisible(true)}
-        type="primary">
+        intent={Intent.PRIMARY}
+        icon="small-plus">
         Create Board
       </Button>
 

@@ -65,20 +65,5 @@ export default function () {
         )}
       </Navbar.Group>
     </Navbar>
-
-    // <Container>
-    //   <Logo>
-    //   </Logo>
-    //   <StyledVersion>v{config.version}</StyledVersion>
-    //   <StyledRight>
-    //     {status === 'loading' ? (
-    //       <Spin />
-    //     ) : signInCheckResult.signedIn ? (
-    //       <UserMenu user={signInCheckResult.user} />
-    //     ) : (
-    //       <AuthButton />
-    //     )}
-    //   </StyledRight>
-    // </Container>
   )
 }
