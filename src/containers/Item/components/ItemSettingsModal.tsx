@@ -1,9 +1,9 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useDatabase } from 'reactfire'
 import { WarningOutlined } from '@ant-design/icons'
-import { Button, Form, Input, message, Modal, Popconfirm } from 'antd'
-import { ref, update, remove } from 'firebase/database'
+import { Avatar, Button, Divider, Form, Input, message, Modal, Popconfirm } from 'antd'
+import { get, ref, update, remove } from 'firebase/database'
 import { CirclePicker } from 'react-color'
 import { colorPickerColors } from '../../../constants'
 import FormDangerZone from '../../../components/Form/FormDangerZone'
@@ -11,7 +11,8 @@ import { ListContext } from '../../List/components/ListContext'
 import { ItemContext } from './ItemContext'
 import { BoardContext } from '../../Board/components/BoardContext'
 import Restricted from '@/containers/Permission/Restricted'
-import { Board, Item, List } from '@/types'
+import { Board, Item, List, UserProfile } from '@/types'
+import AddMemberModal from './AddMemberModal'
 
 type Props = {
   visible: boolean
@@ -24,6 +25,34 @@ const ItemSettingsModal: React.FunctionComponent<Props> = (props) => {
   const board: Board = useContext(BoardContext)
   const list: List = useContext(ListContext)
   const item: Item = useContext(ItemContext)
+
+  const [members, setMembers] = useState<UserProfile[]>([])
+  const [isAddMemberModalVisible, setIsAddMemberModalVisible] = useState(false)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!item.members) {
+        return setMembers([])
+      }
+
+      const members = await Promise.all(
+        Object.keys(item.members).map(async (uid) => {
+          const snap = await get(ref(db, `users/${uid}`))
+
+          if (snap.exists()) {
+            return {
+              uid,
+              ...snap.val()
+            }
+          }
+        })
+      )
+
+      setMembers(members)
+    }
+
+    fetchData().catch(console.error)
+  }, [item.members])
 
   const onSave = async () => {
     const values = await form.validateFields()
@@ -62,6 +91,38 @@ const ItemSettingsModal: React.FunctionComponent<Props> = (props) => {
           getValueFromEvent={({ hex }) => hex}>
           <CirclePicker width={null} colors={colorPickerColors} color={item.color} />
         </Form.Item>
+
+        <Restricted to="member:read">
+          <Divider orientation="left" orientationMargin={0}>
+            Members
+          </Divider>
+
+          <div className="flex flex-col gap-2">
+            <Avatar.Group>
+              {members.map((member) => (
+                <Avatar src={member.photoURL ?? null}>
+                  {!member.photoURL
+                    ? member.displayName
+                        .split(' ')
+                        .map((word) => word.charAt(0))
+                        .join('')
+                    : null}
+                </Avatar>
+              ))}
+            </Avatar.Group>
+
+            <Restricted to="member:create">
+              <Button className="mt-4 self-start" onClick={() => setIsAddMemberModalVisible(true)}>
+                Add Member
+              </Button>
+
+              <AddMemberModal
+                visible={isAddMemberModalVisible}
+                close={() => setIsAddMemberModalVisible(false)}
+              />
+            </Restricted>
+          </div>
+        </Restricted>
 
         <Restricted to="item:delete">
           <FormDangerZone>

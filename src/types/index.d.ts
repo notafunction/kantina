@@ -1,38 +1,20 @@
-export type BoardPermissions =
-    'board:read'
-  | 'board:edit'
-  | 'board:create'
-  | 'board.delete'
-  
-export type ListPermissions =
-    'list:read'
-  | 'list:edit'
-  | 'list:create'
-  | 'list:delete'
+export type BoardPermissions = 'board:read' | 'board:edit' | 'board:create' | 'board.delete'
 
-export type ItemPermissions =
-    'item:read'
-  | 'item:edit'
-  | 'item:create'
-  | 'item:delete'
+export type ListPermissions = 'list:read' | 'list:edit' | 'list:create' | 'list:delete'
 
-export type MemberPermissions =
-    'member:read'
-  | 'member:edit'
-  | 'member:create'
-  | 'member:delete'
+export type ItemPermissions = 'item:read' | 'item:edit' | 'item:create' | 'item:delete'
+
+export type MemberPermissions = 'member:read' | 'member:edit' | 'member:create' | 'member:delete'
 
 export type Permission = BoardPermissions | ListPermissions | ItemPermissions | MemberPermissions
 
-export type UserPermissionRole = 
-    'viewer'
-  | 'editor'
-  | 'admin'
+export type UserPermissionRole = 'viewer' | 'editor' | 'admin'
 
 export type Membership = {
   role: UserPermissionRole
 }
 export type MembershipRecord = Record<string, Membership>
+export type ItemMembership = Record<string, boolean>
 
 export type ItemRecord = Record<string, Item>
 export type Item = {
@@ -42,6 +24,7 @@ export type Item = {
   id: string
   list: string
   position: number
+  members: ItemMembership
 }
 
 export type ListRecord = Record<string, List>
@@ -70,6 +53,6 @@ export type UserProfile = {
   uid: string
   boards: Membership[]
   displayName: string
-  email: string,
+  email: string
   photoURL: string
 }

@@ -24,11 +24,9 @@ const BoardSettingsMember: React.FunctionComponent<Props> = (props) => {
     return props.member.boards[board.id].role
   }, [props.member])
 
-  const userPermissionRoles: Array<UserPermissionRole> = [
-    'viewer', 'editor', 'admin'
-  ]
+  const userPermissionRoles: Array<UserPermissionRole> = ['viewer', 'editor', 'admin']
 
-  const renderMemberTags = () => {
+  const renderMemberTag = () => {
     switch (memberRole) {
       case 'admin':
         return <Tag color="red">Admin</Tag>
@@ -79,7 +77,7 @@ const BoardSettingsMember: React.FunctionComponent<Props> = (props) => {
         <div className="flex flex-col items-start text-sm">
           <div className="flex gap-2">
             {props.member.displayName}
-            {renderMemberTags()}
+            {renderMemberTag()}
           </div>
           <span>{props.member.email}</span>
         </div>
